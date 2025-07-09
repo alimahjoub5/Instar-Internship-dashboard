@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dash-adm',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './dash-adm.html',
-  styleUrl: './dash-adm.css'
+  styleUrls: ['./dash-adm.css']
 })
-export class DashAdm {
-
-}
+export class DashAdmComponent {}

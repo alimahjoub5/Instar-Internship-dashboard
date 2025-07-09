@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-login',
@@ -15,12 +17,13 @@ export class LoginComponent {
   error: string = '';
   showPassword: boolean = false;
 
+  private router = inject(Router);
+
   login() {
-    // Basic login logic
     if (this.username === 'admin' && this.password === 'admin') {
-      // redirect to admin
+      this.router.navigate(['/dash-adm']);
     } else if (this.username === 'fournisseur' && this.password === 'fournisseur') {
-      // redirect to fournisseur
+      this.router.navigate(['/dash-fn']);
     } else {
       this.error = 'Invalid username or password';
     }
