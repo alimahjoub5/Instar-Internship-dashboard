@@ -1,50 +1,438 @@
-<div class="container my-4">
-    <mat-card class="add-product-card glass">
-      <h2 class="mb-3">Add a New Product</h2>
-      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-        <div class="row">
-          <div class="col-md-6">
-            <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Product Name</mat-label>
-              <input matInput formControlName="name" required>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Description</mat-label>
-              <textarea matInput formControlName="description" rows="3" required></textarea>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Price</mat-label>
-              <input matInput type="number" formControlName="price" required>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Category</mat-label>
-              <input matInput formControlName="category" required>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Stock</mat-label>
-              <input matInput type="number" formControlName="stock" required>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="w-100 mb-3">
-              <mat-label>Supplier</mat-label>
-              <mat-select formControlName="supplier" required>
-                <mat-option *ngFor="let s of suppliers" [value]="s.id">{{s.name}}</mat-option>
-              </mat-select>
-            </mat-form-field>
+<div class="upload-container">
+  <!-- Loading overlay -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p>Chargement du modèle...</p>
+  </div>
+
+  <header class="upload-header">
+    <h1>Upload de Fichiers 3D</h1>
+    <button class="dashboard-btn" (click)="goToDashboard()">Retour au Dashboard</button>
+  </header>
+
+  <main class="upload-content">
+    <!-- Zone d'upload -->
+    <div class="upload-section">
+      <div class="file-upload-area" 
+           [class.has-file]="selectedFile"
+           (click)="fileInput.click()"
+           (dragover)="$event.preventDefault()"
+           (drop)="onFileDropped($event)">
+        
+        <div class="upload-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7,10 12,15 17,10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </div>
+        
+        <h3>Glissez-déposez votre fichier ici</h3>
+        <p>ou cliquez pour sélectionner un fichier</p>
+        <p class="file-types">Formats supportés: .STL, .OBJ, .GCODE</p>
+        
+        <input #fileInput 
+               type="file" 
+               accept=".stl,.obj,.gcode,application/octet-stream"
+               (change)="onFileSelected($event)"
+               style="display: none;">
+      </div>
+
+      <!-- Informations du fichier -->
+      <div *ngIf="fileInfo" class="file-info">
+        <h3>Informations du fichier</h3>
+        <div class="file-details">
+          <div class="file-detail">
+            <span class="label">Nom:</span>
+            <span class="value">{{ fileInfo.name }}</span>
           </div>
-          <div class="col-md-6 d-flex flex-column align-items-center">
-            <label class="upload-label mb-2">
-              <input #fileInput type="file" accept=".obj,.stl" (change)="onFileSelected($event)" hidden>
-              <button mat-raised-button color="primary" type="button" (click)="fileInput.click()">Upload 3D Model (OBJ, STL)</button>
-            </label>
-            <div #viewerContainer class="viewer-container mb-2"></div>
-            <div *ngIf="uploadError" class="text-danger">{{uploadError}}</div>
+          <div class="file-detail">
+            <span class="label">Taille:</span>
+            <span class="value">{{ formatFileSize(fileInfo.size) }}</span>
+          </div>
+          <div class="file-detail">
+            <span class="label">Type:</span>
+            <span class="value">{{ fileInfo.type || 'Fichier binaire' }}</span>
+          </div>
+          <div class="file-detail">
+            <span class="label">Modifié:</span>
+            <span class="value">{{ fileInfo.lastModified | date:'dd/MM/yyyy HH:mm' }}</span>
           </div>
         </div>
-        <div class="d-flex justify-content-end mt-3">
-          <button mat-raised-button color="accent" type="submit" [disabled]="isSubmitting || productForm.invalid">
-            {{ isSubmitting ? 'Submitting...' : 'Add Product' }}
+
+        <!-- Statistiques du modèle (pour les fichiers STL/OBJ) -->
+        <div *ngIf="isModelLoaded" class="model-stats">
+          <h4>Statistiques du modèle</h4>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label">Vertices:</span>
+              <span class="stat-value">{{ modelStats.vertices.toLocaleString() }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Faces:</span>
+              <span class="stat-value">{{ modelStats.faces.toLocaleString() }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Largeur:</span>
+              <span class="stat-value">{{ modelStats.boundingBox.width.toFixed(2) }} mm</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Hauteur:</span>
+              <span class="stat-value">{{ modelStats.boundingBox.height.toFixed(2) }} mm</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Profondeur:</span>
+              <span class="stat-value">{{ modelStats.boundingBox.depth.toFixed(2) }} mm</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bouton d'upload -->
+        <div class="upload-actions">
+          <button 
+            class="upload-btn" 
+            [disabled]="!selectedFile || isUploading"
+            (click)="uploadFile()">
+            <span *ngIf="!isUploading">Uploader le fichier</span>
+            <span *ngIf="isUploading">Upload en cours...</span>
           </button>
         </div>
-      </form>
-    </mat-card>
+
+        <!-- Barre de progression -->
+        <div *ngIf="isUploading" class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+          </div>
+          <span class="progress-text">{{ uploadProgress.toFixed(0) }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualiseur 3D -->
+    <div class="viewer-section">
+      <div class="viewer-header">
+        <h3>🎮 Visualiseur 3D Interactif</h3>
+        <div class="viewer-controls">
+          <button class="control-btn primary" (click)="resetView()" title="Réinitialiser la vue">
+            <span>🏠</span>
+            <span>Reset</span>
+          </button>
+          <button class="control-btn" [class.active]="isRotating" (click)="toggleRotation()" title="Rotation automatique">
+            <span>🔄</span>
+            <span>Auto</span>
+          </button>
+          <button class="control-btn" [class.active]="wireframeMode" (click)="toggleWireframe()" title="Mode wireframe">
+            <span>🔲</span>
+            <span>Wire</span>
+          </button>
+          <button class="control-btn" (click)="changeMaterial()" title="Changer la couleur">
+            <span>🎨</span>
+            <span>Couleur</span>
+          </button>
+          <button class="control-btn" (click)="toggleFullscreen()" title="Plein écran">
+            <span>⛶</span>
+            <span>Full</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="viewer-container">
+        <div #viewerContainer class="three-js-container" style="width: 100%; height: 100%;"></div>
+        
+        <!-- Overlay Controls -->
+        <div class="viewer-overlay" *ngIf="isModelLoaded">
+          <div class="camera-info">
+            <div class="info-item">
+              <span class="info-label">Zoom:</span>
+              <span class="info-value">{{ cameraInfo.zoom.toFixed(1) }}x</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Rotation:</span>
+              <span class="info-value">{{ cameraInfo.rotation.toFixed(0) }}°</span>
+            </div>
+          </div>
+          
+          <div class="model-info">
+            <div class="model-name">{{ selectedFile?.name }}</div>
+            <div class="model-stats-mini">
+              <span>{{ modelStats.vertices.toLocaleString() }} vertices</span>
+              <span>{{ modelStats.faces.toLocaleString() }} faces</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div *ngIf="!isModelLoaded" class="viewer-placeholder">
+          <div class="placeholder-content">
+            <div class="placeholder-icon">
+              <span>📦</span>
+            </div>
+            <h4>Prêt pour la visualisation 3D</h4>
+            <p>Chargez un fichier STL ou OBJ pour commencer</p>
+                         <div class="controls-help">
+               <div class="help-item">
+                 <span>🖱️</span>
+                 <span>Clic gauche + glisser pour faire pivoter</span>
+               </div>
+               <div class="help-item">
+                 <span>🔍</span>
+                 <span>Molette pour zoomer/dézoomer</span>
+               </div>
+               <div class="help-item">
+                 <span>↔️</span>
+                 <span>Clic droit + glisser pour déplacer</span>
+               </div>
+               <div class="help-item">
+                 <span>🔄</span>
+                 <span>Double-clic pour centrer la vue</span>
+               </div>
+               <div class="help-item">
+                 <span>⛶</span>
+                 <span>Bouton Full pour le plein écran</span>
+               </div>
+             </div>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="viewer-loading">
+          <div class="loading-animation">
+            <div class="cube-loader">
+              <div class="cube"></div>
+              <div class="cube"></div>
+              <div class="cube"></div>
+              <div class="cube"></div>
+            </div>
+          </div>
+          <p>Chargement du modèle 3D...</p>
+        </div>
+      </div>
+
+      <!-- Advanced Controls Panel -->
+      <div class="advanced-controls" *ngIf="isModelLoaded">
+        <div class="control-group">
+          <label>Luminosité</label>
+          <input type="range" min="0" max="2" step="0.1" [value]="lightIntensity" (input)="adjustLight($event)">
+        </div>
+        <div class="control-group">
+          <label>Échelle</label>
+          <input type="range" min="0.1" max="3" step="0.1" [value]="modelScale" (input)="adjustScale($event)">
+        </div>
+        <div class="control-group">
+          <label>Vitesse de rotation</label>
+          <input type="range" min="0" max="0.05" step="0.001" [value]="rotationSpeed" (input)="adjustRotationSpeed($event)">
+        </div>
+        <div class="control-group">
+          <label>Sensibilité caméra</label>
+          <input type="range" min="0.1" max="3" step="0.1" [value]="cameraSensitivity" (input)="adjustCameraSensitivity($event)">
+        </div>
+        <div class="control-group">
+          <label>Vitesse de zoom</label>
+          <input type="range" min="0.1" max="2" step="0.1" [value]="zoomSpeed" (input)="adjustZoomSpeed($event)">
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Product Form Section -->
+  <div class="product-form-section" *ngIf="showProductForm">
+    <div class="form-header">
+      <h3>📝 Informations du Produit</h3>
+      <p>Complétez les informations du produit avec le modèle 3D</p>
+    </div>
+    
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>🏷️ Nom du Produit</mat-label>
+            <input matInput formControlName="name" placeholder="Ex: Table de bureau moderne" required>
+            <mat-error *ngIf="productForm.get('name')?.hasError('required')">
+              Le nom du produit est requis
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>🔢 Code Produit</mat-label>
+            <input matInput formControlName="code" placeholder="Ex: PROD-001" required>
+            <mat-error *ngIf="productForm.get('code')?.hasError('required')">
+              Le code produit est requis
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>📄 Description</mat-label>
+            <textarea matInput formControlName="description" rows="4" 
+                      placeholder="Décrivez les caractéristiques, matériaux, dimensions..." required></textarea>
+            <mat-error *ngIf="productForm.get('description')?.hasError('required')">
+              La description est requise
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>💰 Prix (DT)</mat-label>
+            <input matInput type="number" formControlName="price" placeholder="0.00" min="0" step="0.01" required>
+            <mat-error *ngIf="productForm.get('price')?.hasError('required')">
+              Le prix est requis
+            </mat-error>
+            <mat-error *ngIf="productForm.get('price')?.hasError('min')">
+              Le prix doit être positif
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>📂 Catégorie</mat-label>
+            <mat-select formControlName="category" required>
+              <mat-option value="mobilier">🪑 Mobilier</mat-option>
+              <mat-option value="electronique">📱 Électronique</mat-option>
+              <mat-option value="vetements">👕 Vêtements</mat-option>
+              <mat-option value="alimentation">🍎 Alimentation</mat-option>
+              <mat-option value="sport">⚽ Sport</mat-option>
+              <mat-option value="maison">🏠 Maison & Jardin</mat-option>
+              <mat-option value="automobile">🚗 Automobile</mat-option>
+              <mat-option value="autre">📦 Autre</mat-option>
+            </mat-select>
+            <mat-error *ngIf="productForm.get('category')?.hasError('required')">
+              La catégorie est requise
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>📦 Stock</mat-label>
+            <input matInput type="number" formControlName="stock" placeholder="0" min="0" required>
+            <mat-error *ngIf="productForm.get('stock')?.hasError('required')">
+              Le stock est requis
+            </mat-error>
+            <mat-error *ngIf="productForm.get('stock')?.hasError('min')">
+              Le stock doit être positif
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>🏢 Fournisseur</mat-label>
+            <mat-select formControlName="supplier" required>
+              <mat-option *ngFor="let s of suppliers" [value]="s.id">
+                {{s.name}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="productForm.get('supplier')?.hasError('required')">
+              Le fournisseur est requis
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>⚖️ Poids (kg)</mat-label>
+            <input matInput type="number" formControlName="weight" placeholder="0.0" min="0" step="0.1">
+            <mat-error *ngIf="productForm.get('weight')?.hasError('min')">
+              Le poids doit être positif
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>🎨 Couleur</mat-label>
+            <input matInput formControlName="color" placeholder="Ex: Rouge, Bleu, Blanc...">
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>🏷️ Tags/Mots-clés</mat-label>
+            <input matInput formControlName="tags" placeholder="Ex: moderne, durable, écologique">
+            <mat-hint>Séparez les tags par des virgules</mat-hint>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>📏 Longueur (cm)</mat-label>
+            <input matInput type="number" formControlName="dimensions.length" placeholder="0" min="0" step="0.1">
+            <mat-error *ngIf="productForm.get('dimensions.length')?.hasError('min')">
+              La longueur doit être positive
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>📏 Largeur (cm)</mat-label>
+            <input matInput type="number" formControlName="dimensions.width" placeholder="0" min="0" step="0.1">
+            <mat-error *ngIf="productForm.get('dimensions.width')?.hasError('min')">
+              La largeur doit être positive
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>📏 Hauteur (cm)</mat-label>
+            <input matInput type="number" formControlName="dimensions.height" placeholder="0" min="0" step="0.1">
+            <mat-error *ngIf="productForm.get('dimensions.height')?.hasError('min')">
+              La hauteur doit être positive
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>📊 Statut</mat-label>
+            <mat-select formControlName="isActive">
+              <mat-option [value]="true">✅ Disponible</mat-option>
+              <mat-option [value]="false">❌ Indisponible</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <!-- Informations supplémentaires -->
+      <div class="additional-info">
+        <h4>📊 Informations du Modèle 3D</h4>
+        <div class="model-info-grid">
+          <div class="info-card">
+            <span class="info-label">📁 Fichier:</span>
+            <span class="info-value">{{ selectedFile?.name }}</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">📏 Taille:</span>
+            <span class="info-value">{{ formatFileSize(selectedFile?.size || 0) }}</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">🔢 Vertices:</span>
+            <span class="info-value">{{ modelStats.vertices.toLocaleString() }}</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">📐 Faces:</span>
+            <span class="info-value">{{ modelStats.faces.toLocaleString() }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="resetForm()">
+          <span>🔄</span>
+          Réinitialiser
+        </button>
+        <button mat-raised-button color="accent" type="submit" [disabled]="isSubmitting || productForm.invalid">
+          <span *ngIf="isSubmitting" class="loading-spinner"></span>
+          <span *ngIf="!isSubmitting">✅</span>
+          {{ isSubmitting ? 'Enregistrement...' : 'Ajouter le Produit' }}
+        </button>
+      </div>
+    </form>
   </div>
+</div>
