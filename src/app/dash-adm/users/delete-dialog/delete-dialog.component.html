@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Confirmer la suppression</h2>
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field>
+      <mat-label>Mot de passe de sécurité</mat-label>
+      <input matInput type="password" formControlName="password">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">Annuler</button>
+  <button mat-raised-button color="warn" (click)="confirm()">Supprimer</button>
+</mat-dialog-actions> 
