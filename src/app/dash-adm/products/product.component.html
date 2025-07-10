@@ -1,0 +1,35 @@
+<div *ngIf="isLoading" class="loading">Loading products...</div>
+
+<table class="product-table" *ngIf="!isLoading && products.length">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Category</th>
+      <th>Format</th>
+      <th>Polygons</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let product of products">
+      <td>{{ product.name }}</td>
+      <td>{{ product.description }}</td>
+      <td>{{ product.price | currency }}</td>
+      <td>{{ product.quantity }}</td>
+      <td>{{ product.category }}</td>
+      <td>{{ product.modelFormat || 'N/A' }}</td>
+      <td>{{ product.polygonCount || 'N/A' }}</td>
+      <td>
+        <button class="edit-btn">Edit</button>
+        <button class="delete-btn" (click)="deleteProduct(product.id)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="!isLoading && !products.length" class="no-products">
+  No products found.
+</div> 

@@ -1,9 +1,10 @@
 <aside class="sidebar">
   <nav>
     <ul>
-      <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
-      <li><a routerLink="/users" routerLinkActive="active">Users</a></li>
-      <li><a routerLink="/settings" routerLinkActive="active">Settings</a></li>
+      <li><a (click)="navigateTo('dashboard')" [class.active]="currentView === 'dashboard'">Dashboard</a></li>
+      <li><a (click)="navigateTo('users')" [class.active]="currentView === 'users'">Users</a></li>
+      <li><a (click)="navigateTo('products')" [class.active]="currentView === 'products'">Products</a></li>
+      <li><a (click)="navigateTo('settings')" [class.active]="currentView === 'settings'">Settings</a></li>
       <li class="logout"><a routerLink="/login">Logout</a></li>
     </ul>
   </nav>

@@ -1,7 +1,69 @@
 <div class="dashboard-layout">
   <app-navbar></app-navbar>
-  <app-sidebar></app-sidebar>
+  <app-sidebar [currentView]="currentView" (viewChange)="onViewChange($event)"></app-sidebar>
+  
   <main class="main-content">
-    <app-user></app-user>
+    <!-- Dashboard View -->
+    <div *ngIf="currentView === 'dashboard'" class="dashboard-view">
+      <h1>Welcome to Admin Dashboard</h1>
+      <div class="dashboard-stats">
+        <div class="stat-card">
+          <h3>Total Users</h3>
+          <p>150</p>
+        </div>
+        <div class="stat-card">
+          <h3>Active Users</h3>
+          <p>120</p>
+        </div>
+        <div class="stat-card">
+          <h3>New Users</h3>
+          <p>25</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Users View -->
+    <div *ngIf="currentView === 'users'" class="users-view">
+      <div class="view-header">
+        <h1>User Management</h1>
+        <button class="add-user-btn" (click)="showAddUser()">Add New User</button>
+      </div>
+      <app-user></app-user>
+    </div>
+
+    <!-- Add User View -->
+    <div *ngIf="currentView === 'adduser'" class="adduser-view">
+      <div class="view-header">
+        <h1>Add New User</h1>
+        <button class="back-btn" (click)="showUsers()">Back to Users</button>
+      </div>
+      <app-adduser></app-adduser>
+    </div>
+
+    <!-- Products View -->
+    <div *ngIf="currentView === 'products'" class="products-view">
+      <div class="view-header">
+        <h1>Product Management</h1>
+        <button class="add-product-btn" (click)="showAddProduct()">Add New Product</button>
+      </div>
+      <app-product></app-product>
+    </div>
+
+    <!-- Add Product View -->
+    <div *ngIf="currentView === 'addproduct'" class="addproduct-view">
+      <div class="view-header">
+        <h1>Add New 3D Model Product</h1>
+        <button class="back-btn" (click)="showProducts()">Back to Products</button>
+      </div>
+      <app-addproduct></app-addproduct>
+    </div>
+
+    <!-- Settings View -->
+    <div *ngIf="currentView === 'settings'" class="settings-view">
+      <h1>Settings</h1>
+      <div class="settings-content">
+        <p>Settings page coming soon...</p>
+      </div>
+    </div>
   </main>
 </div>

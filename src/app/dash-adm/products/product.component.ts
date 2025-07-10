@@ -1,0 +1,36 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ProductService } from './product.service';
+import { Product } from './product.model';
+
+@Component({
+  selector: 'app-product',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './product.component.html',
+  styleUrls: ['./product.component.css']
+})
+export class ProductComponent implements OnInit {
+  products: Product[] = [];
+  isLoading = true;
+
+  constructor(private productService: ProductService) {}
+
+  ngOnInit() {
+    this.loadProducts();
+  }
+
+  loadProducts() {
+    this.isLoading = true;
+    this.productService.getProducts().subscribe(products => {
+      this.products = products;
+      this.isLoading = false;
+    });
+  }
+
+  deleteProduct(id: string) {
+    if (confirm('Are you sure you want to delete this product?')) {
+      this.productService.deleteProduct(id).subscribe(() => this.loadProducts());
+    }
+  }
+} 
