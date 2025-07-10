@@ -289,7 +289,11 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
         } else if (ext === 'stl') {
           const loader = new STLLoader();
           const geometry = loader.parse(e.target.result);
-          const material = new THREE.MeshPhongMaterial({ color: 0x9b59b6 });
+          const material = new THREE.MeshPhongMaterial({ 
+            color: 0xcccccc,
+            transparent: true,
+            opacity: 0.9
+          });
           const mesh = new THREE.Mesh(geometry, material);
           this.displayModel(mesh);
         } else {
@@ -315,9 +319,9 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
     // Créer un cube de test pour démontrer le visualiseur
     const geometry = new THREE.BoxGeometry(2, 2, 2);
     const material = new THREE.MeshPhongMaterial({ 
-      color: 0x9b59b6,
+      color: 0xcccccc,
       transparent: true,
-      opacity: 0.8
+      opacity: 0.9
     });
     const cube = new THREE.Mesh(geometry, material);
     cube.castShadow = true;
@@ -358,14 +362,17 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
       this.scene.remove(this.model);
     }
     
-    // Appliquer la couleur mauve à tous les Mesh
+    // Préserver les couleurs naturelles du modèle et ajouter les ombres
     object.traverse?.((child: any) => {
       if (child.isMesh) {
-        child.material = new THREE.MeshPhongMaterial({ 
-          color: 0x9b59b6,
-          transparent: true,
-          opacity: 0.8
-        });
+        // Préserver le matériau existant s'il y en a un
+        if (!child.material) {
+          child.material = new THREE.MeshPhongMaterial({ 
+            color: 0xcccccc,
+            transparent: true,
+            opacity: 0.9
+          });
+        }
         child.castShadow = true;
         child.receiveShadow = true;
       }
@@ -571,12 +578,26 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
   changeMaterial() {
     if (this.model) {
-      const colors = [0x9b59b6, 0xe74c3c, 0x3498db, 0x2ecc71, 0xf39c12];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      // Couleurs naturelles pour les matériaux
+      const naturalColors = [
+        0xcccccc, // Gris clair (métal)
+        0x8B4513, // Marron (bois)
+        0x696969, // Gris foncé (pierre)
+        0xD2B48C, // Beige (sable)
+        0x708090, // Gris acier
+        0xF5DEB3, // Blé (matériau clair)
+        0xCD853F, // Brun sable
+        0xDEB887  // Brun bois clair
+      ];
+      const randomColor = naturalColors[Math.floor(Math.random() * naturalColors.length)];
       
       this.model.traverse((child: any) => {
         if (child.isMesh) {
-          child.material = new THREE.MeshPhongMaterial({ color: randomColor });
+          child.material = new THREE.MeshPhongMaterial({ 
+            color: randomColor,
+            transparent: true,
+            opacity: 0.9
+          });
         }
       });
     }
