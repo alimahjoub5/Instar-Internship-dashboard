@@ -1,0 +1,135 @@
+<div class="reset-container">
+  <div class="reset-logo">🔐</div>
+  <h2>Password Reset</h2>
+  
+  <!-- Step 1: Email -->
+  <div *ngIf="currentStep === 1">
+    <p class="step-description">Enter your email address to receive a verification code</p>
+    <form (ngSubmit)="sendCode()" #emailForm="ngForm">
+      <div class="input-group">
+        <span class="input-icon">📧</span>
+        <input 
+          type="email" 
+          placeholder="Your email address"
+          [(ngModel)]="email"
+          name="email"
+          required
+          #emailInput="ngModel">
+      </div>
+      <div class="error" *ngIf="emailInput.invalid && emailInput.touched">
+        Please enter a valid email address
+      </div>
+      <button 
+        type="submit" 
+        class="reset-btn"
+        [disabled]="emailForm.invalid || isLoading">
+        {{ isLoading ? 'Sending...' : 'Send code' }}
+      </button>
+    </form>
+  </div>
+
+  <!-- Step 2: Code Verification Only -->
+  <div *ngIf="currentStep === 2">
+    <p class="step-description">Code sent to {{ email }}</p>
+    <form (ngSubmit)="verifyCode()" #codeForm="ngForm">
+      <div class="input-group">
+        <span class="input-icon">🔢</span>
+        <input 
+          type="text" 
+          placeholder="Verification code"
+          [(ngModel)]="verificationCode"
+          name="verificationCode"
+          required
+          maxlength="6"
+          #codeInput="ngModel">
+      </div>
+      <div class="error" *ngIf="codeInput.invalid && codeInput.touched">
+        Please enter the verification code
+      </div>
+      <button 
+        type="submit" 
+        class="reset-btn"
+        [disabled]="codeForm.invalid || isLoading">
+        {{ isLoading ? 'Verifying...' : 'Verify code' }}
+      </button>
+    </form>
+    <div class="resend-code">
+      <p>Didn't receive the code?</p>
+      <button 
+        type="button" 
+        class="resend-btn"
+        (click)="resendCode()"
+        [disabled]="resendCooldown > 0">
+        {{ resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend code' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 3: New Password Only -->
+  <div *ngIf="currentStep === 3">
+    <p class="step-description">Enter your new password</p>
+    <form (ngSubmit)="resetPassword()" #resetForm="ngForm">
+      <div class="input-group">
+        <span class="input-icon">🔒</span>
+        <input 
+          [type]="showNewPassword ? 'text' : 'password'"
+          placeholder="New password"
+          [(ngModel)]="newPassword"
+          name="newPassword"
+          required
+          minlength="8"
+          #newPasswordInput="ngModel">
+        <button 
+          type="button" 
+          class="show-btn"
+          (click)="toggleNewPassword()">
+          {{ showNewPassword ? '👁️' : '👁️‍🗨️' }}
+        </button>
+      </div>
+      <div class="error" *ngIf="newPasswordInput.invalid && newPasswordInput.touched">
+        Password must be at least 8 characters
+      </div>
+      <div class="input-group">
+        <span class="input-icon">🔒</span>
+        <input 
+          [type]="showConfirmPassword ? 'text' : 'password'"
+          placeholder="Confirm password"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          required
+          #confirmPasswordInput="ngModel">
+        <button 
+          type="button" 
+          class="show-btn"
+          (click)="toggleConfirmPassword()">
+          {{ showConfirmPassword ? '👁️' : '👁️‍🗨️' }}
+        </button>
+      </div>
+      <div class="error" *ngIf="confirmPasswordInput.invalid && confirmPasswordInput.touched">
+        Please confirm your password
+      </div>
+      <div class="error" *ngIf="passwordsMismatch && confirmPasswordInput.touched">
+        Passwords do not match
+      </div>
+      <button 
+        type="submit" 
+        class="reset-btn"
+        [disabled]="resetForm.invalid || passwordsMismatch || isLoading">
+        {{ isLoading ? 'Resetting...' : 'Reset password' }}
+      </button>
+    </form>
+  </div>
+
+  <!-- Success/Error messages -->
+  <div class="success" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+  <div class="error" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Back to login link -->
+  <div class="back-link">
+    <a routerLink="/login">← Back to login</a>
+  </div>
+</div>
