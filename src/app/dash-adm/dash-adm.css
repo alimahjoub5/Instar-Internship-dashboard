@@ -1,1 +1,40 @@
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
 
+.main-content {
+  flex: 1;
+  margin-left: 280px; /* Updated to match new sidebar width */
+  margin-top: 70px; /* Updated to match new navbar height */
+  padding: 32px;
+  background: transparent;
+  overflow-y: auto;
+  min-height: calc(100vh - 70px);
+}
+
+/* Glass morphism effect for content */
+.main-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  margin: 16px;
+  z-index: -1;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    margin-top: 60px; /* Updated navbar height for mobile */
+    padding: 20px;
+  }
+}
