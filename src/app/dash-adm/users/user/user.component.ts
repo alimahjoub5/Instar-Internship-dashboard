@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { UserService } from '../user.service';
-import { User } from '../user.model';
+import { UserService, User } from '../../../shared/services/user.service';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -56,7 +55,7 @@ export class UserComponent implements OnInit {
 
   loadUsers() {
     this.loading = true;
-    this.userService.getUsers().subscribe({
+    this.userService.getAllUsers().subscribe({
       next: (users) => {
         this.dataSource.data = users;
         this.dataSource.paginator = this.paginator;
@@ -95,7 +94,7 @@ export class UserComponent implements OnInit {
   }
 
   blockUser(user: User) {
-    this.userService.blockUser(user._id!).subscribe(() => this.loadUsers());
+    this.userService.banUser(user._id!, !user.ban).subscribe(() => this.loadUsers());
   }
 
   getFullName(user: User): string {

@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ProductService } from './product.service';
-import { Product } from './product.model';
+import { ProductService, Product } from '../../shared/services/product.service';
 
 @Component({
   selector: 'app-product',
@@ -23,7 +22,7 @@ export class ProductComponent implements OnInit {
 
   loadProducts() {
     this.isLoading = true;
-    this.productService.getProducts().subscribe(products => {
+    this.productService.getAllProducts().subscribe(products => {
       this.products = products;
       this.isLoading = false;
     });

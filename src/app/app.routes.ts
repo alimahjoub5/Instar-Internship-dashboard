@@ -9,6 +9,7 @@ import { AddProductComponent } from './dash-adm/products/addproduct/addproduct';
 import { DashboardHomeComponent } from './dash-adm/dashboard-home/dashboard-home';
 import { SettingsComponent } from './dash-adm/settings/settings';
 import { Reset } from './auth/reset/reset';
+import { AuthGuard } from './shared/guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { 
     path: 'dash-adm', 
     component: DashAdmComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardHomeComponent },
