@@ -16,6 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @Component({
   selector: 'app-user',
@@ -34,13 +35,14 @@ import { MatChipsModule } from '@angular/material/chips';
     MatTooltipModule,
     MatProgressSpinnerModule,
     MatChipsModule,
-    MatIconModule
+    MatIconModule,
+    MatBadgeModule
   ],
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css']
 })
 export class UserComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'email', 'role', 'actions'];
+  displayedColumns: string[] = ['name', 'email', 'role', 'phone', 'status', 'actions'];
   dataSource = new MatTableDataSource<User>([]);
   loading = false;
 
@@ -61,7 +63,7 @@ export class UserComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        console.error('Erreur lors du chargement des utilisateurs:', error);
+        console.error('Error loading users:', error);
         this.loading = false;
       }
     });
@@ -77,7 +79,7 @@ export class UserComponent implements OnInit {
   }
 
   editUser(user: User) {
-    // Naviguer vers le formulaire d'édition
+    // Navigate to edit form
   }
 
   deleteUser(user: User) {
@@ -87,12 +89,24 @@ export class UserComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'confirmed') {
-        this.userService.deleteUser(user.id!).subscribe(() => this.loadUsers());
+        this.userService.deleteUser(user._id!).subscribe(() => this.loadUsers());
       }
     });
   }
 
   blockUser(user: User) {
-    this.userService.blockUser(user.id!).subscribe(() => this.loadUsers());
+    this.userService.blockUser(user._id!).subscribe(() => this.loadUsers());
+  }
+
+  getFullName(user: User): string {
+    return `${user.firstName} ${user.lastName}`;
+  }
+
+  getStatusColor(user: User): string {
+    return user.ban ? 'warn' : 'primary';
+  }
+
+  getStatusText(user: User): string {
+    return user.ban ? 'Blocked' : 'Active';
   }
 } 

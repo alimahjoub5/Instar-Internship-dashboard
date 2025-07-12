@@ -82,21 +82,23 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.productForm = this.fb.group({
       name: ['', Validators.required],
-      code: ['', Validators.required], // Code produit unique
+      reference: ['', Validators.required], // Reference produit unique
       description: ['', Validators.required],
       price: [0, [Validators.required, Validators.min(0)]],
       category: ['', Validators.required],
-      stock: [0, [Validators.required, Validators.min(0)]],
+      subCategory: ['', Validators.required],
+      image: ['', Validators.required],
       supplier: ['', Validators.required],
-      weight: [0, [Validators.min(0)]], // Poids en kg
+      materials: ['', Validators.required],
+      promotion: [false],
+      sales: [0],
+      rate: [0, [Validators.min(0), Validators.max(5)]],
       dimensions: this.fb.group({
-        length: [0, [Validators.min(0)]], // Longueur en cm
-        width: [0, [Validators.min(0)]],  // Largeur en cm
-        height: [0, [Validators.min(0)]]  // Hauteur en cm
+        height: [0, [Validators.min(0)]],
+        width: [0, [Validators.min(0)]],
+        length: [0, [Validators.min(0)]],
+        radius: [0, [Validators.min(0)]]
       }),
-      color: [''], // Couleur du produit
-      isActive: [true], // Statut de disponibilité
-      tags: [''], // Tags/mots-clés
       model3d: [null, Validators.required]
     });
     this.fetchSuppliers();
@@ -183,6 +185,7 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
   goToDashboard() {
     // Navigation logic here
     console.log('Returning to dashboard');
+    // You can add router navigation here if needed
   }
 
   uploadFile() {
@@ -610,24 +613,46 @@ export class AddProductComponent implements OnInit, AfterViewInit, OnDestroy {
   onSubmit() {
     if (this.productForm.invalid || !this.selectedFile) return;
     this.isSubmitting = true;
+    
+    // Prepare product data according to new schema
+    const productData = {
+      ...this.productForm.value,
+      dimensions: {
+        height: this.productForm.get('dimensions.height')?.value || 0,
+        width: this.productForm.get('dimensions.width')?.value || 0,
+        length: this.productForm.get('dimensions.length')?.value || 0,
+        radius: this.productForm.get('dimensions.radius')?.value || 0
+      }
+    };
+    
+    // Remove model3d from product data as it will be handled separately
+    delete productData.model3d;
+    
     const formData = new FormData();
-    Object.entries(this.productForm.value).forEach(([key, value]) => {
-      if (key !== 'model3d') formData.append(key, value as any);
-    });
+    
+    // Add product data
+    formData.append('product', JSON.stringify(productData));
+    
+    // Add 3D model file
     formData.append('model3d', this.selectedFile);
+    
+    // Add color variations image (placeholder for now)
+    const colorImageBlob = new Blob([''], { type: 'image/png' });
+    formData.append('imageCouleurs', colorImageBlob, 'colors.png');
 
     // Remplace l'URL par celle de ton backend réel
     this.http.post('/api/products', formData).subscribe({
-      next: () => {
+      next: (response: any) => {
         this.isSubmitting = false;
         this.productForm.reset();
         this.selectedFile = null;
         this.viewerContainer.nativeElement.innerHTML = '';
-        alert('Product added!');
+        alert('Product added successfully!');
       },
-      error: () => {
+      error: (error) => {
         this.isSubmitting = false;
         this.uploadError = 'Error uploading product. Try again.';
+        console.error('Upload error:', error);
       }
     });
   }

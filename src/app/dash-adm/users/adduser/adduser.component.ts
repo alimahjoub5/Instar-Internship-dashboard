@@ -10,6 +10,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from "@angular/common";
 
 @Component({
@@ -17,13 +20,15 @@ import { CommonModule } from "@angular/common";
   templateUrl: './adduser.component.html',
   styleUrls: ['./adduser.component.css'],
   standalone: true,
-
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatCheckboxModule,
     CommonModule,
     MatCardModule,
     MatIconModule,
@@ -35,6 +40,18 @@ export class AddUserComponent implements OnInit {
   isEdit = false;
   userId: string | null = null;
 
+  roles = [
+    { value: 'user', label: 'User' },
+    { value: 'vendor', label: 'Vendor' },
+    { value: 'admin', label: 'Administrator' }
+  ];
+
+  genders = [
+    { value: '', label: 'Not specified' },
+    { value: 'male', label: 'Male' },
+    { value: 'female', label: 'Female' }
+  ];
+
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -42,9 +59,18 @@ export class AddUserComponent implements OnInit {
     private router: Router
   ) {
     this.userForm = this.fb.group({
-      name: ['', Validators.required],
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      role: ['', Validators.required]
+      recoveryEmail: ['', [Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      phone: [''],
+      address: [''],
+      gender: [''],
+      birthDate: [''],
+      role: ['user', Validators.required],
+      imageUrl: [''],
+      ban: [false]
     });
   }
 
@@ -53,22 +79,48 @@ export class AddUserComponent implements OnInit {
     if (this.userId) {
       this.isEdit = true;
       this.userService.getUserById(this.userId).subscribe(user => {
-        this.userForm.patchValue(user);
+        // Remove password from form when editing
+        const { password, ...userWithoutPassword } = user;
+        this.userForm.patchValue(userWithoutPassword);
+        this.userForm.get('password')?.clearValidators();
+        this.userForm.get('password')?.updateValueAndValidity();
       });
     }
   }
 
   onSubmit() {
     if (this.userForm.invalid) return;
-    const user: User = this.userForm.value;
+    
+    const formValue = this.userForm.value;
+    const user: User = {
+      ...formValue,
+      cart: [],
+      wishlist: []
+    };
+
     if (this.isEdit && this.userId) {
-      this.userService.updateUser(this.userId, user).subscribe(() => this.router.navigate(['/users']));
+      this.userService.updateUser(this.userId, user).subscribe(() => this.router.navigate(['/dash-adm/users']));
     } else {
-      this.userService.addUser(user).subscribe(() => this.router.navigate(['/users']));
+      this.userService.addUser(user).subscribe(() => this.router.navigate(['/dash-adm/users']));
     }
   }
 
   goBack() {
-    this.router.navigate(['/users']);
+    this.router.navigate(['/dash-adm/users']);
+  }
+
+  getErrorMessage(fieldName: string): string {
+    const field = this.userForm.get(fieldName);
+    if (field?.hasError('required')) {
+      return 'This field is required';
+    }
+    if (field?.hasError('email')) {
+      return 'Invalid email address';
+    }
+    if (field?.hasError('minlength')) {
+      const requiredLength = field.getError('minlength').requiredLength;
+      return `Minimum ${requiredLength} characters`;
+    }
+    return '';
   }
 } 

@@ -1,30 +1,44 @@
 <div *ngIf="isLoading" class="loading">Loading products...</div>
 
+<div class="product-header" *ngIf="!isLoading">
+  <h1>Product Management</h1>
+  <button class="add-product-btn" [routerLink]="['/dash-adm/products/add']">
+    <span>➕</span>
+    Add Product
+  </button>
+</div>
+
 <table class="product-table" *ngIf="!isLoading && products.length">
   <thead>
     <tr>
       <th>Name</th>
+      <th>Reference</th>
       <th>Description</th>
       <th>Price</th>
-      <th>Quantity</th>
       <th>Category</th>
-      <th>Format</th>
-      <th>Polygons</th>
+      <th>Sub-Category</th>
+      <th>Supplier</th>
+      <th>Promotion</th>
+      <th>Sales</th>
+      <th>Rate</th>
       <th>Actions</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let product of products">
       <td>{{ product.name }}</td>
+      <td>{{ product.reference }}</td>
       <td>{{ product.description }}</td>
       <td>{{ product.price | currency }}</td>
-      <td>{{ product.quantity }}</td>
       <td>{{ product.category }}</td>
-      <td>{{ product.modelFormat || 'N/A' }}</td>
-      <td>{{ product.polygonCount || 'N/A' }}</td>
+      <td>{{ product.subCategory }}</td>
+      <td>{{ product.supplier }}</td>
+      <td>{{ product.promotion ? 'Yes' : 'No' }}</td>
+      <td>{{ product.sales }}</td>
+      <td>{{ product.rate }}/5</td>
       <td>
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn" (click)="deleteProduct(product.id)">Delete</button>
+        <button class="edit-btn" [routerLink]="['/dash-adm/products/add']">Edit</button>
+        <button class="delete-btn" (click)="deleteProduct(product._id || '')">Delete</button>
       </td>
     </tr>
   </tbody>

@@ -1,19 +1,19 @@
 <mat-card class="user-list-card mat-elevation-z4">
   <mat-card-header>
     <div class="header-content">
-      <mat-card-title>Gestion des utilisateurs</mat-card-title>
-      <button mat-raised-button color="primary" [routerLink]="['/users/add']">
-        <mat-icon>person_add</mat-icon> Ajouter
+      <mat-card-title>User Management</mat-card-title>
+      <button mat-raised-button color="primary" [routerLink]="['/dash-adm/users/add']">
+        <mat-icon>person_add</mat-icon> Add User
       </button>
     </div>
   </mat-card-header>
 
   <mat-card-content>
-    <!-- Champ de recherche -->
+    <!-- Search field -->
     <div class="search-container">
       <mat-form-field appearance="outline">
-        <mat-label>Recherche</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Rechercher un utilisateur">
+        <mat-label>Search</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search for a user">
         <mat-icon matSuffix>search</mat-icon>
         <button mat-icon-button matSuffix *ngIf="dataSource.filter" (click)="clearFilter()">
           <mat-icon>close</mat-icon>
@@ -21,67 +21,105 @@
       </mat-form-field>
     </div>
 
-    <!-- État de chargement -->
+    <!-- Loading state -->
     <div class="loading" *ngIf="loading">
       <mat-spinner diameter="40"></mat-spinner>
     </div>
 
-    <!-- État vide -->
+    <!-- Empty state -->
     <div class="empty-state" *ngIf="!loading && dataSource.data.length === 0">
       <mat-icon>people_outline</mat-icon>
-      <h3>Aucun utilisateur trouvé</h3>
-      <p>Commencez par ajouter votre premier utilisateur</p>
-      <button mat-raised-button color="primary" [routerLink]="['/users/add']" style="margin-top: 16px;">
-        <mat-icon>person_add</mat-icon> Ajouter un utilisateur
+      <h3>No users found</h3>
+      <p>Start by adding your first user</p>
+      <button mat-raised-button color="primary" [routerLink]="['/dash-adm/users/add']" style="margin-top: 16px;">
+        <mat-icon>person_add</mat-icon> Add User
       </button>
     </div>
 
-    <!-- Tableau des utilisateurs -->
+    <!-- Users table -->
     <div class="table-container" *ngIf="!loading && dataSource.data.length > 0">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 full-width-table">
 
-        <!-- Nom -->
+        <!-- Full name -->
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Nom</th>
+          <th mat-header-cell *matHeaderCellDef>Full Name</th>
           <td mat-cell *matCellDef="let user">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <mat-icon style="color: #1976d2;">person</mat-icon>
-              {{ user.name }}
+              <img [src]="user.imageUrl || 'https://via.placeholder.com/40'" 
+                   [alt]="getFullName(user)" 
+                   style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+              <div>
+                <div style="font-weight: 500;">{{ getFullName(user) }}</div>
+                <div style="font-size: 12px; color: #666;">{{ user.gender || 'Not specified' }}</div>
+              </div>
             </div>
           </td>
         </ng-container>
+
         <!-- Email -->
         <ng-container matColumnDef="email">
           <th mat-header-cell *matHeaderCellDef>Email</th>
           <td mat-cell *matCellDef="let user">
             <div style="display: flex; align-items: center; gap: 8px;">
               <mat-icon style="color: #666; font-size: 18px;">email</mat-icon>
-              {{ user.email }}
+              <div>
+                <div>{{ user.email }}</div>
+                <div style="font-size: 12px; color: #666;" *ngIf="user.recoveryEmail">
+                  {{ user.recoveryEmail }}
+                </div>
+              </div>
             </div>
           </td>
         </ng-container>
-        <!-- Rôle -->
+
+        <!-- Role -->
         <ng-container matColumnDef="role">
-          <th mat-header-cell *matHeaderCellDef>Rôle</th>
+          <th mat-header-cell *matHeaderCellDef>Role</th>
           <td mat-cell *matCellDef="let user">
-            <mat-chip [color]="user.role === 'admin' ? 'primary' : 'accent'" selected>
+            <mat-chip [color]="user.role === 'admin' ? 'primary' : user.role === 'vendor' ? 'accent' : 'warn'" selected>
               {{ user.role }}
             </mat-chip>
           </td>
         </ng-container>
+
+        <!-- Phone -->
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef>Phone</th>
+          <td mat-cell *matCellDef="let user">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <mat-icon style="color: #666; font-size: 18px;">phone</mat-icon>
+              {{ user.phone || 'Not specified' }}
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let user">
+            <mat-chip [color]="getStatusColor(user)" selected>
+              <mat-icon style="font-size: 16px; margin-right: 4px;">
+                {{ user.ban ? 'block' : 'check_circle' }}
+              </mat-icon>
+              {{ getStatusText(user) }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
         <!-- Actions -->
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let user">
             <div class="action-buttons">
-              <button mat-icon-button color="primary" [routerLink]="['/users/edit', user.id]" matTooltip="Modifier">
+              <button mat-icon-button color="primary" [routerLink]="['/dash-adm/users/edit', user._id]" matTooltip="Edit">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button mat-icon-button color="warn" (click)="deleteUser(user)" matTooltip="Supprimer">
+              <button mat-icon-button color="warn" (click)="deleteUser(user)" matTooltip="Delete">
                 <mat-icon>delete</mat-icon>
               </button>
-              <button mat-icon-button color="accent" (click)="blockUser(user)" matTooltip="Bloquer">
-                <mat-icon>block</mat-icon>
+              <button mat-icon-button [color]="user.ban ? 'primary' : 'accent'" (click)="blockUser(user)" 
+                      [matTooltip]="user.ban ? 'Unblock' : 'Block'">
+                <mat-icon>{{ user.ban ? 'check_circle' : 'block' }}</mat-icon>
               </button>
             </div>
           </td>

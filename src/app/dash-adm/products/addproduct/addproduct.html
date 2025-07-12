@@ -255,10 +255,10 @@
         
         <div class="form-group">
           <mat-form-field appearance="outline">
-            <mat-label>🔢 Code Produit</mat-label>
-            <input matInput formControlName="code" placeholder="Ex: PROD-001" required>
-            <mat-error *ngIf="productForm.get('code')?.hasError('required')">
-              Le code produit est requis
+            <mat-label>🔢 Référence Produit</mat-label>
+            <input matInput formControlName="reference" placeholder="Ex: PROD-001" required>
+            <mat-error *ngIf="productForm.get('reference')?.hasError('required')">
+              La référence produit est requise
             </mat-error>
           </mat-form-field>
         </div>
@@ -308,13 +308,10 @@
         
         <div class="form-group">
           <mat-form-field appearance="outline">
-            <mat-label>📦 Stock</mat-label>
-            <input matInput type="number" formControlName="stock" placeholder="0" min="0" required>
-            <mat-error *ngIf="productForm.get('stock')?.hasError('required')">
-              Le stock est requis
-            </mat-error>
-            <mat-error *ngIf="productForm.get('stock')?.hasError('min')">
-              Le stock doit être positif
+            <mat-label>📂 Sous-catégorie</mat-label>
+            <input matInput formControlName="subCategory" placeholder="Ex: Ordinateurs portables" required>
+            <mat-error *ngIf="productForm.get('subCategory')?.hasError('required')">
+              La sous-catégorie est requise
             </mat-error>
           </mat-form-field>
         </div>
@@ -335,26 +332,31 @@
         
         <div class="form-group">
           <mat-form-field appearance="outline">
-            <mat-label>⚖️ Poids (kg)</mat-label>
-            <input matInput type="number" formControlName="weight" placeholder="0.0" min="0" step="0.1">
-            <mat-error *ngIf="productForm.get('weight')?.hasError('min')">
-              Le poids doit être positif
+            <mat-label>🖼️ Image URL</mat-label>
+            <input matInput formControlName="image" placeholder="Ex: https://example.com/image.jpg" required>
+            <mat-error *ngIf="productForm.get('image')?.hasError('required')">
+              L'URL de l'image est requise
             </mat-error>
           </mat-form-field>
         </div>
         
         <div class="form-group">
           <mat-form-field appearance="outline">
-            <mat-label>🎨 Couleur</mat-label>
-            <input matInput formControlName="color" placeholder="Ex: Rouge, Bleu, Blanc...">
+            <mat-label>🏗️ Matériaux</mat-label>
+            <input matInput formControlName="materials" placeholder="Ex: Aluminium, Plastique, Verre..." required>
+            <mat-error *ngIf="productForm.get('materials')?.hasError('required')">
+              Les matériaux sont requis
+            </mat-error>
           </mat-form-field>
         </div>
         
         <div class="form-group">
           <mat-form-field appearance="outline">
-            <mat-label>🏷️ Tags/Mots-clés</mat-label>
-            <input matInput formControlName="tags" placeholder="Ex: moderne, durable, écologique">
-            <mat-hint>Séparez les tags par des virgules</mat-hint>
+            <mat-label>📏 Rayon (cm)</mat-label>
+            <input matInput type="number" formControlName="dimensions.radius" placeholder="0" min="0" step="0.1">
+            <mat-error *ngIf="productForm.get('dimensions.radius')?.hasError('min')">
+              Le rayon doit être positif
+            </mat-error>
           </mat-form-field>
         </div>
         
@@ -390,11 +392,34 @@
         
         <div class="form-group">
           <mat-form-field appearance="outline">
-            <mat-label>📊 Statut</mat-label>
-            <mat-select formControlName="isActive">
-              <mat-option [value]="true">✅ Disponible</mat-option>
-              <mat-option [value]="false">❌ Indisponible</mat-option>
+            <mat-label>🏷️ Promotion</mat-label>
+            <mat-select formControlName="promotion">
+              <mat-option [value]="true">✅ En promotion</mat-option>
+              <mat-option [value]="false">❌ Pas en promotion</mat-option>
             </mat-select>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>📈 Ventes</mat-label>
+            <input matInput type="number" formControlName="sales" placeholder="0" min="0">
+            <mat-error *ngIf="productForm.get('sales')?.hasError('min')">
+              Le nombre de ventes doit être positif
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group">
+          <mat-form-field appearance="outline">
+            <mat-label>⭐ Note</mat-label>
+            <input matInput type="number" formControlName="rate" placeholder="0" min="0" max="5" step="0.1">
+            <mat-error *ngIf="productForm.get('rate')?.hasError('min')">
+              La note doit être positive
+            </mat-error>
+            <mat-error *ngIf="productForm.get('rate')?.hasError('max')">
+              La note ne peut pas dépasser 5
+            </mat-error>
           </mat-form-field>
         </div>
       </div>
