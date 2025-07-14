@@ -1,0 +1,132 @@
+.sidebar-container {
+  height: 100vh;
+  width: 100vw;
+  margin-top: 0;
+}
+
+.sidebar {
+  width: 260px;
+  border-right: 1px solid #e0e0e0;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.sidebar-toolbar {
+  min-height: 56px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  background: #eeeeee;
+  color: #000000;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.mat-nav-list a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.08em;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin: 4px 8px;
+  color: #333;
+  transition: background 0.2s;
+}
+
+.mat-nav-list a:hover {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.main-content {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-radius: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  min-height: 72px;
+  background: #fff;
+  margin-top: 0;
+}
+
+.menu-btn {
+  margin-right: 16px;
+}
+
+.navbar-center {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-bar {
+  width: 350px;
+  max-width: 100%;
+  min-width: 200px;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #1976d2;
+  background: #e3f2fd;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #1976d2;
+  font-size: 1.08em;
+}
+
+.content-area {
+  flex: 1 1 auto;
+  padding: 24px 32px 16px 32px;
+  border-radius: 18px;
+  margin: 16px 16px 0 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 8px;
+    min-height: 90px;
+  }
+  .navbar-center, .navbar-right {
+    justify-content: flex-start;
+  }
+  .search-bar {
+    min-width: 120px;
+    max-width: 100%;
+  }
+  .content-area {
+    padding: 12px 4px;
+    margin: 8px 2px 0 2px;
+  }
+}

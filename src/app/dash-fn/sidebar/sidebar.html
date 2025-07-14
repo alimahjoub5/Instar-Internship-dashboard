@@ -1,0 +1,51 @@
+<mat-drawer-container class="sidebar-container">
+  <mat-drawer #drawer class="sidebar" mode="over">
+    <mat-toolbar color="primary" class="sidebar-toolbar">
+      <span>Navigation</span>
+    </mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item href="#">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+      <a mat-list-item href="#">
+        <mat-icon>person</mat-icon>
+        <span>Profile</span>
+      </a>
+      <a mat-list-item href="#">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </a>
+    </mat-nav-list>
+  </mat-drawer>
+
+  <div class="main-content">
+    <mat-toolbar color="primary" class="navbar">
+      <button mat-icon-button (click)="drawer.toggle()" class="menu-btn">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <div class="navbar-center">
+        <mat-form-field class="search-bar" appearance="outline">
+          <mat-label>Search</mat-label>
+          <input matInput placeholder="Search...">
+          <button mat-icon-button matSuffix>
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div class="navbar-right">
+        <button mat-stroked-button color="accent" (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          Logout
+        </button>
+        <div class="user-info">
+          <img src="https://i.pravatar.cc/40?img=3" alt="User Avatar" class="user-avatar" />
+          <span class="user-name">John Doe</span>
+        </div>
+      </div>
+    </mat-toolbar>
+    <div class="content-area">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</mat-drawer-container>

@@ -10,6 +10,7 @@ import { DashboardHomeComponent } from './dash-adm/dashboard-home/dashboard-home
 import { SettingsComponent } from './dash-adm/settings/settings';
 import { Reset } from './auth/reset/reset';
 import { AuthGuard } from './shared/guards/auth.guard';
+import { Sidebar } from './dash-fn/sidebar/sidebar';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -30,5 +31,6 @@ export const routes: Routes = [
     ]
   },
   { path: 'dash-fn', component: DashFnComponent },
+  { path: 'sidebar', component: Sidebar },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
