@@ -1,4 +1,4 @@
-<mat-drawer-container class="sidebar-container">
+<mat-drawer-container class="sidebar-container" style="margin-top: 20px;">
   <mat-drawer #drawer class="sidebar" mode="over">
     <mat-toolbar color="primary" class="sidebar-toolbar">
       <span>Navigation</span>
@@ -34,14 +34,24 @@
         </mat-form-field>
       </div>
       <div class="navbar-right">
-        <button mat-stroked-button color="accent" (click)="logout()">
-          <mat-icon>logout</mat-icon>
-          Logout
-        </button>
-        <div class="user-info">
+        <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
           <img src="https://i.pravatar.cc/40?img=3" alt="User Avatar" class="user-avatar" />
           <span class="user-name">John Doe</span>
-        </div>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>person</mat-icon>
+            <span>Profile</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon>settings</mat-icon>
+            <span>Settings</span>
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
       </div>
     </mat-toolbar>
     <div class="content-area">
