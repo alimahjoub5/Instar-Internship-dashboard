@@ -10,7 +10,8 @@ import { MatMenuModule } from '@angular/material/menu';
 
 
 @Component({
-  selector: 'app-sidebar',
+  selector: 'app-sidebarfn',
+  standalone: true,
   imports: [
     MatSidenavModule, MatButtonModule, MatToolbarModule, MatIconModule,
     MatListModule, MatFormFieldModule, MatInputModule, MatMenuModule

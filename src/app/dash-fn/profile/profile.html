@@ -1,1 +1,24 @@
-<p>profile works!</p>
+<app-sidebarfn>
+  <mat-card class="profile-card">
+    <div class="profile-header">
+        <img [src]="user.imageUrl" alt="User Avatar" class="profile-avatar" *ngIf="user.imageUrl">
+        <div class="profile-name">
+        <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+        <span class="profile-role"><mat-icon>verified_user</mat-icon> {{ user.role | titlecase }}</span>
+        </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="profile-section">
+        <h3>Contact Information</h3>
+        <div class="profile-info-row"><mat-icon>email</mat-icon> <span>{{ user.email }}</span></div>
+        <div class="profile-info-row" *ngIf="user.phone"><mat-icon>phone</mat-icon> <span>{{ user.phone }}</span></div>
+        <div class="profile-info-row" *ngIf="user.address"><mat-icon>home</mat-icon> <span>{{ user.address }}</span></div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="profile-section">
+        <h3>Account</h3>
+        <div class="profile-info-row"><mat-icon>lock</mat-icon> <span>Password: ••••••••</span></div>
+    </div>
+  </mat-card>
+</app-sidebarfn>
+

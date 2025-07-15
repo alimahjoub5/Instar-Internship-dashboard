@@ -1,0 +1,40 @@
+<div class="filter-sidebar">
+  <h3>Filter Products</h3>
+  <form>
+    <div class="filter-group">
+      <label for="category">Category</label>
+      <select id="category" name="category">
+        <option value="">All</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Fashion">Fashion</option>
+        <option value="Cameras">Cameras</option>
+        <option value="Shoes">Shoes</option>
+        <option value="Smartphones">Smartphones</option>
+        <option value="Headphones">Headphones</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="price-min">Price Range</label>
+      <div class="price-range-inputs">
+        <input type="number" id="price-min" name="price-min" placeholder="Min" min="0">
+        <span>-</span>
+        <input type="number" id="price-max" name="price-max" placeholder="Max" min="0">
+      </div>
+    </div>
+    <div class="filter-group">
+      <label for="stock">Stock</label>
+      <input type="number" id="stock" name="stock" placeholder=">= Stock" min="0">
+    </div>
+    <div class="filter-group">
+      <label for="rating">Min Rating</label>
+      <input type="number" id="rating" name="rating" placeholder=">= Rating" min="0" max="5" step="0.1">
+    </div>
+    <div class="filter-group">
+      <label>
+        <input type="checkbox" id="promotion" name="promotion">
+        Promotion Only
+      </label>
+    </div>
+    <button type="submit">Apply Filters</button>
+  </form>
+</div>
