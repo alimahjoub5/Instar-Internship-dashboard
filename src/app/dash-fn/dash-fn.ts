@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { FnFooter } from './fn-footer/fn-footer';
 
 @Component({
   selector: 'app-dash-fn',
   standalone: true,
-  imports: [CommonModule],
+  imports: [FnFooter],
   templateUrl: './dash-fn.html',
-  styleUrls: ['./dash-fn.css']
+  styleUrl: './dash-fn.css'
 })
-export class DashFnComponent {}
+export class DashFn {}

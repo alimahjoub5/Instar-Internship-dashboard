@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login';
-import { DashFnComponent } from './dash-fn/dash-fn';
+import { DashFn } from './dash-fn/dash-fn';
 import { DashAdmComponent } from './dash-adm/dash-adm';
 import { UserComponent } from './dash-adm/users/user/user.component';
 import { AddUserComponent } from './dash-adm/users/adduser/adduser.component';
@@ -20,7 +20,7 @@ export const routes: Routes = [
   { 
     path: 'dash-adm', 
     component: DashAdmComponent,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardHomeComponent },
@@ -32,7 +32,7 @@ export const routes: Routes = [
       { path: 'settings', component: SettingsComponent }
     ]
   },
-  { path: 'dash-fn', component: DashFnComponent },
+  { path: 'dash-fn', component: DashFn },
   { path: 'sidebar', component: Sidebar },
   {path : 'profile', component:ProfileComponent},
   {path : 'products', component:Products},
