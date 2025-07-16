@@ -20,7 +20,7 @@ export const routes: Routes = [
   { 
     path: 'dash-adm', 
     component: DashAdmComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardHomeComponent },
