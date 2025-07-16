@@ -4,11 +4,12 @@ import { Product } from '../../shared/services/product.service';
 import { ProductCard } from './product-card/product-card';
 import { Sidebar } from '../sidebar/sidebar';
 import { SidebarProducts } from './sidebar/sidebar';
+import { ProductModal } from './product-modal/product-modal';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, ProductCard, Sidebar, SidebarProducts],
+  imports: [CommonModule, ProductCard, Sidebar, SidebarProducts, ProductModal],
   templateUrl: './products.html',
   styleUrl: './products.css'
 })
@@ -95,4 +96,14 @@ export class Products {
       promotion: true
     }
   ];
+
+  selectedProduct: Product | null = null;
+
+  openProductModal(product: Product) {
+    this.selectedProduct = product;
+  }
+
+  closeProductModal() {
+    this.selectedProduct = null;
+  }
 }

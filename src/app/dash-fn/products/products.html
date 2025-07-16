@@ -3,8 +3,9 @@
   <app-sidebarPrdcts></app-sidebarPrdcts>
   <div class="vertical-divider"></div>
   <div class="products-list">
-    <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
+    <app-product-card *ngFor="let product of products" [product]="product" (cardClick)="openProductModal(product)"></app-product-card>
     <div *ngIf="!products.length" class="no-products">No products found.</div>
   </div>
+  <app-product-modal *ngIf="selectedProduct" [product]="selectedProduct" (close)="closeProductModal()"></app-product-modal>
 </div>
 </app-sidebarfn>

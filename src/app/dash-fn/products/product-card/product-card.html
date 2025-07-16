@@ -1,4 +1,4 @@
-<mat-card class="product-card">
+<mat-card class="product-card" (click)="cardClick.emit()">
   <mat-card-header>
     <mat-card-title>{{ product.name }}</mat-card-title>
     <mat-card-subtitle>{{ product.category }}<span *ngIf="product.subCategory"> / {{ product.subCategory }}</span></mat-card-subtitle>

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { Product } from '../../../shared/services/product.service';
@@ -12,4 +12,5 @@ import { Product } from '../../../shared/services/product.service';
 })
 export class ProductCard {
   @Input() product!: Product;
+  @Output() cardClick = new EventEmitter<void>();
 }

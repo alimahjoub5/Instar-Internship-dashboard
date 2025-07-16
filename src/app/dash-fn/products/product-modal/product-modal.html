@@ -1,0 +1,26 @@
+<div class="modal-backdrop" (click)="onClose()"></div>
+<div class="modal-content">
+  <button class="close-btn" (click)="onClose()">&times;</button>
+  <div *ngIf="product">
+    <h2 class="modal-title">{{ product?.name }}</h2>
+    <hr class="modal-divider" />
+    <img [src]="product?.images?.[0]" alt="{{ product?.name }}" class="product-image" />
+    <div class="modal-details-row">
+      <div class="modal-details-col">
+        <p><strong>Reference:</strong> {{ product?.reference }}</p>
+        <p><strong>Description:</strong> {{ product?.description }}</p>
+        <p><strong>Price:</strong> {{ product?.price | currency }}</p>
+        <p><strong>Category:</strong> {{ product?.category }}</p>
+        <p><strong>Subcategory:</strong> {{ product?.subCategory }}</p>
+      </div>
+      <div class="modal-details-col">
+        <p><strong>Supplier:</strong> {{ product?.supplier }}</p>
+        <p><strong>Promotion:</strong> {{ product?.promotion ? 'Yes' : 'No' }}</p>
+        <p><strong>Sales:</strong> {{ product?.sales }}</p>
+        <p><strong>Rate:</strong> {{ product?.rate }}</p>
+        <p><strong>Created At:</strong> {{ product?.createdAt | date:'medium' }}</p>
+        <p><strong>Updated At:</strong> {{ product?.updatedAt | date:'medium' }}</p>
+      </div>
+    </div>
+  </div>
+</div>
