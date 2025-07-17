@@ -1,26 +1,27 @@
 <div class="modal-backdrop" (click)="onClose()"></div>
-<div class="modal-content">
+<div class="modal-content" [ngClass]="{ 'show': showModal }">
   <button class="close-btn" (click)="onClose()">&times;</button>
   <div *ngIf="product">
-    <h2 class="modal-title">{{ product?.name }}</h2>
+    <h2 class="modal-title">
+      <span class="modal-product-name">{{ product?.name }}</span>
+      <span *ngIf="product?.reference" class="modal-ref">- {{ product?.reference }}</span>
+    </h2>
+    <div class="modal-category-subcat">
+      <span>{{ product?.category }}</span>
+      <span *ngIf="product?.subCategory"> / {{ product?.subCategory }}</span>
+    </div>
     <hr class="modal-divider" />
     <img [src]="product?.images?.[0]" alt="{{ product?.name }}" class="product-image" />
-    <div class="modal-details-row">
-      <div class="modal-details-col">
-        <p><strong>Reference:</strong> {{ product?.reference }}</p>
-        <p><strong>Description:</strong> {{ product?.description }}</p>
-        <p><strong>Price:</strong> {{ product?.price | currency }}</p>
-        <p><strong>Category:</strong> {{ product?.category }}</p>
-        <p><strong>Subcategory:</strong> {{ product?.subCategory }}</p>
-      </div>
-      <div class="modal-details-col">
-        <p><strong>Supplier:</strong> {{ product?.supplier }}</p>
-        <p><strong>Promotion:</strong> {{ product?.promotion ? 'Yes' : 'No' }}</p>
-        <p><strong>Sales:</strong> {{ product?.sales }}</p>
-        <p><strong>Rate:</strong> {{ product?.rate }}</p>
-        <p><strong>Created At:</strong> {{ product?.createdAt | date:'medium' }}</p>
-        <p><strong>Updated At:</strong> {{ product?.updatedAt | date:'medium' }}</p>
-      </div>
+    <div class="modal-description-wide">
+      <strong>Description:</strong> {{ product?.description }}
+    </div>
+    <div class="modal-bottom-row">
+      <span class="modal-price">{{ product?.price | currency }}</span>
+      <span class="modal-stock" [class.out-of-stock]="product?.stock === 0">
+        {{ product?.stock === 0 ? 'Out of stock' : ('Stock: ' + product?.stock) }}
+      </span>
+      <span class="modal-promotion" *ngIf="product?.promotion">Promotion</span>
+      <span class="modal-supplier" *ngIf="product?.supplier"><span class="modal-supplier-label">Supplier:</span> {{ product?.supplier }}</span>
     </div>
   </div>
 </div>

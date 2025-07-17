@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Product } from '../../shared/services/product.service';
 import { ProductCard } from './product-card/product-card';
 import { Sidebar } from '../sidebar/sidebar';
 import { SidebarProducts } from './sidebar/sidebar';
 import { ProductModal } from './product-modal/product-modal';
 import { FnFooter } from '../fn-footer/fn-footer';
+import { ProductsCarousel } from './products-carousel/products-carousel';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [CommonModule, ProductCard, Sidebar, SidebarProducts, ProductModal, FnFooter],
+  imports: [CommonModule, FormsModule, ProductCard, Sidebar, SidebarProducts, ProductModal, FnFooter, ProductsCarousel],
   templateUrl: './products.html',
   styleUrl: './products.css'
 })
@@ -33,7 +35,7 @@ export class Products {
       category: 'Electronics',
       subCategory: 'Smartphones',
       images: ['https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-model-unselect-gallery-1-202309?wid=5120&hei=2880&fmt=jpeg&qlt=80&.v=1692923778669'],
-      stock: 25,
+      stock: 0,
       sales: 120,
       rating: 4.8,
       reference: 'IP15P-2023',
@@ -210,6 +212,8 @@ export class Products {
     }
   ];
 
+  sortParam: string = 'price-asc';
+
   selectedProduct: Product | null = null;
 
   // Pagination properties
@@ -237,5 +241,22 @@ export class Products {
 
   closeProductModal() {
     this.selectedProduct = null;
+  }
+
+  onSortChange() {
+    switch (this.sortParam) {
+      case 'price-asc':
+        this.products.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        this.products.sort((a, b) => b.price - a.price);
+        break;
+      case 'name-asc':
+        this.products.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'name-desc':
+        this.products.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+    }
   }
 }

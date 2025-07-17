@@ -16,17 +16,24 @@ html, body {
   padding: 2rem 0;
 }
 
+app-sidebarPrdcts {
+  flex: 0 0 280px;
+  max-width: 320px;
+  min-width: 220px;
+  width: 100%;
+  display: block;
+}
+
 .fn-footer {
   flex-shrink: 0;
 }
 
 .products-list {
-  flex: 1 1 0;
+  flex: 3 1 0;
   display: flex;
   flex-direction: column;
   min-height: 600px;
   justify-content: flex-start;
-  width: 100%;
   align-items: stretch;
 }
 
@@ -92,6 +99,89 @@ html, body {
 .pagination-controls span {
   font-size: 1.1rem;
   font-weight: 500;
+}
+
+.products-carousel-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  margin-top: 1.5rem;
+}
+
+.products-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 0 1.1rem 0;
+  border-bottom: 1px solid #e3eafc;
+  margin-bottom: 1.2rem;
+  gap: 1.5rem;
+}
+
+.products-count {
+  font-size: 1.1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.products-sort {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.products-sort label {
+  font-size: 1rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.products-sort select {
+  font-size: 1rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #d0d7e2;
+  background: #f7fafd;
+  color: #222;
+  font-weight: 500;
+  outline: none;
+  transition: border 0.2s;
+}
+.products-sort select:focus {
+  border: 1.5px solid #1976d2;
+}
+
+.products-page-title {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: #222;
+  margin: 2.2rem 0 0.7rem 0;
+  text-align: left;
+  letter-spacing: 0.01em;
+  padding-left: 2.5vw;
+}
+
+.products-breadcrumb {
+  font-size: 1.05rem;
+  color: #888;
+  margin: 1.2rem 0 0.2rem 2.5vw;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+}
+
+.breadcrumb-separator {
+  color: #bbb;
+  font-size: 1.1em;
+  margin: 0 0.2em;
+}
+
+.breadcrumb-current {
+  color: #1976d2;
+  font-weight: 700;
 }
 
 @media (max-width: 1000px) {

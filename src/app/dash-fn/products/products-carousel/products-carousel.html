@@ -1,0 +1,23 @@
+<div class="carousel-container">
+  <button class="carousel-arrow left" (click)="prev()" aria-label="Previous product">&#8592;</button>
+  <div class="carousel-main-image" *ngIf="currentProduct">
+    <img [src]="currentProduct.images?.[0]"
+         [alt]="currentProduct.name || 'Product image'"
+         (click)="selectProduct(currentProduct)"
+         tabindex="0"
+         [class.ng-animating]="isAnimating"
+         (load)="onImageLoad()"
+    />
+    <div class="carousel-product-name">{{ currentProduct.name }}</div>
+  </div>
+  <button class="carousel-arrow right" (click)="next()" aria-label="Next product">&#8594;</button>
+</div>
+<!-- <div class="carousel-thumbnails" *ngIf="products.length > 1">
+  <img *ngFor="let product of products; let i = index"
+       [src]="product.images?.[0]"
+       [alt]="product.name || 'Product image'"
+       [class.active]="i === currentIndex"
+       (click)="goToIndex(i)"
+       tabindex="0"
+  />
+</div> -->

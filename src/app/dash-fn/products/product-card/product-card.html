@@ -3,15 +3,14 @@
     <mat-card-title>{{ product.name }}</mat-card-title>
     <mat-card-subtitle>{{ product.category }}<span *ngIf="product.subCategory"> / {{ product.subCategory }}</span></mat-card-subtitle>
   </mat-card-header>
-  <img *ngIf="product.images && product.images.length" mat-card-image [src]="product.images[0]" alt="{{ product.name }} image">
+  <img *ngIf="product.images && product.images.length" mat-card-image class="card-product-image" [src]="product.images[0]" alt="{{ product.name }} image">
   <mat-card-content>
     <p class="product-description">{{ product.description }}</p>
-    <p><strong>Price:</strong> {{ product.price | currency }}</p>
-    <p><strong>Stock:</strong> {{ product.stock }}</p>
-    <p *ngIf="product.sales"><strong>Sales:</strong> {{ product.sales }}</p>
-    <p *ngIf="product.rating"><strong>Rating:</strong> {{ product.rating }}</p>
-    <p *ngIf="product.reference"><strong>Reference:</strong> {{ product.reference }}</p>
-    <p *ngIf="product.supplier"><strong>Supplier:</strong> {{ product.supplier }}</p>
-    <p *ngIf="product.promotion"><strong>Promotion:</strong> <span style="color: green;">Yes</span></p>
   </mat-card-content>
+  <div class="product-bottom-row">
+    <span class="product-price">{{ product.price | currency }}</span>
+    <span class="product-stock" [class.out-of-stock]="product.stock === 0">
+      {{ product.stock === 0 ? 'Out of stock' : ('Stock: ' + product.stock) }}
+    </span>
+  </div>
 </mat-card>

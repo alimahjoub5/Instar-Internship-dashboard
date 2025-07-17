@@ -1,0 +1,105 @@
+.carousel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.carousel-arrow {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carousel-arrow:hover, .carousel-arrow:focus {
+  background: #f0f0f0;
+  outline: none;
+  transform: scale(1.08);
+}
+
+.carousel-main-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  width: 600px;
+  max-width: 90vw;
+}
+.carousel-main-image img {
+  width: 100%;
+  max-width: 600px;
+  max-height: 340px;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+  transition: transform 0.4s cubic-bezier(.4,2,.6,1), opacity 0.4s cubic-bezier(.4,2,.6,1);
+  object-fit: contain;
+  background: #fafbfc;
+}
+.carousel-main-image img.ng-animating {
+  opacity: 0.5;
+  transform: scale(0.97);
+}
+.carousel-main-image img:hover, .carousel-main-image img:focus {
+  transform: scale(1.03);
+  outline: 2px solid #1976d2;
+}
+.carousel-product-name {
+  margin-top: 0.8rem;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #222;
+  letter-spacing: 0.01em;
+}
+
+.carousel-thumbnails {
+  display: flex;
+  justify-content: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-top: 0.7rem;
+}
+.carousel-thumbnails img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border 0.2s, transform 0.2s;
+  background: #fff;
+}
+.carousel-thumbnails img.active, .carousel-thumbnails img:hover, .carousel-thumbnails img:focus {
+  border: 2px solid #1976d2;
+  transform: scale(1.12);
+  outline: none;
+  z-index: 2;
+}
+
+@media (max-width: 900px) {
+  .carousel-main-image {
+    width: 98vw;
+    max-width: 98vw;
+  }
+  .carousel-main-image img {
+    max-width: 98vw;
+    max-height: 200px;
+  }
+  .carousel-thumbnails img {
+    width: 44px;
+    height: 44px;
+  }
+  .carousel-arrow {
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 1.2rem;
+  }
+}
