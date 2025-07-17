@@ -8,19 +8,21 @@ import { TitleCasePipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from "../../shared/shared.module";
 import { Sidebar } from '../sidebar/sidebar';
+import { FnFooter } from '../fn-footer/fn-footer';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
     Sidebar,
-    MatCardModule, MatDividerModule, MatIconModule, TitleCasePipe, CommonModule, SharedModule
+    MatCardModule, MatDividerModule, MatIconModule, TitleCasePipe, CommonModule, SharedModule, FnFooter
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })
 export class ProfileComponent implements OnInit {
   user: Partial<User> = {};
+  is2FAEnabled: boolean = false;
 
   constructor(private userService: UserService) {}
 
@@ -35,7 +37,15 @@ export class ProfileComponent implements OnInit {
       imageUrl: 'https://i.pravatar.cc/150?img=3',
       role: 'user'
     };
-    // Example for real fetch:
+    
     // this.userService.getProfileById('USER_ID').subscribe(u => this.user = u);
+  }
+
+  activate2FA() {
+    this.is2FAEnabled = true;
+  }
+
+  deactivate2FA() {
+    this.is2FAEnabled = false;
   }
 }
