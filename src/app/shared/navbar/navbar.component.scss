@@ -15,9 +15,14 @@
   backdrop-filter: blur(10px);
 }
 
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .navbar-logo {
   font-size: 2rem;
-  margin-right: 16px;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
@@ -37,20 +42,52 @@
   align-items: center;
   gap: 16px;
   
-  span {
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    
+    .user-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    
+    .user-email {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 400;
+    }
+  }
+  
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 8px 16px;
+    color: #fff;
     font-size: 1rem;
     font-weight: 500;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
     
     &:hover {
       background: rgba(255, 255, 255, 0.2);
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .logout-icon {
+      font-size: 1.1rem;
+    }
+    
+    .logout-text {
+      font-weight: 500;
     }
   }
 }
@@ -68,5 +105,29 @@
   
   .navbar-logo {
     font-size: 1.6rem;
+  }
+  
+  .navbar-user-menu {
+    .user-info {
+      display: none; /* Hide user info on mobile */
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 16px;
+  }
+  
+  .navbar-title {
+    font-size: 1rem;
+  }
+  
+  .logout-btn {
+    padding: 6px 12px;
+    
+    .logout-text {
+      display: none; /* Hide logout text on very small screens */
+    }
   }
 } 

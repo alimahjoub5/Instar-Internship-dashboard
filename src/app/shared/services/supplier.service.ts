@@ -24,27 +24,35 @@ export class SupplierService {
 
   // Basic CRUD Operations
   createSupplier(supplierData: Supplier): Observable<Supplier> {
-    return this.apiService.post('/suppliers', supplierData);
+    return this.apiService.post('/supplier', supplierData);
   }
 
   getAllSuppliers(): Observable<Supplier[]> {
-    return this.apiService.get('/suppliers');
+    return this.apiService.get('/supplier');
   }
 
   getSupplierById(id: string): Observable<Supplier> {
-    return this.apiService.get(`/suppliers/${id}`);
+    return this.apiService.get(`/supplier/${id}`);
   }
 
   updateSupplier(id: string, supplierData: Partial<Supplier>): Observable<Supplier> {
-    return this.apiService.put(`/suppliers/${id}`, supplierData);
+    return this.apiService.put(`/supplier/${id}`, supplierData);
   }
 
   deleteSupplier(id: string): Observable<any> {
-    return this.apiService.delete(`/suppliers/${id}`);
+    return this.apiService.delete(`/supplier/${id}`);
   }
 
   // Get active suppliers only
   getActiveSuppliers(): Observable<Supplier[]> {
-    return this.apiService.get('/suppliers', { status: 'active' });
+    return this.apiService.get('/supplier', { status: 'active' });
+  }
+
+  // Update supplier image
+  updateSupplierImage(id: string, imageFile: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('id', id);
+    formData.append('image', imageFile);
+    return this.apiService.put('/updatesupplierimage', formData);
   }
 } 

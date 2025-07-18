@@ -1,0 +1,29 @@
+<div class="product-list-container">
+  <button (click)="addProduct()" class="btn btn-primary">Add Product</button>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Category</th>
+        <th>Supplier</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products">
+        <td>{{ product.name }}</td>
+        <td>{{ product.price }}</td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.supplier }}</td>
+        <td>
+          <button (click)="viewProduct(product._id)">View</button>
+          <button (click)="editProduct(product._id)">Edit</button>
+          <button (click)="deleteProduct(product._id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="isLoading">Loading products...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+</div>

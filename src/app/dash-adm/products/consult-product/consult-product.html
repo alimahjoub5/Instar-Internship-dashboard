@@ -1,0 +1,29 @@
+<div class="consult-product-container" *ngIf="product">
+  <h2>Product Details</h2>
+  <div><strong>Name:</strong> {{ product.name }}</div>
+  <div><strong>Reference:</strong> {{ product.reference }}</div>
+  <div><strong>Description:</strong> {{ product.description }}</div>
+  <div><strong>Price:</strong> {{ product.price }}</div>
+  <div><strong>Category:</strong> {{ product.category }}</div>
+  <div><strong>Subcategory:</strong> {{ product.subCategory }}</div>
+  <div><strong>Supplier:</strong> {{ product.supplier }}</div>
+  <div><strong>Promotion:</strong> {{ product.promotion ? 'Yes' : 'No' }}</div>
+  <div><strong>Sales:</strong> {{ product.sales }}</div>
+  <div><strong>Rate:</strong> {{ product.rate }}</div>
+  <div *ngIf="product.dimensions">
+    <strong>Dimensions:</strong>
+    <ul>
+      <li *ngIf="product.dimensions.height">Height: {{ product.dimensions.height }}</li>
+      <li *ngIf="product.dimensions.width">Width: {{ product.dimensions.width }}</li>
+      <li *ngIf="product.dimensions.length">Length: {{ product.dimensions.length }}</li>
+      <li *ngIf="product.dimensions.radius">Radius: {{ product.dimensions.radius }}</li>
+    </ul>
+  </div>
+  <div *ngIf="product.image">
+    <strong>Image:</strong><br />
+    <img [src]="product.image" alt="Product Image" style="max-width: 300px; max-height: 300px;" />
+  </div>
+  <button (click)="goBack()">Back to List</button>
+</div>
+<div *ngIf="isLoading">Loading product...</div>
+<div *ngIf="error" class="error">{{ error }}</div>

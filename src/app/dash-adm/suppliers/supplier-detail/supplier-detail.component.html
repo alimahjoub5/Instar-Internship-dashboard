@@ -1,0 +1,91 @@
+<div class="supplier-detail-container">
+  <div class="header">
+    <button mat-button (click)="onBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Suppliers
+    </button>
+    <div class="actions" *ngIf="supplier">
+      <button mat-raised-button color="primary" (click)="onEdit()">
+        <mat-icon>edit</mat-icon>
+        Edit Supplier
+      </button>
+      <button mat-raised-button color="warn" (click)="onDelete()">
+        <mat-icon>delete</mat-icon>
+        Delete Supplier
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    <mat-spinner></mat-spinner>
+    <p>Loading supplier details...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error">
+    <mat-icon>error</mat-icon>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && supplier" class="supplier-content">
+    <mat-card class="supplier-card">
+      <mat-card-header>
+        <mat-card-title>{{ supplier.name }}</mat-card-title>
+        <mat-card-subtitle>
+          <mat-chip [class]="getStatusClass(supplier.status || 'inactive')">
+            {{ supplier.status || 'inactive' }}
+          </mat-chip>
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="supplier-info">
+          <div class="info-section">
+            <h3>Contact Information</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <strong>Email:</strong>
+                <span>{{ supplier.email }}</span>
+              </div>
+              <div class="info-item" *ngIf="supplier.phone">
+                <strong>Phone:</strong>
+                <span>{{ supplier.phone }}</span>
+              </div>
+              <div class="info-item" *ngIf="supplier.contactPerson">
+                <strong>Contact Person:</strong>
+                <span>{{ supplier.contactPerson }}</span>
+              </div>
+              <div class="info-item" *ngIf="supplier.website">
+                <strong>Website:</strong>
+                <a [href]="supplier.website" target="_blank">{{ supplier.website }}</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section" *ngIf="supplier.address">
+            <h3>Address</h3>
+            <p>{{ supplier.address }}</p>
+          </div>
+
+          <div class="info-section" *ngIf="supplier.description">
+            <h3>Description</h3>
+            <p>{{ supplier.description }}</p>
+          </div>
+
+          <div class="info-section">
+            <h3>Additional Information</h3>
+            <div class="info-grid">
+              <div class="info-item" *ngIf="supplier.createdAt">
+                <strong>Created:</strong>
+                <span>{{ formatDate(supplier.createdAt) }}</span>
+              </div>
+              <div class="info-item" *ngIf="supplier.updatedAt">
+                <strong>Last Updated:</strong>
+                <span>{{ formatDate(supplier.updatedAt) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div> 

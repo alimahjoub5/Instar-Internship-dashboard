@@ -4,12 +4,17 @@ import { DashFnComponent } from './dash-fn/dash-fn';
 import { DashAdmComponent } from './dash-adm/dash-adm';
 import { UserComponent } from './dash-adm/users/user/user.component';
 import { AddUserComponent } from './dash-adm/users/adduser/adduser.component';
-import { ProductComponent } from './dash-adm/products/product.component';
-import { AddProductComponent } from './dash-adm/products/addproduct/addproduct';
 import { DashboardHomeComponent } from './dash-adm/dashboard-home/dashboard-home';
 import { SettingsComponent } from './dash-adm/settings/settings';
 import { Reset } from './auth/reset/reset';
 import { AuthGuard } from './shared/guards/auth.guard';
+import { SupplierListComponent } from './dash-adm/suppliers/supplier-list/supplier-list.component';
+import { AddSupplierComponent } from './dash-adm/suppliers/add-supplier/add-supplier.component';
+import { SupplierDetailComponent } from './dash-adm/suppliers/supplier-detail/supplier-detail.component';
+import { ListeProductComponent } from './dash-adm/products/liste-product/liste-product';
+import { AddProductComponent } from './dash-adm/products/add-product/add-product';
+import { EditProductComponent } from './dash-adm/products/edit-product/edit-product';
+import { ConsultProductComponent } from './dash-adm/products/consult-product/consult-product';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -24,8 +29,14 @@ export const routes: Routes = [
       { path: 'users', component: UserComponent },
       { path: 'users/add', component: AddUserComponent },
       { path: 'users/edit/:userId', component: AddUserComponent },
-      { path: 'products', component: ProductComponent },
-      { path: 'products/add', component: AddProductComponent },
+      { path: 'suppliers', component: SupplierListComponent },
+      { path: 'suppliers/add', component: AddSupplierComponent },
+      { path: 'suppliers/edit/:id', component: AddSupplierComponent },
+      { path: 'suppliers/:id', component: SupplierDetailComponent },
+      { path: 'products', component: ListeProductComponent },
+      { path: 'products/add-product', component: AddProductComponent },
+      { path: 'products/edit-product/:id', component: EditProductComponent },
+      { path: 'products/consult-product/:id', component: ConsultProductComponent },
       { path: 'settings', component: SettingsComponent }
     ]
   },
