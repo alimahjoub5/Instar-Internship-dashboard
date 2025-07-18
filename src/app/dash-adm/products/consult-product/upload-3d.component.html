@@ -1,0 +1,11 @@
+<div>
+  <label>Upload Fichier 3D:
+    <input type="file" (change)="on3DFileSelected($event)" accept=".glb,.gltf,.obj,.fbx" />
+  </label>
+</div>
+<div>
+  <label>Upload Image Couleur:
+    <input type="file" (change)="onColorImageSelected($event)" accept="image/*" />
+  </label>
+</div>
+<div *ngIf="uploadResult">{{ uploadResult }}</div> 

@@ -24,6 +24,9 @@
     <img [src]="product.image" alt="Product Image" style="max-width: 300px; max-height: 300px;" />
   </div>
   <button (click)="goBack()">Back to List</button>
+
+  <!-- Upload 3D & couleur -->
+  <app-upload-3d [product3DId]="product3DId"></app-upload-3d>
 </div>
 <div *ngIf="isLoading">Loading product...</div>
 <div *ngIf="error" class="error">{{ error }}</div>
