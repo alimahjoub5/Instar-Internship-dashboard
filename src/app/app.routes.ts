@@ -13,6 +13,7 @@ import { AuthGuard } from './shared/guards/auth.guard';
 import { Sidebar } from './dash-fn/sidebar/sidebar';
 import { ProfileComponent } from './dash-fn/profile/profile';
 import { Products } from './dash-fn/products/products';
+import { Dashboard } from './dash-fn/dashboard/dashboard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -36,5 +37,6 @@ export const routes: Routes = [
   { path: 'sidebar', component: Sidebar },
   {path : 'profile', component:ProfileComponent},
   {path : 'products', component:Products},
+  {path : 'dashboard', component:Dashboard},
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
