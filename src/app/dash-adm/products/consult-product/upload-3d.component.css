@@ -1,0 +1,37 @@
+div {
+  margin-bottom: 1rem;
+}
+
+label {
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #1976d2;
+}
+
+input[type="file"] {
+  display: block;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #b0bec5;
+  border-radius: 8px;
+  background: #f9fbfd;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+input[type="file"]:focus {
+  border: 1.5px solid #1976d2;
+  outline: none;
+}
+
+.upload-success {
+  color: #388e3c;
+  font-weight: 600;
+}
+.upload-error {
+  color: #d32f2f;
+  font-weight: 600;
+} 

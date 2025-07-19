@@ -1,0 +1,57 @@
+body {
+  background: #f4f6fb;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+.consult-product-container {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(25, 118, 210, 0.08);
+  padding: 2.5rem 2rem;
+  margin: 2rem auto;
+  max-width: 650px;
+  transition: box-shadow 0.2s;
+}
+
+.consult-product-container:hover {
+  box-shadow: 0 8px 32px rgba(25, 118, 210, 0.15);
+}
+
+.consult-product-container h2 {
+  margin-top: 0;
+  color: #1976d2;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.consult-product-container div {
+  margin-bottom: 1rem;
+  font-size: 1.08rem;
+}
+
+strong {
+  color: #222;
+}
+
+button {
+  background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+  color: #fff;
+  border: none;
+  padding: 0.7rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+}
+button:hover {
+  background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.15);
+}
+
+.error {
+  color: #d32f2f;
+  font-weight: 600;
+  margin-top: 1rem;
+}

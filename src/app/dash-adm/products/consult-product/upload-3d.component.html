@@ -8,4 +8,7 @@
     <input type="file" (change)="onColorImageSelected($event)" accept="image/*" />
   </label>
 </div>
-<div *ngIf="uploadResult">{{ uploadResult }}</div> 
+<div *ngIf="uploadResult" [ngClass]="{
+  'upload-success': uploadResult.includes('uploadé'),
+  'upload-error': uploadResult.includes('Erreur')
+}">{{ uploadResult }}</div> 
