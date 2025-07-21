@@ -39,6 +39,7 @@ export class AddSupplierComponent implements OnInit {
   supplierId: string | null = null;
   successMessage = '';
   errorMessage = '';
+  imagePreview: string | ArrayBuffer | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -54,7 +55,15 @@ export class AddSupplierComponent implements OnInit {
       contactPerson: [''],
       website: ['', [Validators.pattern(/^https?:\/\/.+/)]],
       description: [''],
-      status: ['active', Validators.required]
+      status: ['active', Validators.required],
+      marque: ['', Validators.required],
+      rib: ['', Validators.required],
+      image: [''],
+      notes: [''],
+      taxId: [''],
+      country: [''],
+      city: [''],
+      updatedAt: [null]
     });
   }
 
@@ -130,9 +139,25 @@ export class AddSupplierComponent implements OnInit {
     this.router.navigate(['/dash-adm/suppliers']);
   }
 
+  onImageSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+        this.supplierForm.patchValue({ image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   getErrorMessage(fieldName: string): string {
     const field = this.supplierForm.get(fieldName);
     if (field?.hasError('required')) {
+      if (fieldName === 'marque') return 'Marque is required';
+      if (fieldName === 'rib') return 'RIB is required';
+      if (fieldName === 'country') return 'Country is required';
+      if (fieldName === 'city') return 'City is required';
       return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
     }
     if (field?.hasError('email')) {
@@ -147,6 +172,12 @@ export class AddSupplierComponent implements OnInit {
       }
       if (fieldName === 'website') {
         return 'Please enter a valid URL (starting with http:// or https://)';
+      }
+      if (fieldName === 'image') {
+        return 'Please enter a valid image URL';
+      }
+      if (fieldName === 'taxId') {
+        return 'Please enter a valid Tax ID';
       }
     }
     return '';

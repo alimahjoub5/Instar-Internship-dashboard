@@ -14,6 +14,7 @@ export interface Supplier {
   status?: 'active' | 'inactive';
   createdAt?: Date;
   updatedAt?: Date;
+  image?: string | null;
 }
 
 @Injectable({

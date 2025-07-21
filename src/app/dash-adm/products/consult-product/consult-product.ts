@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Upload3DComponent } from './upload-3d.component';
+import { ThreeViewerComponent } from './three-viewer.component';
 
 @Component({
   selector: 'app-consult-product',
   imports: [
     CommonModule,
-    Upload3DComponent
+    Upload3DComponent,
+    ThreeViewerComponent
   ],
   templateUrl: './consult-product.html',
   styleUrl: './consult-product.css'
@@ -34,6 +36,7 @@ export class ConsultProductComponent {
   isLoading = false;
   error: string | null = null;
   product3DId = 'mocked-3d-id'; // Remplace par l'id réel du produit 3D si besoin
+  model3DUrl = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb'; // Remplace par l'URL réelle du modèle 3D
 
   goBack() {
     // For now, just log. In a real app, use router navigation.

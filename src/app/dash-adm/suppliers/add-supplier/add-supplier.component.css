@@ -99,6 +99,33 @@ mat-form-field {
   margin-bottom: 8px;
 }
 
+.image-preview {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.image-preview img {
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  max-width: 100px;
+  max-height: 100px;
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
+}
+
+input[type="file"] {
+  background: #fafafa;
+  border-radius: 4px;
+  padding: 6px 0;
+  font-size: 15px;
+  color: #333;
+  border: none;
+  outline: none;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .add-supplier-container {

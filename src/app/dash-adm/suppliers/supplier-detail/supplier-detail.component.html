@@ -39,6 +39,9 @@
 
       <mat-card-content>
         <div class="supplier-info">
+          <div *ngIf="supplier.image" class="supplier-image-preview">
+            <img [src]="supplier.image" alt="Supplier Image" style="max-width: 120px; max-height: 120px; border-radius: 8px; margin-bottom: 16px; object-fit: cover; border: 1px solid #e0e0e0;" />
+          </div>
           <div class="info-section">
             <h3>Contact Information</h3>
             <div class="info-grid">

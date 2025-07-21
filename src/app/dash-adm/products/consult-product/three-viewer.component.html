@@ -1,0 +1,14 @@
+<div class="viewer-container">
+  <div class="viewer-toolbar">
+    <button class="viewer-btn" (click)="goFullscreen()" title="Plein écran">
+      <svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 8V3h5M17 8V3h-5M3 12v5h5M17 12v5h-5" stroke="#5c6bc0" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    </button>
+    <button class="viewer-btn" (click)="resetCamera()" title="Reset camera">
+      <svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 4V1L6 5l4 4V6c2.76 0 5 2.24 5 5a5 5 0 1 1-9.9-1" stroke="#5c6bc0" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div #rendererContainer class="renderer-host"></div>
+  <div class="viewer-loader" *ngIf="isLoading">
+    <div class="loader-spinner"></div>
+  </div>
+</div> 

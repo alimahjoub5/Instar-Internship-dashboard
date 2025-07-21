@@ -10,9 +10,7 @@ export interface Product {
   category: string;
   subCategory?: string;
   images?: string[];
-  stock: number;
   sales?: number;
-  rating?: number;
   rate?: number;
   reviews?: any[];
   specifications?: any;
@@ -95,7 +93,7 @@ export class ProductService {
     const formData = new FormData();
     formData.append('id', productId);
     formData.append('image', file);
-    return this.apiService.put('/uploadprodcutsimage', formData);
+    return this.apiService.put('/uploadproductsimage', formData);
   }
 
   // Upload 3D color image

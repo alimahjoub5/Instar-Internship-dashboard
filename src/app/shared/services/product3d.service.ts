@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class Product3DService {
-  private apiUrl = 'http://localhost:3000/api'; // adapte selon ton backend
+  private apiUrl = 'http://localhost:9002/api'; // adapte selon ton backend
 
   constructor(private http: HttpClient) {}
 

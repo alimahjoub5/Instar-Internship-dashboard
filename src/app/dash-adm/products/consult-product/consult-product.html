@@ -1,32 +1,67 @@
 <div class="consult-product-container" *ngIf="product">
   <h2>Product Details</h2>
-  <div><strong>Name:</strong> {{ product.name }}</div>
-  <div><strong>Reference:</strong> {{ product.reference }}</div>
-  <div><strong>Description:</strong> {{ product.description }}</div>
-  <div><strong>Price:</strong> {{ product.price }}</div>
-  <div><strong>Category:</strong> {{ product.category }}</div>
-  <div><strong>Subcategory:</strong> {{ product.subCategory }}</div>
-  <div><strong>Supplier:</strong> {{ product.supplier }}</div>
-  <div><strong>Promotion:</strong> {{ product.promotion ? 'Yes' : 'No' }}</div>
-  <div><strong>Sales:</strong> {{ product.sales }}</div>
-  <div><strong>Rate:</strong> {{ product.rate }}</div>
-  <div *ngIf="product.dimensions">
-    <strong>Dimensions:</strong>
-    <ul>
-      <li *ngIf="product.dimensions.height">Height: {{ product.dimensions.height }}</li>
-      <li *ngIf="product.dimensions.width">Width: {{ product.dimensions.width }}</li>
-      <li *ngIf="product.dimensions.length">Length: {{ product.dimensions.length }}</li>
-      <li *ngIf="product.dimensions.radius">Radius: {{ product.dimensions.radius }}</li>
-    </ul>
+  <div class="product-main-horizontal">
+    <div class="product-visuals">
+      <img *ngIf="product.image" [src]="product.image" alt="Product Image" />
+      <app-three-viewer [modelUrl]="model3DUrl"></app-three-viewer>
+    </div>
+    <div class="product-main-info">
+      <div class="product-info-grid">
+        <div class="product-info-item">
+          <span class="product-info-label">Name</span>
+          <span class="product-info-value">{{ product.name }}</span>
+        </div>
+        <div class="product-info-item">
+          <span class="product-info-label">Reference</span>
+          <span class="product-info-value">{{ product.reference }}</span>
+        </div>
+        <div class="product-info-item">
+          <span class="product-info-label">Category</span>
+          <span class="product-info-value">{{ product.category }}</span>
+        </div>
+        <div class="product-info-item">
+          <span class="product-info-label">Subcategory</span>
+          <span class="product-info-value">{{ product.subCategory }}</span>
+        </div>
+        <div class="product-info-item">
+          <span class="product-info-label">Supplier</span>
+          <span class="product-info-value">{{ product.supplier }}</span>
+        </div>
+        <div class="product-info-item">
+          <span class="product-info-label">Promotion</span>
+          <span class="product-info-value">{{ product.promotion ? 'Yes' : 'No' }}</span>
+        </div>
+        <div class="product-info-item">
+          <span class="product-info-label">Sales</span>
+          <span class="product-info-value">{{ product.sales }}</span>
+        </div>
+        <div class="product-info-item">
+          <span class="product-info-label">Rate</span>
+          <span class="product-info-value">{{ product.rate }}</span>
+        </div>
+        <div class="product-info-item" *ngIf="product.price">
+          <span class="product-info-label">Price</span>
+          <span class="product-info-value">{{ product.price | currency }}</span>
+        </div>
+      </div>
+      <div class="product-info-item" *ngIf="product.description">
+        <span class="product-info-label">Description</span>
+        <span class="product-info-value">{{ product.description }}</span>
+      </div>
+      <div class="product-info-item" *ngIf="product.dimensions">
+        <span class="product-info-label">Dimensions</span>
+        <ul>
+          <li *ngIf="product.dimensions.height">Height: <b>{{ product.dimensions.height }}</b></li>
+          <li *ngIf="product.dimensions.width">Width: <b>{{ product.dimensions.width }}</b></li>
+          <li *ngIf="product.dimensions.length">Length: <b>{{ product.dimensions.length }}</b></li>
+          <li *ngIf="product.dimensions.radius">Radius: <b>{{ product.dimensions.radius }}</b></li>
+        </ul>
+      </div>
+    </div>
   </div>
-  <div *ngIf="product.image">
-    <strong>Image:</strong><br />
-    <img [src]="product.image" alt="Product Image" style="max-width: 300px; max-height: 300px;" />
-  </div>
-  <button (click)="goBack()">Back to List</button>
-
-  <!-- Upload 3D & couleur -->
+  <hr class="product-separator" />
   <app-upload-3d [product3DId]="product3DId"></app-upload-3d>
+  <button (click)="goBack()">Back to List</button>
 </div>
 <div *ngIf="isLoading">Loading product...</div>
 <div *ngIf="error" class="error">{{ error }}</div>

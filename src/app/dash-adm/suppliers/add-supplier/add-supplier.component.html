@@ -75,6 +75,65 @@
           </mat-form-field>
         </div>
 
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Marque *</mat-label>
+            <input matInput formControlName="marque" placeholder="Enter marque">
+            <mat-error *ngIf="supplierForm.get('marque')?.hasError('required') && isSubmitted">
+              Marque is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>RIB *</mat-label>
+            <input matInput formControlName="rib" placeholder="Enter RIB">
+            <mat-error *ngIf="supplierForm.get('rib')?.hasError('required') && isSubmitted">
+              RIB is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="imageUpload"><b>Image</b></label>
+            <input id="imageUpload" type="file" (change)="onImageSelected($event)" accept="image/*">
+            <div *ngIf="imagePreview" class="image-preview">
+              <img [src]="imagePreview" alt="Image Preview" />
+            </div>
+          </div>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Notes</mat-label>
+            <input matInput formControlName="notes" placeholder="Enter notes">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Tax ID</mat-label>
+            <input matInput formControlName="taxId" placeholder="Enter tax ID">
+            <mat-error *ngIf="supplierForm.get('taxId')?.hasError('pattern') && isSubmitted">
+              Please enter a valid Tax ID
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Country</mat-label>
+            <input matInput formControlName="country" placeholder="Enter country">
+            <mat-error *ngIf="supplierForm.get('country')?.hasError('required') && isSubmitted">
+              Country is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>City</mat-label>
+            <input matInput formControlName="city" placeholder="Enter city">
+            <mat-error *ngIf="supplierForm.get('city')?.hasError('required') && isSubmitted">
+              City is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
         <mat-form-field appearance="outline" class="form-field full-width">
           <mat-label>Address</mat-label>
           <textarea matInput formControlName="address" rows="3" placeholder="Enter full address"></textarea>
