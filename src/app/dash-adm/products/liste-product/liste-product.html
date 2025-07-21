@@ -1,5 +1,18 @@
 <div class="product-list-container">
-  <button (click)="addProduct()" class="btn btn-primary">Add Product</button>
+  <div class="product-list-filters-row">
+    <div class="product-list-filters">
+      <input type="text" placeholder="Search by name..." [(ngModel)]="searchTerm" (input)="onSearchChange()" />
+      <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
+        <option value="">All Categories</option>
+        <option *ngFor="let cat of categories" [value]="cat.name">{{ cat.name }}</option>
+      </select>
+      <select [(ngModel)]="selectedSupplier" (change)="onSupplierChange()">
+        <option value="">All Suppliers</option>
+        <option *ngFor="let sup of suppliers" [value]="sup.name">{{ sup.name }}</option>
+      </select>
+    </div>
+    <button (click)="addProduct()" class="btn btn-primary">Add Product</button>
+  </div>
   <table>
     <thead>
       <tr>
@@ -11,11 +24,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let product of products">
+      <tr *ngFor="let product of filteredProducts">
         <td>{{ product.name }}</td>
         <td>{{ product.price }}</td>
         <td>{{ product.category }}</td>
-        <td>{{ product.supplier }}</td>
+        <td>{{ getSupplierName(product.supplier) }}</td>
         <td>
           <button (click)="viewProduct(product._id)">View</button>
           <button (click)="editProduct(product._id)">Edit</button>

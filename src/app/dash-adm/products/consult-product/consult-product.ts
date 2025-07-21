@@ -1,42 +1,66 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Upload3DComponent } from './upload-3d.component';
 import { ThreeViewerComponent } from './three-viewer.component';
+import { Product, ProductService } from '../../../shared/services/product.service';
+import { Supplier, SupplierService } from '../../../shared/services/supplier.service';
 
 @Component({
   selector: 'app-consult-product',
   imports: [
     CommonModule,
     Upload3DComponent,
-    ThreeViewerComponent
+    ThreeViewerComponent,
+    RouterModule
   ],
   templateUrl: './consult-product.html',
   styleUrl: './consult-product.css'
 })
-export class ConsultProductComponent {
-  product = {
-    name: 'Sample Product',
-    reference: 'REF123',
-    description: 'A sample product for demonstration.',
-    price: 99.99,
-    category: 'Electronics',
-    subCategory: 'Gadgets',
-    supplier: 'Supplier Inc.',
-    promotion: true,
-    sales: 150,
-    rate: 4.5,
-    dimensions: {
-      height: 10,
-      width: 20,
-      length: 30,
-      radius: null
-    },
-    image: 'https://via.placeholder.com/300'
-  };
+export class ConsultProductComponent implements OnInit {
+  product: Product | null = null;
   isLoading = false;
   error: string | null = null;
-  product3DId = 'mocked-3d-id'; // Remplace par l'id réel du produit 3D si besoin
-  model3DUrl = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb'; // Remplace par l'URL réelle du modèle 3D
+  product3DId: string = '';
+  model3DUrl: string = '';
+  suppliers: Supplier[] = [];
+
+  constructor(
+    private route: ActivatedRoute,
+    private productService: ProductService,
+    private supplierService: SupplierService
+  ) {}
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    this.supplierService.getAllSuppliers().subscribe({
+      next: (sups) => this.suppliers = sups,
+      error: () => this.suppliers = []
+    });
+    if (id) {
+      this.isLoading = true;
+      this.productService.getProductById(id).subscribe({
+        next: (product) => {
+          this.product = product;
+          this.product3DId = product._id || '';
+          this.model3DUrl = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb';
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.error = 'Failed to load product.';
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.error = 'No product ID provided.';
+    }
+  }
+
+  getSupplierName(supplierId: string | undefined): string {
+    if (!supplierId) return '';
+    const supplier = this.suppliers.find(s => s._id === supplierId || s.name === supplierId);
+    return supplier ? supplier.name : supplierId;
+  }
 
   goBack() {
     // For now, just log. In a real app, use router navigation.

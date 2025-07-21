@@ -53,3 +53,42 @@ button:hover {
   color: #d32f2f;
   font-weight: 600;
 }
+
+.product-list-filters-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  gap: 1rem;
+}
+.product-list-filters {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.product-list-filters input[type="text"],
+.product-list-filters select {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #cfd8dc;
+  font-size: 1rem;
+  background: #f5faff;
+  transition: border 0.2s;
+}
+.product-list-filters input[type="text"]:focus,
+.product-list-filters select:focus {
+  border: 1.5px solid #1976d2;
+  outline: none;
+}
+@media (max-width: 700px) {
+  .product-list-filters-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+  }
+  .product-list-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+  }
+}

@@ -1,67 +1,57 @@
 <div class="consult-product-container" *ngIf="product">
-  <h2>Product Details</h2>
+  <div class="product-header">
+    <img *ngIf="product.image" [src]="product.image" alt="Product Image" class="product-header-img" />
+    <div class="product-header-info">
+      <h2>{{ product.name }} <span *ngIf="product.promotion" class="badge-promo">Promo</span></h2>
+      <div class="product-header-meta">
+        <span class="product-ref">Ref: {{ product.reference }}</span>
+        <span class="product-category">{{ product.category }}<ng-container *ngIf="product.subCategory"> &rsaquo; {{ product.subCategory }}</ng-container></span>
+        <span class="product-supplier">Supplier: {{ getSupplierName(product.supplier) }}</span>
+      </div>
+      <div class="product-header-rating">
+        <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
+          <span class="star" [class.filled]="product.rate && product.rate >= star">&#9733;</span>
+        </ng-container>
+        <span class="rate-value">{{ product.rate || 0 }}/5</span>
+      </div>
+    </div>
+  </div>
+  <hr class="product-separator" />
   <div class="product-main-horizontal">
     <div class="product-visuals">
-      <img *ngIf="product.image" [src]="product.image" alt="Product Image" />
       <app-three-viewer [modelUrl]="model3DUrl"></app-three-viewer>
     </div>
     <div class="product-main-info">
-      <div class="product-info-grid">
-        <div class="product-info-item">
-          <span class="product-info-label">Name</span>
-          <span class="product-info-value">{{ product.name }}</span>
+      <div class="product-info-card">
+        <div class="product-info-row">
+          <span class="product-info-label">Price</span>
+          <span class="product-info-value price">{{ product.price | currency }}</span>
         </div>
-        <div class="product-info-item">
-          <span class="product-info-label">Reference</span>
-          <span class="product-info-value">{{ product.reference }}</span>
-        </div>
-        <div class="product-info-item">
-          <span class="product-info-label">Category</span>
-          <span class="product-info-value">{{ product.category }}</span>
-        </div>
-        <div class="product-info-item">
-          <span class="product-info-label">Subcategory</span>
-          <span class="product-info-value">{{ product.subCategory }}</span>
-        </div>
-        <div class="product-info-item">
-          <span class="product-info-label">Supplier</span>
-          <span class="product-info-value">{{ product.supplier }}</span>
-        </div>
-        <div class="product-info-item">
-          <span class="product-info-label">Promotion</span>
-          <span class="product-info-value">{{ product.promotion ? 'Yes' : 'No' }}</span>
-        </div>
-        <div class="product-info-item">
+        <div class="product-info-row">
           <span class="product-info-label">Sales</span>
           <span class="product-info-value">{{ product.sales }}</span>
         </div>
-        <div class="product-info-item">
-          <span class="product-info-label">Rate</span>
-          <span class="product-info-value">{{ product.rate }}</span>
+        <div class="product-info-row" *ngIf="product.description">
+          <span class="product-info-label">Description</span>
+          <span class="product-info-value">{{ product.description }}</span>
         </div>
-        <div class="product-info-item" *ngIf="product.price">
-          <span class="product-info-label">Price</span>
-          <span class="product-info-value">{{ product.price | currency }}</span>
+        <div class="product-info-row" *ngIf="product.dimensions">
+          <span class="product-info-label">Dimensions</span>
+          <span class="product-info-value">
+            <ng-container *ngIf="product.dimensions.height">H: <b>{{ product.dimensions.height }}</b> </ng-container>
+            <ng-container *ngIf="product.dimensions.width">W: <b>{{ product.dimensions.width }}</b> </ng-container>
+            <ng-container *ngIf="product.dimensions.length">L: <b>{{ product.dimensions.length }}</b> </ng-container>
+            <ng-container *ngIf="product.dimensions.radius">R: <b>{{ product.dimensions.radius }}</b></ng-container>
+          </span>
         </div>
-      </div>
-      <div class="product-info-item" *ngIf="product.description">
-        <span class="product-info-label">Description</span>
-        <span class="product-info-value">{{ product.description }}</span>
-      </div>
-      <div class="product-info-item" *ngIf="product.dimensions">
-        <span class="product-info-label">Dimensions</span>
-        <ul>
-          <li *ngIf="product.dimensions.height">Height: <b>{{ product.dimensions.height }}</b></li>
-          <li *ngIf="product.dimensions.width">Width: <b>{{ product.dimensions.width }}</b></li>
-          <li *ngIf="product.dimensions.length">Length: <b>{{ product.dimensions.length }}</b></li>
-          <li *ngIf="product.dimensions.radius">Radius: <b>{{ product.dimensions.radius }}</b></li>
-        </ul>
       </div>
     </div>
   </div>
   <hr class="product-separator" />
   <app-upload-3d [product3DId]="product3DId"></app-upload-3d>
-  <button (click)="goBack()">Back to List</button>
+  <button class="back-btn" (click)="goBack()">
+    <span class="back-icon">&#8592;</span> Back to List
+  </button>
 </div>
 <div *ngIf="isLoading">Loading product...</div>
 <div *ngIf="error" class="error">{{ error }}</div>
