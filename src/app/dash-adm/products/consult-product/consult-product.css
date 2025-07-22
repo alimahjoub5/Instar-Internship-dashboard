@@ -319,3 +319,49 @@ button:hover {
     padding: 12px 6px;
   }
 }
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 1000;
+}
+.modal-review {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  width: 95vw;
+  max-width: 540px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(40,60,90,0.18);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+}
+.modal-content {
+  position: relative;
+}
+.close-btn {
+  position: absolute;
+  top: 8px; right: 12px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #888;
+  cursor: pointer;
+}
+.open-review-btn {
+  margin-bottom: 1.2rem;
+  background: linear-gradient(90deg, #5c6bc0 0%, #42a5f5 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 24px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(60,60,90,0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.open-review-btn:hover {
+  background: linear-gradient(90deg, #3949ab 0%, #1976d2 100%);
+}

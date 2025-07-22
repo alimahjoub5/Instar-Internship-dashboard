@@ -111,17 +111,7 @@
       <div class="form-section">
         <h3>Account Information</h3>
         
-        <mat-form-field appearance="outline">
-          <mat-label>Role *</mat-label>
-          <mat-select formControlName="role" required>
-            <mat-option *ngFor="let role of roles" [value]="role.value">
-              {{ role.label }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="userForm.get('role')?.hasError('required') && userForm.get('role')?.touched">
-            Role is required
-          </mat-error>
-        </mat-form-field>
+        <!-- Removed role selection field -->
 
         <mat-checkbox formControlName="ban" color="warn">
           Blocked User

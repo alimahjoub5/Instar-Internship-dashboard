@@ -8,7 +8,7 @@
       </select>
       <select [(ngModel)]="selectedSupplier" (change)="onSupplierChange()">
         <option value="">All Suppliers</option>
-        <option *ngFor="let sup of suppliers" [value]="sup.name">{{ sup.name }}</option>
+        <option *ngFor="let sup of suppliers" [value]="sup._id">{{ sup.name }}</option>
       </select>
     </div>
     <button (click)="addProduct()" class="btn btn-primary">Add Product</button>
@@ -33,6 +33,7 @@
           <button (click)="viewProduct(product._id)">View</button>
           <button (click)="editProduct(product._id)">Edit</button>
           <button (click)="deleteProduct(product._id)">Delete</button>
+          <button (click)="goToReviews(product._id)">Voir reviews</button>
         </td>
       </tr>
     </tbody>

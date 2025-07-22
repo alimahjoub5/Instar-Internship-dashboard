@@ -1,0 +1,17 @@
+<h2>Liste des reviews du produit</h2>
+<div *ngIf="isLoading" class="loading">Chargement...</div>
+<ul class="review-list">
+  <li *ngFor="let review of reviews" class="review-card">
+    <div class="review-header">
+      <span class="review-user">{{ review.user }}</span>
+      <span class="review-date">{{ review.createdAt | date:'short' }}</span>
+    </div>
+    <div class="review-body">
+      <span>{{ review.comment }}</span>
+      <img *ngIf="review.image" [src]="review.image" class="review-image" />
+    </div>
+    <div class="review-actions">
+      <button class="delete-btn" (click)="confirmDeleteReview(review)">Supprimer</button>
+    </div>
+  </li>
+</ul>

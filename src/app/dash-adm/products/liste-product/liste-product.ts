@@ -105,6 +105,12 @@ export class ListeProductComponent implements OnInit {
     this.router.navigate(['/dash-adm/products/add-product']);
   }
 
+  goToReviews(productId: string | undefined) {
+    if (productId) {
+      this.router.navigate(['/dash-adm/reviews', productId]);
+    }
+  }
+
   // Helper method to get supplier name by ID
   getSupplierName(supplierId: string | undefined): string {
     if (!supplierId) return '';

@@ -15,6 +15,7 @@ import { ListeProductComponent } from './dash-adm/products/liste-product/liste-p
 import { AddProductComponent } from './dash-adm/products/add-product/add-product';
 import { EditProductComponent } from './dash-adm/products/edit-product/edit-product';
 import { ConsultProductComponent } from './dash-adm/products/consult-product/consult-product';
+import { Reviews } from './dash-adm/reviews/reviews';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -37,6 +38,7 @@ export const routes: Routes = [
       { path: 'products/add-product', component: AddProductComponent },
       { path: 'products/edit-product/:id', component: EditProductComponent },
       { path: 'products/consult-product/:id', component: ConsultProductComponent },
+      { path: 'reviews/:productId', component: Reviews },
       { path: 'settings', component: SettingsComponent }
     ]
   },

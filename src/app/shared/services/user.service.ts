@@ -133,7 +133,7 @@ export class UserService {
   }
 
   banUser(id: string, ban: boolean): Observable<any> {
-    return this.apiService.put('/banUser', { id, ban });
+    return this.apiService.put('/users/ban', { id, ban });
   }
 
   deleteUser(id: string): Observable<any> {
