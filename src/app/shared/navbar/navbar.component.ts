@@ -25,7 +25,7 @@ export class NavbarComponent implements OnInit {
   loadUserInfo() {
     const userId = localStorage.getItem('userId');
     if (userId) {
-      this.userService.getProfileById(userId).subscribe({
+      this.userService.getUserById(userId).subscribe({
         next: (user: any) => {
           this.userName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User';
           this.userEmail = user.email || '';

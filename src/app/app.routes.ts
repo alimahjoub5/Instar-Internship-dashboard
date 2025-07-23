@@ -39,7 +39,8 @@ export const routes: Routes = [
       { path: 'products/edit-product/:id', component: EditProductComponent },
       { path: 'products/consult-product/:id', component: ConsultProductComponent },
       { path: 'reviews/:productId', component: Reviews },
-      { path: 'settings', component: SettingsComponent }
+      { path: 'settings', component: SettingsComponent },
+      { path: 'profile-admin', loadComponent: () => import('./dash-adm/profile-admin/profile-admin.component').then(m => m.ProfileAdminComponent) }
     ]
   },
   { path: 'dash-fn', component: DashFnComponent },

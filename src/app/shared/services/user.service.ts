@@ -144,6 +144,10 @@ export class UserService {
     return this.apiService.post('/getAllUserEmails', { email });
   }
 
+  getUserById(id: string): Observable<User> {
+    return this.apiService.get(`/users/byId?id=${id}`);
+  }
+
   // Token Management
   setToken(token: string): void {
     localStorage.setItem('token', token);

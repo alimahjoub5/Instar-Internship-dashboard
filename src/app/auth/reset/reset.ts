@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../../shared/services/user.service';
 
 @Component({
   selector: 'app-reset',
@@ -10,7 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './reset.css'
 })
 export class Reset {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private userService: UserService) {}
 
   currentStep: number = 1;
   email: string = '';
@@ -41,30 +42,35 @@ export class Reset {
     this.isLoading = true;
     this.errorMessage = '';
     this.successMessage = '';
-
-    setTimeout(() => {
-      this.currentStep = 2;
-      this.isLoading = false;
-      this.successMessage = 'Verification code sent successfully!';
-      this.startResendCooldown();
-    }, 2000);
+    this.userService.forgetPassword({ email: this.email, destination: this.email }).subscribe({
+      next: () => {
+        this.currentStep = 2;
+        this.isLoading = false;
+        this.successMessage = 'Verification code sent successfully!';
+        this.startResendCooldown();
+      },
+      error: err => {
+        this.isLoading = false;
+        this.errorMessage = err?.error?.message || 'Failed to send verification code.';
+      }
+    });
   }
 
   verifyCode(): void {
     this.isLoading = true;
     this.errorMessage = '';
     this.successMessage = '';
-
-    setTimeout(() => {
-      if (this.verificationCode === '' || this.verificationCode.length < 4) {
-        this.errorMessage = 'Invalid verification code';
+    this.userService.verifyOTP({ email: this.email, otp: this.verificationCode }).subscribe({
+      next: () => {
+        this.currentStep = 3;
         this.isLoading = false;
-        return;
+        this.successMessage = '';
+      },
+      error: err => {
+        this.isLoading = false;
+        this.errorMessage = err?.error?.message || 'Invalid or expired verification code.';
       }
-      this.currentStep = 3;
-      this.isLoading = false;
-      this.successMessage = '';
-    }, 1500);
+    });
   }
 
   resetPassword(): void {
@@ -75,19 +81,24 @@ export class Reset {
     this.isLoading = true;
     this.errorMessage = '';
     this.successMessage = '';
-
-    setTimeout(() => {
-      this.successMessage = 'Your password has been reset successfully! Redirecting to login...';
-      this.isLoading = false;
-      setTimeout(() => {
-        this.router.navigate(['/login']);
-      }, 2000);
-      this.email = '';
-      this.verificationCode = '';
-      this.newPassword = '';
-      this.confirmPassword = '';
-      this.currentStep = 1;
-    }, 2000);
+    this.userService.resetPassword({ email: this.email, password: this.newPassword }).subscribe({
+      next: () => {
+        this.successMessage = 'Your password has been reset successfully! Redirecting to login...';
+        this.isLoading = false;
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
+        this.email = '';
+        this.verificationCode = '';
+        this.newPassword = '';
+        this.confirmPassword = '';
+        this.currentStep = 1;
+      },
+      error: err => {
+        this.isLoading = false;
+        this.errorMessage = err?.error?.message || 'Failed to reset password.';
+      }
+    });
   }
 
   resendCode(): void {
@@ -95,11 +106,17 @@ export class Reset {
     this.isLoading = true;
     this.errorMessage = '';
     this.successMessage = '';
-    setTimeout(() => {
-      this.isLoading = false;
-      this.successMessage = 'Verification code resent successfully!';
-      this.startResendCooldown();
-    }, 1500);
+    this.userService.forgetPassword({ email: this.email, destination: this.email }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.successMessage = 'Verification code resent successfully!';
+        this.startResendCooldown();
+      },
+      error: err => {
+        this.isLoading = false;
+        this.errorMessage = err?.error?.message || 'Failed to resend verification code.';
+      }
+    });
   }
 
   private startResendCooldown(): void {

@@ -1,0 +1,16 @@
+<div *ngIf="loading" class="profile-loading">Chargement du profil...</div>
+<div *ngIf="!loading && admin" class="profile-admin-container">
+  <div class="profile-image-section">
+    <img [src]="admin.imageUrl || 'https://via.placeholder.com/120'" alt="Profile Image" class="profile-image" />
+  </div>
+  <div class="profile-info-section">
+    <h2>{{ admin.firstName }} {{ admin.lastName }}</h2>
+    <p><strong>Email :</strong> {{ admin.email }}</p>
+    <p><strong>Rôle :</strong> {{ admin.role }}</p>
+    <p><strong>Téléphone :</strong> {{ admin.phone || 'Non spécifié' }}</p>
+    <p><strong>Adresse :</strong> {{ admin.address || 'Non spécifiée' }}</p>
+    <p><strong>Genre :</strong> {{ admin.gender || 'Non spécifié' }}</p>
+    <p><strong>Date de naissance :</strong> {{ admin.birthDate || 'Non spécifiée' }}</p>
+  </div>
+</div>
+<div *ngIf="!loading && !admin" class="profile-error">Impossible de charger le profil admin.</div> 
