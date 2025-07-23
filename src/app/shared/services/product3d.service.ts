@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -24,5 +24,12 @@ export class Product3DService {
 
   create3DProduct(formData: FormData): Observable<any> {
     return this.http.post(`${this.apiUrl}/3Dproducts`, formData);
+  }
+
+  create3DProductWithProgress(formData: FormData) {
+    return this.http.post<HttpEvent<any>>(`${this.apiUrl}/3Dproducts`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    });
   }
 } 

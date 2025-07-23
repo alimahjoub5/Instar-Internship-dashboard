@@ -1,17 +1,28 @@
 <form (ngSubmit)="onSubmit()" #form3D="ngForm" class="upload-3d-form">
+  <h2 class="upload-title">Ajouter un modèle 3D</h2>
   <div class="form-group">
-    <label for="file3d">Fichier 3D :</label>
-    <input id="file3d" type="file" (change)="on3DFileSelected($event)" accept=".glb,.gltf,.obj,.fbx" required />
+    <label for="file3d"><span>Fichier 3D</span>
+      <input id="file3d" type="file" (change)="on3DFileSelected($event)" accept=".glb,.gltf,.obj,.fbx" required />
+    </label>
   </div>
   <div class="form-group">
-    <label for="colorImage">Image Couleur :</label>
-    <input id="colorImage" type="file" (change)="onColorImageSelected($event)" accept="image/*" required />
+    <label for="colorImage"><span>Image Couleur</span>
+      <input id="colorImage" type="file" (change)="onColorImageSelected($event)" accept="image/*" required />
+    </label>
   </div>
   <div class="form-group">
-    <label for="quantity">Quantité :</label>
-    <input id="quantity" type="number" [(ngModel)]="quantity" name="quantity" min="1" required />
+    <label for="quantity"><span>Quantité</span>
+      <input id="quantity" type="number" [(ngModel)]="quantity" name="quantity" min="1" required />
+    </label>
   </div>
-  <button type="submit" [disabled]="isSubmitting" class="submit-btn">Ajouter le modèle 3D</button>
+  <button type="submit" [disabled]="isSubmitting" class="submit-btn">
+    <span *ngIf="!isSubmitting">Ajouter le modèle 3D</span>
+    <span *ngIf="isSubmitting">Envoi en cours...</span>
+  </button>
+  <div *ngIf="isSubmitting" class="progress-bar-container">
+    <div class="progress-bar" [style.width.%]="uploadProgress"></div>
+    <span class="progress-label">{{ uploadProgress < 100 ? (uploadProgress + '%') : 'Traitement...' }}</span>
+  </div>
   <div *ngIf="uploadResult" [ngClass]="{
     'upload-success': uploadResult.includes('succès'),
     'upload-error': uploadResult.includes('Erreur')

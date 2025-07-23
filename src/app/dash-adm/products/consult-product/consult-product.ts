@@ -34,6 +34,7 @@ export class ConsultProductComponent implements OnInit {
   isReviewSubmitting = false;
   editingReview: Review | null = null;
   has3DModel: boolean = false;
+  showUpload3D = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -163,5 +164,43 @@ export class ConsultProductComponent implements OnInit {
   goBack() {
     // For now, just log. In a real app, use router navigation.
     console.log('Back to list');
+  }
+
+  onUpload3DClose() {
+    this.showUpload3D = false;
+    // Recharge les données du produit (et donc le modèle 3D)
+    const id = this.product?._id || this.product3DId;
+    if (id) {
+      this.isLoading = true;
+      this.productService.getProductById(id).subscribe({
+        next: (product) => {
+          this.product = product;
+          this.product3DId = product._id || '';
+          // Recharge la liste des modèles 3D
+          this.productService.getAll3DProducts(this.product3DId).subscribe({
+            next: (models) => {
+              if (Array.isArray(models) && models.length > 0) {
+                this.has3DModel = true;
+                const file = models[0]?.image3D || '';
+                this.model3DUrl = file.startsWith('http') ? file : `http://localhost:9002/uploads/${file}`;
+              } else {
+                this.has3DModel = false;
+                this.model3DUrl = '';
+              }
+            },
+            error: () => {
+              this.has3DModel = false;
+              this.model3DUrl = '';
+            }
+          });
+          this.isLoading = false;
+          this.loadReviews(id);
+        },
+        error: (err) => {
+          this.error = 'Failed to load product.';
+          this.isLoading = false;
+        }
+      });
+    }
   }
 }

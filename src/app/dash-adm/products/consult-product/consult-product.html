@@ -1,3 +1,14 @@
+<!-- Popup modal pour ajout 3D -->
+<div class="modal-backdrop" *ngIf="showUpload3D">
+  <div class="modal-content">
+    <button class="close-btn" (click)="showUpload3D = false">&times;</button>
+    <app-upload-3d [product3DId]="product3DId" (close)="onUpload3DClose()"></app-upload-3d>
+  </div>
+</div>
+
+<!-- Bouton pour ouvrir la popup -->
+<button class="open-upload-btn" (click)="showUpload3D = true">Ajouter un modèle 3D</button>
+
 <div class="consult-product-container" *ngIf="product">
   <div class="product-header">
     <img *ngIf="product.image" [src]="product.image" alt="Product Image" class="product-header-img" />
@@ -51,7 +62,6 @@
     <span class="back-icon">&#9733;</span> View All Reviews
   </button>
   <hr class="product-separator" />
-  <app-upload-3d *ngIf="!has3DModel" [product3DId]="product3DId"></app-upload-3d>
   <button class="back-btn" (click)="goBack()">
     <span class="back-icon">&#8592;</span> Back to List
   </button>
