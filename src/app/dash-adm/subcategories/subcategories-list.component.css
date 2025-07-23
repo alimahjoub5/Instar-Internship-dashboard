@@ -1,0 +1,6 @@
+.subcategories-list-container { max-width: 900px; margin: 32px auto; padding: 24px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(60,60,90,0.08); }
+table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+th, td { padding: 10px 8px; border-bottom: 1px solid #eee; text-align: left; }
+button { margin-right: 8px; padding: 6px 16px; border-radius: 6px; border: none; background: #1976d2; color: #fff; cursor: pointer; }
+button:hover { background: #125ea2; }
+.error { color: #b71c1c; margin-top: 12px; } 

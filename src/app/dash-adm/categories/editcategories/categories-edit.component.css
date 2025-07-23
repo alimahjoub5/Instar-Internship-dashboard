@@ -1,0 +1,7 @@
+.categories-edit-container { max-width: 500px; margin: 32px auto; padding: 24px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(60,60,90,0.08); }
+form div { margin-bottom: 16px; }
+label { display: block; margin-bottom: 4px; font-weight: 500; }
+input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; }
+button { padding: 8px 24px; border-radius: 6px; border: none; background: #1976d2; color: #fff; cursor: pointer; }
+button:hover { background: #125ea2; }
+.error { color: #b71c1c; margin-top: 12px; } 

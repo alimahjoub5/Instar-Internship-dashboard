@@ -16,6 +16,12 @@ import { AddProductComponent } from './dash-adm/products/add-product/add-product
 import { EditProductComponent } from './dash-adm/products/edit-product/edit-product';
 import { ConsultProductComponent } from './dash-adm/products/consult-product/consult-product';
 import { Reviews } from './dash-adm/reviews/reviews';
+import { CategoriesListComponent } from './dash-adm/categories/categories-list.component';
+import { CategoriesAddComponent } from './dash-adm/categories/addcategories/categories-add.component';
+import { CategoriesEditComponent } from './dash-adm/categories/editcategories/categories-edit.component';
+import { SubCategoriesListComponent } from './dash-adm/subcategories/subcategories-list.component';
+import { SubCategoriesAddComponent } from './dash-adm/subcategories/addsubcategories/subcategories-add.component';
+import { SubCategoriesEditComponent } from './dash-adm/subcategories/editsubcategories/subcategories-edit.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -40,7 +46,13 @@ export const routes: Routes = [
       { path: 'products/consult-product/:id', component: ConsultProductComponent },
       { path: 'reviews/:productId', component: Reviews },
       { path: 'settings', component: SettingsComponent },
-      { path: 'profile-admin', loadComponent: () => import('./dash-adm/profile-admin/profile-admin.component').then(m => m.ProfileAdminComponent) }
+      { path: 'profile-admin', loadComponent: () => import('./dash-adm/profile-admin/profile-admin.component').then(m => m.ProfileAdminComponent) },
+      { path: 'categories', component: CategoriesListComponent },
+      { path: 'categories/add', component: CategoriesAddComponent },
+      { path: 'categories/edit/:id', component: CategoriesEditComponent },
+      { path: 'subcategories', component: SubCategoriesListComponent },
+      { path: 'subcategories/add', component: SubCategoriesAddComponent },
+      { path: 'subcategories/edit/:id', component: SubCategoriesEditComponent },
     ]
   },
   { path: 'dash-fn', component: DashFnComponent },
