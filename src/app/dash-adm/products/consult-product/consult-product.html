@@ -2,7 +2,7 @@
 <div class="modal-backdrop" *ngIf="showUpload3D">
   <div class="modal-content">
     <button class="close-btn" (click)="showUpload3D = false">&times;</button>
-    <app-upload-3d [product3DId]="product3DId" (close)="onUpload3DClose()"></app-upload-3d>
+    <app-upload-3d [product3DId]="product3DId" (close)="showUpload3D = false"></app-upload-3d>
   </div>
 </div>
 

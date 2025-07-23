@@ -26,6 +26,7 @@ export interface Product {
     length?: number;
     radius?: number;
   };
+  quantity3D?: number; // Ajout pour la quantité liée au product3d
 }
 
 export interface Product3D {
