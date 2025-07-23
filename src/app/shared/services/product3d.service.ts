@@ -21,4 +21,8 @@ export class Product3DService {
     formData.append('image', image);
     return this.http.put(`${this.apiUrl}/uploadcolorimage`, formData);
   }
+
+  create3DProduct(formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/3Dproducts`, formData);
+  }
 } 

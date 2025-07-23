@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
@@ -11,7 +11,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
   templateUrl: './three-viewer.component.html',
   styleUrls: ['./three-viewer.component.css']
 })
-export class ThreeViewerComponent implements OnInit, OnDestroy {
+export class ThreeViewerComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('rendererContainer', { static: true }) rendererContainer!: ElementRef;
   @Input() modelUrl!: string;
 
@@ -24,8 +24,22 @@ export class ThreeViewerComponent implements OnInit, OnDestroy {
   isLoading = true;
 
   ngOnInit() {
-    this.initThree();
-    this.animate();
+    if (this.modelUrl) {
+      this.initThree();
+      this.animate();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['modelUrl'] && !changes['modelUrl'].firstChange) {
+      // Détruire l'ancienne scène si besoin
+      if (this.renderer) {
+        this.renderer.dispose();
+        this.rendererContainer.nativeElement.innerHTML = '';
+      }
+      this.initThree();
+      this.animate();
+    }
   }
 
   ngOnDestroy() {
@@ -34,8 +48,8 @@ export class ThreeViewerComponent implements OnInit, OnDestroy {
   }
 
   private initThree() {
-    const width = this.rendererContainer.nativeElement.clientWidth || 600;
-    const height = 220;
+    const width = this.rendererContainer.nativeElement.clientWidth || 700;
+    const height = 400;
 
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
@@ -62,12 +76,30 @@ export class ThreeViewerComponent implements OnInit, OnDestroy {
       const loader = new GLTFLoader();
       loader.load(this.modelUrl, (gltf: { scene: THREE.Object3D<THREE.Object3DEventMap>; }) => {
         this.scene.add(gltf.scene);
+        this.frameObject(gltf.scene);
         this.isLoading = false;
       }, undefined, (error: any) => {
         console.error('Erreur chargement modèle 3D:', error);
         this.isLoading = false;
       });
     }
+  }
+
+  // Centre et ajuste la caméra pour voir tout le modèle
+  private frameObject(object: THREE.Object3D) {
+    const box = new THREE.Box3().setFromObject(object);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const fov = this.camera.fov * (Math.PI / 180);
+    let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+    cameraZ *= 1.5; // marge de sécurité
+
+    this.camera.position.set(center.x, center.y, cameraZ + center.z);
+    this.camera.lookAt(center);
+    this.controls.target.copy(center);
+    this.controls.update();
   }
 
   private animate = () => {

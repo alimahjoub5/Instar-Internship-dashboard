@@ -1,14 +1,19 @@
-<div>
-  <label>Upload Fichier 3D:
-    <input type="file" (change)="on3DFileSelected($event)" accept=".glb,.gltf,.obj,.fbx" />
-  </label>
-</div>
-<div>
-  <label>Upload Image Couleur:
-    <input type="file" (change)="onColorImageSelected($event)" accept="image/*" />
-  </label>
-</div>
-<div *ngIf="uploadResult" [ngClass]="{
-  'upload-success': uploadResult.includes('uploadé'),
-  'upload-error': uploadResult.includes('Erreur')
-}">{{ uploadResult }}</div> 
+<form (ngSubmit)="onSubmit()" #form3D="ngForm" class="upload-3d-form">
+  <div class="form-group">
+    <label for="file3d">Fichier 3D :</label>
+    <input id="file3d" type="file" (change)="on3DFileSelected($event)" accept=".glb,.gltf,.obj,.fbx" required />
+  </div>
+  <div class="form-group">
+    <label for="colorImage">Image Couleur :</label>
+    <input id="colorImage" type="file" (change)="onColorImageSelected($event)" accept="image/*" required />
+  </div>
+  <div class="form-group">
+    <label for="quantity">Quantité :</label>
+    <input id="quantity" type="number" [(ngModel)]="quantity" name="quantity" min="1" required />
+  </div>
+  <button type="submit" [disabled]="isSubmitting" class="submit-btn">Ajouter le modèle 3D</button>
+  <div *ngIf="uploadResult" [ngClass]="{
+    'upload-success': uploadResult.includes('succès'),
+    'upload-error': uploadResult.includes('Erreur')
+  }">{{ uploadResult }}</div>
+</form> 

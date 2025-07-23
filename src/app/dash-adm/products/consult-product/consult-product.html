@@ -47,35 +47,11 @@
       </div>
     </div>
   </div>
+  <button class="view-reviews-btn" [routerLink]="['/dash-adm/reviews', product._id]" style="margin: 32px auto 32px auto;">
+    <span class="back-icon">&#9733;</span> View All Reviews
+  </button>
   <hr class="product-separator" />
-  <section class="product-reviews-section">
-    <h3>Reviews</h3>
-    <form (ngSubmit)="submitReview()" #reviewForm="ngForm" class="review-form">
-      <textarea [(ngModel)]="newReview.comment" name="comment" placeholder="Add a review..." required ngModel></textarea>
-      <input type="file" (change)="onReviewImageChange($event)" />
-      <button type="submit" [disabled]="isReviewSubmitting || !newReview.comment">Submit</button>
-    </form>
-    <div *ngIf="isReviewLoading">Loading reviews...</div>
-    <ul class="review-list">
-      <li *ngFor="let review of reviews">
-        <div class="review-header">
-          <span class="review-user">{{ review.user }}</span>
-          <span class="review-date">{{ review.createdAt | date:'short' }}</span>
-        </div>
-        <div class="review-body">
-          <span>{{ review.comment }}</span>
-          <img *ngIf="review.image" [src]="review.image" class="review-image" />
-        </div>
-        <div class="review-actions">
-          <button (click)="editReview(review)">Edit</button>
-          <button (click)="deleteReview(review)">Delete</button>
-          <input type="file" (change)="onReviewImageUpload($event, review)" />
-        </div>
-      </li>
-    </ul>
-  </section>
-  <hr class="product-separator" />
-  <app-upload-3d [product3DId]="product3DId"></app-upload-3d>
+  <app-upload-3d *ngIf="!has3DModel" [product3DId]="product3DId"></app-upload-3d>
   <button class="back-btn" (click)="goBack()">
     <span class="back-icon">&#8592;</span> Back to List
   </button>

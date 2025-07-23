@@ -33,6 +33,7 @@ export class ConsultProductComponent implements OnInit {
   isReviewLoading = false;
   isReviewSubmitting = false;
   editingReview: Review | null = null;
+  has3DModel: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,7 +54,24 @@ export class ConsultProductComponent implements OnInit {
         next: (product) => {
           this.product = product;
           this.product3DId = product._id || '';
-          this.model3DUrl = 'https://modelviewer.dev/shared-assets/models/Astronaut.glb';
+          // Check if a 3D model exists for this product
+          this.productService.getAll3DProducts(this.product3DId).subscribe({
+            next: (models) => {
+              if (Array.isArray(models) && models.length > 0) {
+                this.has3DModel = true;
+                const file = models[0]?.image3D || '';
+                // Correction ici : on construit l'URL complète si besoin
+                this.model3DUrl = file.startsWith('http') ? file : `http://localhost:9002/uploads/${file}`;
+              } else {
+                this.has3DModel = false;
+                this.model3DUrl = '';
+              }
+            },
+            error: () => {
+              this.has3DModel = false;
+              this.model3DUrl = '';
+            }
+          });
           this.isLoading = false;
           this.loadReviews(id);
         },
