@@ -49,21 +49,24 @@ export class AddSupplierComponent implements OnInit {
   ) {
     this.supplierForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.pattern(/^[\+]?[1-9][\d]{0,15}$/)]],
-      address: [''],
-      contactPerson: [''],
-      website: ['', [Validators.pattern(/^https?:\/\/.+/)]],
-      description: [''],
-      status: ['active', Validators.required],
+      address: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern(/^[\+]?[1-9][\d]{0,15}$/)]],
       marque: ['', Validators.required],
       rib: ['', Validators.required],
+      password: ['', Validators.required],
       image: [''],
-      notes: [''],
-      taxId: [''],
-      country: [''],
-      city: [''],
-      updatedAt: [null]
+      email: [''],
+      webSite: [''],
+      userId: [''],
+      // contactPerson: [''], // Not in backend
+      // website: ['', [Validators.pattern(/^https?:\/\/.+/)]], // Use webSite instead
+      // description: [''], // Not in backend
+      // status: ['active', Validators.required], // Not in backend
+      // notes: [''], // Not in backend
+      // taxId: [''], // Not in backend
+      // country: [''], // Not in backend
+      // city: [''], // Not in backend
+      // updatedAt: [null] // Not in backend
     });
   }
 

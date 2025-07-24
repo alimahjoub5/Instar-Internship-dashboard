@@ -28,11 +28,8 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Email *</mat-label>
+            <mat-label>Email</mat-label>
             <input matInput formControlName="email" type="email" placeholder="Enter email address">
-            <mat-error *ngIf="supplierForm.get('email')?.hasError('required') && isSubmitted">
-              {{ getErrorMessage('email') }}
-            </mat-error>
             <mat-error *ngIf="supplierForm.get('email')?.hasError('email') && isSubmitted">
               {{ getErrorMessage('email') }}
             </mat-error>
@@ -41,36 +38,21 @@
 
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Phone Number</mat-label>
+            <mat-label>Phone Number *</mat-label>
             <input matInput formControlName="phone" placeholder="Enter phone number">
+            <mat-error *ngIf="supplierForm.get('phone')?.hasError('required') && isSubmitted">
+              Phone is required
+            </mat-error>
             <mat-error *ngIf="supplierForm.get('phone')?.hasError('pattern') && isSubmitted">
               {{ getErrorMessage('phone') }}
             </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Contact Person</mat-label>
-            <input matInput formControlName="contactPerson" placeholder="Enter contact person name">
-          </mat-form-field>
-        </div>
-
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Website</mat-label>
-            <input matInput formControlName="website" placeholder="https://example.com">
-            <mat-error *ngIf="supplierForm.get('website')?.hasError('pattern') && isSubmitted">
-              {{ getErrorMessage('website') }}
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Status *</mat-label>
-            <mat-select formControlName="status">
-              <mat-option value="active">Active</mat-option>
-              <mat-option value="inactive">Inactive</mat-option>
-            </mat-select>
-            <mat-error *ngIf="supplierForm.get('status')?.hasError('required') && isSubmitted">
-              {{ getErrorMessage('status') }}
+            <mat-label>Address *</mat-label>
+            <input matInput formControlName="address" placeholder="Enter address">
+            <mat-error *ngIf="supplierForm.get('address')?.hasError('required') && isSubmitted">
+              Address is required
             </mat-error>
           </mat-form-field>
         </div>
@@ -94,6 +76,14 @@
         </div>
 
         <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Password *</mat-label>
+            <input matInput formControlName="password" type="password" placeholder="Enter password">
+            <mat-error *ngIf="supplierForm.get('password')?.hasError('required') && isSubmitted">
+              Password is required
+            </mat-error>
+          </mat-form-field>
+
           <div class="form-field">
             <label for="imageUpload"><b>Image</b></label>
             <input id="imageUpload" type="file" (change)="onImageSelected($event)" accept="image/*">
@@ -101,38 +91,21 @@
               <img [src]="imagePreview" alt="Image Preview" />
             </div>
           </div>
-
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Notes</mat-label>
-            <input matInput formControlName="notes" placeholder="Enter notes">
-          </mat-form-field>
         </div>
 
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Tax ID</mat-label>
-            <input matInput formControlName="taxId" placeholder="Enter tax ID">
-            <mat-error *ngIf="supplierForm.get('taxId')?.hasError('pattern') && isSubmitted">
-              Please enter a valid Tax ID
-            </mat-error>
+            <mat-label>Web Site</mat-label>
+            <input matInput formControlName="webSite" placeholder="https://example.com">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Country</mat-label>
-            <input matInput formControlName="country" placeholder="Enter country">
-            <mat-error *ngIf="supplierForm.get('country')?.hasError('required') && isSubmitted">
-              Country is required
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>City</mat-label>
-            <input matInput formControlName="city" placeholder="Enter city">
-            <mat-error *ngIf="supplierForm.get('city')?.hasError('required') && isSubmitted">
-              City is required
-            </mat-error>
+            <mat-label>User ID</mat-label>
+            <input matInput formControlName="userId" placeholder="Enter user ID">
           </mat-form-field>
         </div>
+
+        <!-- Removed fields: contactPerson, description, status, notes, taxId, country, city -->
 
         <mat-form-field appearance="outline" class="form-field full-width">
           <mat-label>Address</mat-label>

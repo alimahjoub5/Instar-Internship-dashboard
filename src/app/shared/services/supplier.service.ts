@@ -5,16 +5,21 @@ import { ApiService } from './api.service';
 export interface Supplier {
   _id?: string;
   name: string;
-  email: string;
-  phone?: string;
-  address?: string;
-  contactPerson?: string;
-  website?: string;
-  description?: string;
-  status?: 'active' | 'inactive';
-  createdAt?: Date;
-  updatedAt?: Date;
+  address: string;
+  phone: string;
+  marque: string;
+  rib: string;
   image?: string | null;
+  email?: string | null;
+  password: string;
+  webSite?: string | null;
+  userId?: string | null;
+  // contactPerson?: string; // Not in backend
+  // website?: string; // Use webSite instead
+  // description?: string; // Not in backend
+  // status?: 'active' | 'inactive'; // Not in backend
+  // createdAt?: Date; // Not in backend
+  // updatedAt?: Date; // Not in backend
 }
 
 @Injectable({
