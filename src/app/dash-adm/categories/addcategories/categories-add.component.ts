@@ -15,6 +15,11 @@ export class CategoriesAddComponent {
   isSubmitting = false;
   error: string | null = null;
 
+
+  selectLogo(logo: string) {
+    this.category.image = logo;
+  }
+
   constructor(private categoryService: CategoryService, private router: Router) {}
 
   submit() {

@@ -5,3 +5,29 @@ input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; }
 button { padding: 8px 24px; border-radius: 6px; border: none; background: #1976d2; color: #fff; cursor: pointer; }
 button:hover { background: #125ea2; }
 .error { color: #b71c1c; margin-top: 12px; } 
+.logo-list {
+  display: flex;
+  gap: 16px;
+  margin: 10px 0 10px 0;
+}
+.logo-list img {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border 0.2s, box-shadow 0.2s;
+  background: #f5f5f5;
+  padding: 4px;
+}
+.logo-list img.selected {
+  border: 2px solid #1976d2;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+  background: #e3f2fd;
+}
+.selected-logo-preview {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.98em;
+  color: #1976d2;
+} 

@@ -2,6 +2,12 @@ import { Component, Input } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
+export interface SidebarItem {
+  label: string;
+  route: string;
+  icon?: string;
+}
+
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -10,6 +16,16 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, RouterModule]
 })
 export class SidebarComponent {
+  sidebarItems: SidebarItem[] = [
+    { label: 'Dashboard', route: '/dash-adm/dashboard' },
+    { label: 'Users', route: '/dash-adm/users' },
+    { label: 'Products', route: '/dash-adm/products' },
+    { label: 'Catégories', route: '/dash-adm/categories' },
+    { label: 'Sous-catégories', route: '/dash-adm/subcategories' },
+    { label: 'Suppliers', route: '/dash-adm/suppliers' },
+    { label: 'Settings', route: '/dash-adm/settings' },
+    { label: 'Logout', route: '/login' }
+  ];
   @Input() currentView: string = 'dashboard';
 
   constructor(private router: Router) {}
