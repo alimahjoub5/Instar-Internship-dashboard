@@ -6,12 +6,11 @@ export interface Promotion {
   _id?: string;
   product: string; // Product ID
   discountPercentage: number;
+  newPrice:Number;
   startDate: Date;
   endDate: Date;
-  description?: string;
-  isActive?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
+  image: string;
+  text: string;
 }
 
 @Injectable({

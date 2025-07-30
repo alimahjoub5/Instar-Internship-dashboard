@@ -15,12 +15,84 @@
     <div class="modal-description-wide">
       <strong>Description:</strong> {{ product?.description }}
     </div>
+    <div class="promotion-container">
+      <span class="modal-promotion" *ngIf="product.promotion">Promotion: {{ promotionPercentage }}%</span>
+      <span class="modal-promotion no-promotion" *ngIf="!product.promotion">No Promotion</span>
+      <button class="modify-promotion-btn" (click)="togglePromotionForm()">Modify</button>
+    </div>
+    
+    <!-- Promotion Form - Hidden by default -->
+    <div class="promotion-form" [ngClass]="{'visible': showPromotionForm, 'hidden': !showPromotionForm}">
+      <form (ngSubmit)="savePromotion()" #promotionForm="ngForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="discountPercentage">Discount Percentage (%)</label>
+            <input 
+              type="number" 
+              id="discountPercentage" 
+              name="discountPercentage"
+              [(ngModel)]="promotionData.discountPercentage"
+              (input)="calculateNewPrice()"
+              min="1"
+              max="99"
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label for="newPrice">New Price</label>
+            <input 
+              type="number" 
+              id="newPrice" 
+              name="newPrice"
+              [(ngModel)]="promotionData.newPrice"
+              readonly
+            >
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input 
+              type="date" 
+              id="startDate" 
+              name="startDate"
+              [(ngModel)]="promotionData.startDate"
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label for="endDate">End Date</label>
+            <input 
+              type="date" 
+              id="endDate" 
+              name="endDate"
+              [(ngModel)]="promotionData.endDate"
+              required
+            >
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label for="text">Promotion Text</label>
+          <textarea 
+            id="text" 
+            name="text"
+            [(ngModel)]="promotionData.text"
+            rows="2"
+            required
+          ></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="togglePromotionForm()">Cancel</button>
+          <button type="submit" class="save-btn" [disabled]="!promotionForm.valid">Save</button>
+        </div>
+      </form>
+    </div>
+    
     <div class="modal-bottom-row">
       <span class="modal-price">{{ product?.price | currency }}</span>
       <span class="modal-sales" [class.out-of-sales]="product?.sales === 0">
         {{ product?.sales === 0 ? 'not sold' : ('sales: ' + product?.sales) }}
       </span>
-      <span class="modal-promotion" *ngIf="product?.promotion">Promotion</span>
       <span class="modal-supplier" *ngIf="product?.supplier"><span class="modal-supplier-label">Supplier:</span> {{ product?.supplier }}</span>
     </div>
   </div>

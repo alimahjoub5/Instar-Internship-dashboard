@@ -204,6 +204,20 @@
   font-weight: 700;
   background: #fff0f0;
 }
+/* Add these styles at the end of the file */
+
+.promotion-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 0.7rem 0;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #e3eafc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.05);
+  background-color: #fafbff;
+}
 
 .modal-promotion {
   font-size: 1.05rem;
@@ -214,6 +228,146 @@
   font-weight: 600;
 }
 
+.modal-promotion.no-promotion {
+  background: #f5f5f5;
+  color: #757575;
+}
+
+.modify-promotion-btn {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.modify-promotion-btn:hover {
+  background: #bbdefb;
+  color: #0d47a1;
+}
+
+/* Promotion Form Styles */
+.promotion-form {
+  width: 100%;
+  margin: 0.5rem 0 1rem 0;
+  padding: 1rem;
+  background-color: #f8faff;
+  border: 1px solid #e3eafc;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(25, 118, 210, 0.07);
+  /* Add transition properties */
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              margin 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Add this new class for the visible state */
+.promotion-form.visible {
+  max-height: 500px; /* Adjust based on your form's maximum possible height */
+  opacity: 1;
+  transform: translateY(0);
+  padding: 1rem;
+  margin: 0.5rem 0 1rem 0;
+}
+
+/* Add this class for when the form is hidden */
+.promotion-form.hidden {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-width: 0;
+}
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  width: 100%;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.cancel-btn {
+  background: #f5f5f5;
+  color: #555;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancel-btn:hover {
+  background: #e0e0e0;
+}
+
+.save-btn {
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.save-btn:hover {
+  background: #1565c0;
+}
+
+.save-btn:disabled {
+  background: #bbdefb;
+  cursor: not-allowed;
+}
 .modal-supplier {
   font-size: 0.98rem;
   color: #1976d2;
