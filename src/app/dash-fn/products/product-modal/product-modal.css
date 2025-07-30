@@ -190,7 +190,7 @@
   color: #1976d2;
 }
 
-.modal-stock {
+.modal-sales {
   font-size: 1.05rem;
   color: #666;
   font-weight: 500;
@@ -199,7 +199,7 @@
   padding: 0.2rem 0.7rem;
 }
 
-.modal-stock.out-of-stock {
+.modal-sales.out-of-sales {
   color: #d32f2f !important;
   font-weight: 700;
   background: #fff0f0;

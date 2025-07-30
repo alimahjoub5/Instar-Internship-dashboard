@@ -11,14 +11,14 @@
       <span *ngIf="product?.subCategory"> / {{ product?.subCategory }}</span>
     </div>
     <hr class="modal-divider" />
-    <img [src]="product?.images?.[0]" alt="{{ product?.name }}" class="product-image" />
+    <img [src]="product?.image" alt="{{ product?.name }}" class="product-image" />
     <div class="modal-description-wide">
       <strong>Description:</strong> {{ product?.description }}
     </div>
     <div class="modal-bottom-row">
       <span class="modal-price">{{ product?.price | currency }}</span>
-      <span class="modal-stock" [class.out-of-stock]="product?.stock === 0">
-        {{ product?.stock === 0 ? 'Out of stock' : ('Stock: ' + product?.stock) }}
+      <span class="modal-sales" [class.out-of-sales]="product?.sales === 0">
+        {{ product?.sales === 0 ? 'not sold' : ('sales: ' + product?.sales) }}
       </span>
       <span class="modal-promotion" *ngIf="product?.promotion">Promotion</span>
       <span class="modal-supplier" *ngIf="product?.supplier"><span class="modal-supplier-label">Supplier:</span> {{ product?.supplier }}</span>

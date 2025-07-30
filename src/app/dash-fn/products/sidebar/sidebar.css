@@ -2,7 +2,11 @@
   width: 300px;
   min-width: 260px;
   max-width: 340px;
-  background: #fff;
+  background: #f8f7f7;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-color: #444;
+  
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   padding: 2rem 1.5rem;

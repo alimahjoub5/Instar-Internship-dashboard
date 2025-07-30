@@ -14,6 +14,7 @@ import { Sidebar } from './dash-fn/sidebar/sidebar';
 import { ProfileComponent } from './dash-fn/profile/profile';
 import { Products } from './dash-fn/products/products';
 import { Dashboard } from './dash-fn/dashboard/dashboard';
+import { TestcompComponent } from './testcomp/testcomp.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -21,7 +22,7 @@ export const routes: Routes = [
   { 
     path: 'dash-adm', 
     component: DashAdmComponent,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardHomeComponent },
@@ -33,10 +34,16 @@ export const routes: Routes = [
       { path: 'settings', component: SettingsComponent }
     ]
   },
-  { path: 'dash-fn', component: DashFn },
+
+  { path: 'dash-fn', component: DashFn,
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ]
+   },
   { path: 'sidebar', component: Sidebar },
   {path : 'profile', component:ProfileComponent},
   {path : 'products', component:Products},
   {path : 'dashboard', component:Dashboard},
+  {path : 'testcomp', component:TestcompComponent},
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];

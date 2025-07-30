@@ -3,14 +3,14 @@
     <mat-card-title>{{ product.name }}</mat-card-title>
     <mat-card-subtitle>{{ product.category }}<span *ngIf="product.subCategory"> / {{ product.subCategory }}</span></mat-card-subtitle>
   </mat-card-header>
-  <img *ngIf="product.images && product.images.length" mat-card-image class="card-product-image" [src]="product.images[0]" alt="{{ product.name }} image">
+  <img *ngIf="product.image" mat-card-image class="card-product-image" [src]="product.image" alt="{{ product.name }} image">
   <mat-card-content>
     <p class="product-description">{{ product.description }}</p>
   </mat-card-content>
   <div class="product-bottom-row">
     <span class="product-price">{{ product.price | currency }}</span>
-    <span class="product-stock" [class.out-of-stock]="product.stock === 0">
-      {{ product.stock === 0 ? 'Out of stock' : ('Stock: ' + product.stock) }}
+    <span class="product-sales" [class.out-of-sales]="product.sales === 0">
+      {{ product.stock === 0 ? '0 Sales' : ('Sales: ' + product.sales) }}
     </span>
   </div>
 </mat-card>

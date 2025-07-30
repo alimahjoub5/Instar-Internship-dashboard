@@ -4,15 +4,15 @@
       <span>Navigation</span>
     </mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item href="#">
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
         <mat-icon>dashboard</mat-icon>
         <span>Dashboard</span>
       </a>
-      <a mat-list-item href="#">
+      <a mat-list-item routerLink="/profile" routerLinkActive="active-link">
         <mat-icon>person</mat-icon>
         <span>Profile</span>
       </a>
-      <a mat-list-item href="#">
+      <a mat-list-item routerLink="/settings" routerLinkActive="active-link">
         <mat-icon>settings</mat-icon>
         <span>Settings</span>
       </a>
@@ -39,7 +39,7 @@
           <span class="user-name">John Doe</span>
         </button>
         <mat-menu #userMenu="matMenu">
-          <button mat-menu-item>
+          <button mat-menu-item routerLink="/profile" routerLinkActive="active-link">
             <mat-icon>person</mat-icon>
             <span>Profile</span>
           </button>

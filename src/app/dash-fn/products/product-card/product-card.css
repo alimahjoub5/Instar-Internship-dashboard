@@ -18,7 +18,7 @@
   color: #1976d2;
 }
 
-.product-stock {
+.product-sales {
   font-size: 1rem;
   color: #666;
   font-weight: 500;
@@ -50,7 +50,7 @@
   min-width: 240px;
   min-height: 340px;
   background: #fff;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #5b5959;
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   padding: 1.1rem 1rem 1rem 1rem;
@@ -117,7 +117,7 @@ mat-card-image {
   margin-right: auto;
 }
 
-.out-of-stock {
+.out-of-sale {
   color: #d32f2f !important;
   font-weight: 700;
 }

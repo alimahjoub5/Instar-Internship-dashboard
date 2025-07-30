@@ -7,6 +7,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { RouterModule } from '@angular/router';
 
 
 @Component({
@@ -14,7 +15,8 @@ import { MatMenuModule } from '@angular/material/menu';
   standalone: true,
   imports: [
     MatSidenavModule, MatButtonModule, MatToolbarModule, MatIconModule,
-    MatListModule, MatFormFieldModule, MatInputModule, MatMenuModule
+    MatListModule, MatFormFieldModule, MatInputModule, MatMenuModule,
+    RouterModule
   ],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css'
