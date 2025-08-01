@@ -30,11 +30,11 @@
   <hr class="product-separator" />
   <div class="product-main-horizontal">
     <div class="product-visuals">
-      <div *ngIf="has3DModel && model3DUrl" class="3d-model-container">
+      <div *ngIf="has3DModel && model3DUrl" class="model-3d-container">
         <app-three-viewer [modelUrl]="model3DUrl"></app-three-viewer>
         
         <!-- Navigation Controls -->
-        <div *ngIf="all3DModels.length > 1" class="3d-model-navigation">
+        <div *ngIf="all3DModels.length > 1" class="model-3d-navigation">
           <button class="nav-btn prev-btn" (click)="previous3DModel()" title="Previous Model">
             &#8592;
           </button>

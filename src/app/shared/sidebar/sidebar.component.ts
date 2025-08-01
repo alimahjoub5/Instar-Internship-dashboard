@@ -23,6 +23,7 @@ export class SidebarComponent {
     { label: 'Catégories', route: '/dash-adm/categories' },
     { label: 'Sous-catégories', route: '/dash-adm/subcategories' },
     { label: 'Suppliers', route: '/dash-adm/suppliers' },
+    { label: 'Subscriptions', route: '/dash-adm/subscriptions' },
     { label: 'Settings', route: '/dash-adm/settings' },
     { label: 'Logout', route: '/login' }
   ];

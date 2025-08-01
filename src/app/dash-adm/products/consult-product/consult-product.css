@@ -594,7 +594,7 @@ button:focus, .back-btn:focus, .open-review-btn:focus {
 }
 
 /* 3D Model Navigation Styles */
-.3d-model-container {
+.model-3d-container {
   position: relative;
   width: 100%;
   display: flex;
@@ -602,7 +602,7 @@ button:focus, .back-btn:focus, .open-review-btn:focus {
   align-items: center;
 }
 
-.3d-model-navigation {
+.model-3d-navigation {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -691,7 +691,7 @@ button:focus, .back-btn:focus, .open-review-btn:focus {
 }
 
 @media (max-width: 600px) {
-  .3d-model-navigation {
+  .model-3d-navigation {
     gap: 12px;
     padding: 8px;
   }

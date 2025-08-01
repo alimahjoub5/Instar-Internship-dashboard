@@ -12,7 +12,7 @@
     <div>
       <label>Catégorie :</label>
       <select [(ngModel)]="subcategory.category" name="category" required>
-        <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.name }}</option>
+        <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.title }}</option>
       </select>
     </div>
     <div>

@@ -1,0 +1,262 @@
+.subscription-list-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.actions-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 16px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  gap: 16px;
+}
+
+.empty-state mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #ccc;
+}
+
+.empty-state h3 {
+  margin: 0;
+  color: #666;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #999;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.subscription-table {
+  width: 100%;
+  min-width: 800px;
+}
+
+.supplier-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.supplier-info strong {
+  font-weight: 500;
+}
+
+.supplier-info small {
+  color: #666;
+  font-size: 12px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-active {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+
+.status-expired {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.status-cancelled {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.status-pending {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.payment-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.payment-paid {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+
+.payment-pending {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.payment-failed {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.payment-refunded {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.days-remaining {
+  font-size: 11px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-buttons button {
+  min-width: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .subscription-list-container {
+    padding: 10px;
+  }
+
+  .actions-bar {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .actions-bar button {
+    width: 100%;
+  }
+
+  .table-container {
+    margin: 0 -10px;
+  }
+
+  .subscription-table {
+    min-width: 600px;
+  }
+
+  .action-buttons {
+    gap: 4px;
+  }
+
+  .action-buttons button {
+    min-width: 28px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Material Design Enhancements */
+mat-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+mat-card-header {
+  padding: 24px 24px 0;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+mat-card-subtitle {
+  margin-top: 8px;
+  color: #666;
+}
+
+mat-card-content {
+  padding: 24px;
+}
+
+/* Table Styling */
+.mat-mdc-table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.mat-mdc-header-row {
+  background-color: #f5f5f5;
+  font-weight: 500;
+}
+
+.mat-mdc-row:hover {
+  background-color: #fafafa;
+}
+
+.mat-mdc-cell, .mat-mdc-header-cell {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Chip Styling */
+mat-chip {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Button Styling */
+button[mat-raised-button] {
+  border-radius: 6px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+button[mat-icon-button] {
+  border-radius: 50%;
+}
+
+/* Loading Spinner */
+mat-spinner {
+  margin: 0 auto;
+}
+
+/* Empty State */
+.empty-state button[mat-raised-button] {
+  margin-top: 16px;
+} 

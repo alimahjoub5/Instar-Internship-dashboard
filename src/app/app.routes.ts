@@ -22,6 +22,10 @@ import { CategoriesEditComponent } from './dash-adm/categories/editcategories/ca
 import { SubCategoriesListComponent } from './dash-adm/subcategories/subcategories-list.component';
 import { SubCategoriesAddComponent } from './dash-adm/subcategories/addsubcategories/subcategories-add.component';
 import { SubCategoriesEditComponent } from './dash-adm/subcategories/editsubcategories/subcategories-edit.component';
+import { SubscriptionListComponent } from './dash-adm/subscriptions/subscription-list/subscription-list.component';
+import { CreateSubscriptionComponent } from './dash-adm/subscriptions/create-subscription/create-subscription.component';
+import { SubscriptionStatsComponent } from './dash-adm/subscriptions/subscription-stats/subscription-stats.component';
+import { SubscriptionDetailsComponent } from './dash-adm/subscriptions/subscription-details/subscription-details.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -53,6 +57,10 @@ export const routes: Routes = [
       { path: 'subcategories', component: SubCategoriesListComponent },
       { path: 'subcategories/add', component: SubCategoriesAddComponent },
       { path: 'subcategories/edit/:id', component: SubCategoriesEditComponent },
+      { path: 'subscriptions', component: SubscriptionListComponent },
+      { path: 'subscriptions/create', component: CreateSubscriptionComponent },
+      { path: 'subscriptions/stats', component: SubscriptionStatsComponent },
+      { path: 'subscriptions/:id', component: SubscriptionDetailsComponent },
     ]
   },
   { path: 'dash-fn', component: DashFnComponent },

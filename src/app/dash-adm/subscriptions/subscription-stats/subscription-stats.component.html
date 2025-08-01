@@ -1,0 +1,265 @@
+<div class="subscription-stats-container">
+  <div class="stats-header">
+    <h1>
+      <mat-icon>analytics</mat-icon>
+      Subscription Analytics
+    </h1>
+    <p>Comprehensive overview of subscription performance and revenue metrics</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading subscription statistics...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-container">
+    <mat-icon>error</mat-icon>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && stats" class="stats-content">
+    <!-- Main Statistics Cards -->
+    <div class="stats-grid">
+      <!-- Total Subscriptions -->
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>subscriptions</mat-icon>
+            <h3>Total Subscriptions</h3>
+          </div>
+          <div class="stat-value">{{ stats.totalSubscriptions }}</div>
+          <div class="stat-description">All time subscriptions</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Active Subscriptions -->
+      <mat-card class="stat-card active">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>check_circle</mat-icon>
+            <h3>Active Subscriptions</h3>
+          </div>
+          <div class="stat-value">{{ stats.activeSubscriptions }}</div>
+          <div class="stat-description">{{ getActivePercentage() | number:'1.1-1' }}% of total</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Expired Subscriptions -->
+      <mat-card class="stat-card expired">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>schedule</mat-icon>
+            <h3>Expired Subscriptions</h3>
+          </div>
+          <div class="stat-value">{{ stats.expiredSubscriptions }}</div>
+          <div class="stat-description">{{ getExpiredPercentage() | number:'1.1-1' }}% of total</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Pending Subscriptions -->
+      <mat-card class="stat-card pending">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>pending</mat-icon>
+            <h3>Pending Subscriptions</h3>
+          </div>
+          <div class="stat-value">{{ stats.pendingSubscriptions }}</div>
+          <div class="stat-description">{{ getPendingPercentage() | number:'1.1-1' }}% of total</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Total Revenue -->
+      <mat-card class="stat-card revenue">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>attach_money</mat-icon>
+            <h3>Total Revenue</h3>
+          </div>
+          <div class="stat-value">{{ formatCurrency(stats.totalRevenue) }}</div>
+          <div class="stat-description">All time revenue</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Average Revenue per Subscription -->
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>trending_up</mat-icon>
+            <h3>Avg Revenue/Subscription</h3>
+          </div>
+          <div class="stat-value">{{ formatCurrency(stats.averageRevenuePerSubscription) }}</div>
+          <div class="stat-description">Average per subscription</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Plan Distribution -->
+    <div *ngIf="stats?.planStats?.length" class="section">
+      <h2>Plan Distribution</h2>
+      <div class="plan-stats-grid">
+        <mat-card *ngFor="let plan of stats.planStats" class="plan-stat-card">
+          <mat-card-content>
+            <div class="plan-stat-header">
+              <mat-chip [color]="getPlanColor(plan._id)" selected>
+                {{ plan._id | titlecase }}
+              </mat-chip>
+            </div>
+            <div class="plan-stat-value">{{ plan.count }}</div>
+            <div class="plan-stat-description">subscriptions</div>
+            <div class="plan-stat-revenue">{{ formatCurrency(plan.totalRevenue) }}</div>
+            <div class="plan-stat-revenue-label">total revenue</div>
+            <div class="plan-stat-breakdown">
+              <div class="breakdown-item">
+                <span class="label">Active:</span>
+                <span class="value">{{ plan.activeCount }}</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="label">Expired:</span>
+                <span class="value">{{ plan.expiredCount }}</span>
+              </div>
+              <div class="breakdown-item">
+                <span class="label">Pending:</span>
+                <span class="value">{{ plan.pendingCount }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Monthly Trends -->
+    <div *ngIf="stats?.monthlyTrends?.length" class="section">
+      <h2>Monthly Trends (Last 12 Months)</h2>
+      <mat-card class="trends-card">
+        <mat-card-content>
+          <div class="trends-grid">
+            <div *ngFor="let month of stats.monthlyTrends" class="trend-item">
+              <div class="trend-date">{{ formatMonth(month._id.year, month._id.month) }}</div>
+              <div class="trend-stats">
+                <div class="trend-stat">
+                  <span class="label">New:</span>
+                  <span class="value">{{ month.count }}</span>
+                </div>
+                <div class="trend-stat">
+                  <span class="label">Revenue:</span>
+                  <span class="value">{{ formatCurrency(month.revenue) }}</span>
+                </div>
+                <div class="trend-stat">
+                  <span class="label">Active:</span>
+                  <span class="value">{{ month.activeCount }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Weekly Trends -->
+    <div *ngIf="stats?.weeklyTrends?.length" class="section">
+      <h2>Weekly Trends (Last 8 Weeks)</h2>
+      <mat-card class="trends-card">
+        <mat-card-content>
+          <div class="trends-grid">
+            <div *ngFor="let week of stats.weeklyTrends" class="trend-item">
+              <div class="trend-date">Week {{ week._id.week }}, {{ week._id.year }}</div>
+              <div class="trend-stats">
+                <div class="trend-stat">
+                  <span class="label">New:</span>
+                  <span class="value">{{ week.count }}</span>
+                </div>
+                <div class="trend-stat">
+                  <span class="label">Revenue:</span>
+                  <span class="value">{{ formatCurrency(week.revenue) }}</span>
+                </div>
+                <div class="trend-stat">
+                  <span class="label">Active:</span>
+                  <span class="value">{{ week.activeCount }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Top Suppliers -->
+    <div *ngIf="stats?.supplierStats?.length" class="section">
+      <h2>Top Suppliers by Revenue</h2>
+      <mat-card class="suppliers-card">
+        <mat-card-content>
+          <div class="suppliers-table">
+            <div class="table-header">
+              <div class="header-cell">Supplier</div>
+              <div class="header-cell">Total Subscriptions</div>
+              <div class="header-cell">Active</div>
+              <div class="header-cell">Current Plan</div>
+              <div class="header-cell">Total Revenue</div>
+              <div class="header-cell">Last Activity</div>
+            </div>
+            <div *ngFor="let supplier of stats.supplierStats" class="table-row">
+              <div class="cell supplier-info">
+                <div class="supplier-name">{{ supplier.supplierName }}</div>
+                <div class="supplier-email">{{ supplier.supplierEmail }}</div>
+              </div>
+              <div class="cell">{{ supplier.totalSubscriptions }}</div>
+              <div class="cell">
+                <span class="status-badge active">{{ supplier.activeSubscriptions }}</span>
+              </div>
+              <div class="cell">
+                <mat-chip [color]="getPlanColor(supplier.currentPlan)" selected>
+                  {{ supplier.currentPlan | titlecase }}
+                </mat-chip>
+              </div>
+              <div class="cell revenue">{{ formatCurrency(supplier.totalRevenue) }}</div>
+              <div class="cell">{{ formatDate(supplier.lastSubscriptionDate) }}</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Payment Method Statistics -->
+    <div *ngIf="stats?.paymentMethodStats?.length" class="section">
+      <h2>Payment Method Distribution</h2>
+      <div class="payment-methods-grid">
+        <mat-card *ngFor="let method of stats.paymentMethodStats" class="payment-method-card">
+          <mat-card-content>
+            <div class="payment-method-header">
+              <mat-icon>payment</mat-icon>
+              <h3>{{ formatPaymentMethod(method._id) }}</h3>
+            </div>
+            <div class="payment-method-value">{{ method.count }}</div>
+            <div class="payment-method-description">subscriptions</div>
+            <div class="payment-method-revenue">{{ formatCurrency(method.totalRevenue) }}</div>
+            <div class="payment-method-revenue-label">total revenue</div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div *ngIf="stats?.recentActivity?.length" class="section">
+      <h2>Recent Activity (Last 30 Days)</h2>
+      <mat-card class="activity-card">
+        <mat-card-content>
+          <div class="activity-grid">
+            <div *ngFor="let activity of stats.recentActivity" class="activity-item">
+              <div class="activity-date">{{ formatDate(activity._id) }}</div>
+              <div class="activity-stats">
+                <div class="activity-stat">
+                  <span class="label">New Subscriptions:</span>
+                  <span class="value">{{ activity.newSubscriptions }}</span>
+                </div>
+                <div class="activity-stat">
+                  <span class="label">Revenue:</span>
+                  <span class="value">{{ formatCurrency(activity.revenue) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div> 

@@ -14,6 +14,8 @@ export interface Supplier {
   password: string;
   webSite?: string | null;
   userId?: string | null;
+  hasActiveSubscription?: boolean; // Added for subscription management
+  hasCancelledSubscription?: boolean; // Added for subscription management
   // contactPerson?: string; // Not in backend
   // website?: string; // Use webSite instead
   // description?: string; // Not in backend

@@ -1,0 +1,308 @@
+<div class="subscription-details-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading subscription details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <mat-icon>error</mat-icon>
+    <h3>Error</h3>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Subscriptions
+    </button>
+  </div>
+
+  <!-- Subscription Details -->
+  <div *ngIf="subscription && !isLoading" class="subscription-content">
+    <!-- Header Section -->
+    <mat-card class="header-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>subscriptions</mat-icon>
+          Subscription Details
+        </mat-card-title>
+        <mat-card-subtitle>
+          ID: {{ subscription._id }}
+        </mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="editSubscription()">
+          <mat-icon>edit</mat-icon>
+          Edit Subscription
+        </button>
+        <button mat-raised-button color="accent" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Back to List
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+      <!-- Left Column - Basic Info -->
+      <div class="left-column">
+        <!-- Supplier Information -->
+        <mat-card class="info-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>business</mat-icon>
+              Supplier Information
+            </mat-card-title>
+          </mat-card-header>
+                     <mat-card-content>
+             <div class="supplier-info">
+               <div *ngIf="!supplier && !isLoading" class="no-supplier">
+                 <p><em>Supplier information not available</em></p>
+                 <p *ngIf="subscription?.supplierId" class="debug-info">
+                   <small>Supplier ID: {{ subscription.supplierId }}</small>
+                 </p>
+               </div>
+               <div *ngIf="supplier" class="supplier-details">
+                 <h3>{{ supplier.name }}</h3>
+                 <p><strong>Email:</strong> {{ supplier.email || 'N/A' }}</p>
+                 <p><strong>Phone:</strong> {{ supplier.phone }}</p>
+                 <p *ngIf="supplier.address"><strong>Address:</strong> {{ supplier.address }}</p>
+                 <p *ngIf="supplier.marque"><strong>Brand:</strong> {{ supplier.marque }}</p>
+                 <p *ngIf="supplier.webSite"><strong>Website:</strong> {{ supplier.webSite }}</p>
+               </div>
+             </div>
+           </mat-card-content>
+        </mat-card>
+
+        <!-- Subscription Status -->
+        <mat-card class="info-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>info</mat-icon>
+              Subscription Status
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="status-section">
+              <div class="status-item">
+                <span class="label">Status:</span>
+                <mat-chip [class]="getStatusClass(subscription.status)" selected>
+                  {{ subscription.status | titlecase }}
+                </mat-chip>
+              </div>
+              
+              <div class="status-item">
+                <span class="label">Payment Status:</span>
+                <mat-chip [class]="getPaymentStatusClass(subscription.paymentStatus)" selected>
+                  {{ subscription.paymentStatus | titlecase }}
+                </mat-chip>
+              </div>
+
+              <div class="status-item">
+                <span class="label">Plan Type:</span>
+                <mat-chip [color]="subscription.planType === 'enterprise' ? 'accent' : subscription.planType === 'premium' ? 'warn' : 'primary'" selected>
+                  {{ subscription.planType | titlecase }}
+                </mat-chip>
+              </div>
+
+              <div class="status-item">
+                <span class="label">Auto Renew:</span>
+                <mat-chip [color]="subscription.autoRenew ? 'primary' : 'warn'" selected>
+                  {{ subscription.autoRenew ? 'Enabled' : 'Disabled' }}
+                </mat-chip>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Payment Information -->
+        <mat-card class="info-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>payment</mat-icon>
+              Payment Information
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="payment-info">
+                             <div class="payment-item">
+                 <span class="label">Price:</span>
+                 <span class="value price">{{ formatPrice(subscription.price) }}</span>
+               </div>
+               <div class="payment-item">
+                 <span class="label">Payment Method:</span>
+                 <span class="value">{{ subscription.paymentMethod | titlecase }}</span>
+               </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Right Column - Timeline & Actions -->
+      <div class="right-column">
+        <!-- Timeline -->
+        <mat-card class="timeline-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>schedule</mat-icon>
+              Subscription Timeline
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-date">
+                  <mat-icon>event</mat-icon>
+                  <span>{{ formatDate(subscription.startDate) }}</span>
+                </div>
+                <div class="timeline-content">
+                  <h4>Start Date</h4>
+                  <p>Subscription began</p>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-date">
+                  <mat-icon>event</mat-icon>
+                  <span>{{ formatDate(subscription.endDate) }}</span>
+                </div>
+                <div class="timeline-content">
+                  <h4>End Date</h4>
+                  <p>Subscription expires</p>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-date">
+                  <mat-icon>schedule</mat-icon>
+                  <span>{{ formatDuration(subscription.startDate, subscription.endDate) }}</span>
+                </div>
+                <div class="timeline-content">
+                  <h4>Duration</h4>
+                  <p>Total subscription period</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div *ngIf="isSubscriptionActive()" class="progress-section">
+              <div class="progress-header">
+                <span>Subscription Progress</span>
+                <span>{{ getDaysRemaining() }} days remaining</span>
+              </div>
+              <mat-progress-bar 
+                [value]="getProgressPercentage()" 
+                color="primary"
+                class="subscription-progress">
+              </mat-progress-bar>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Features -->
+        <mat-card class="features-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>star</mat-icon>
+              Plan Features
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-list>
+              <mat-list-item>
+                <mat-icon matListItemIcon>inventory</mat-icon>
+                <div matListItemTitle>Max Products: {{ subscription.features.maxProducts || 0 }}</div>
+              </mat-list-item>
+              <mat-list-item>
+                <mat-icon matListItemIcon>image</mat-icon>
+                <div matListItemTitle>Max Images: {{ subscription.features.maxImages || 0 }}</div>
+              </mat-list-item>
+              <mat-list-item>
+                <mat-icon matListItemIcon>{{ subscription.features.analytics ? 'analytics' : 'block' }}</mat-icon>
+                <div matListItemTitle>Analytics: {{ subscription.features.analytics ? 'Enabled' : 'Disabled' }}</div>
+              </mat-list-item>
+              <mat-list-item>
+                <mat-icon matListItemIcon>{{ subscription.features.prioritySupport ? 'support_agent' : 'block' }}</mat-icon>
+                <div matListItemTitle>Priority Support: {{ subscription.features.prioritySupport ? 'Enabled' : 'Disabled' }}</div>
+              </mat-list-item>
+              <mat-list-item>
+                <mat-icon matListItemIcon>{{ subscription.features.customBranding ? 'palette' : 'block' }}</mat-icon>
+                <div matListItemTitle>Custom Branding: {{ subscription.features.customBranding ? 'Enabled' : 'Disabled' }}</div>
+              </mat-list-item>
+              <mat-list-item>
+                <mat-icon matListItemIcon>{{ subscription.features.apiAccess ? 'api' : 'block' }}</mat-icon>
+                <div matListItemTitle>API Access: {{ subscription.features.apiAccess ? 'Enabled' : 'Disabled' }}</div>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Actions -->
+        <mat-card class="actions-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>settings</mat-icon>
+              Actions
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="actions-grid">
+              <button 
+                *ngIf="subscription.status === 'active'" 
+                mat-raised-button 
+                color="warn" 
+                (click)="cancelSubscription()"
+                class="action-button">
+                <mat-icon>cancel</mat-icon>
+                Cancel Subscription
+              </button>
+
+              <button 
+                *ngIf="subscription.status === 'expired'" 
+                mat-raised-button 
+                color="primary" 
+                (click)="renewSubscription()"
+                class="action-button">
+                <mat-icon>refresh</mat-icon>
+                Renew Subscription
+              </button>
+
+              <button 
+                *ngIf="subscription.paymentStatus === 'pending'" 
+                mat-raised-button 
+                color="accent" 
+                (click)="updatePaymentStatus('paid')"
+                class="action-button">
+                <mat-icon>payment</mat-icon>
+                Mark as Paid
+              </button>
+
+              <button 
+                *ngIf="subscription.paymentStatus === 'paid'" 
+                mat-raised-button 
+                color="warn" 
+                (click)="updatePaymentStatus('refunded')"
+                class="action-button">
+                <mat-icon>money_off</mat-icon>
+                Mark as Refunded
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Notes Section -->
+    <mat-card *ngIf="subscription.notes" class="notes-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>note</mat-icon>
+          Notes
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ subscription.notes }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div> 
