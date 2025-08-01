@@ -1,0 +1,137 @@
+<div class="subscription-expiration-container">
+  <!-- Header -->
+  <div class="header">
+    <h2>🕐 Subscription Expiration Management</h2>
+    <p>Manage automatic subscription expiration and monitor upcoming expirations</p>
+  </div>
+
+  <!-- Message Display -->
+  <div *ngIf="message" class="message" [ngClass]="'message-' + messageType">
+    {{ message }}
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-container" *ngIf="expirationStats">
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <h3>{{ expirationStats.totalActive }}</h3>
+        <p>Active Subscriptions</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">⏰</div>
+      <div class="stat-content">
+        <h3>{{ expirationStats.totalExpired }}</h3>
+        <p>Expired Subscriptions</p>
+      </div>
+    </div>
+
+    <div class="stat-card warning">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-content">
+        <h3>{{ expirationStats.expiringToday }}</h3>
+        <p>Expiring Today</p>
+      </div>
+    </div>
+
+    <div class="stat-card critical">
+      <div class="stat-icon">🚨</div>
+      <div class="stat-content">
+        <h3>{{ expirationStats.expiringThisWeek }}</h3>
+        <p>Expiring This Week</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manual Controls -->
+  <div class="controls-section">
+    <div class="control-card">
+      <h3>🔧 Manual Controls</h3>
+      <p>Run manual expiration check or refresh data</p>
+      
+      <div class="button-group">
+        <button 
+          (click)="runManualExpirationCheck()" 
+          [disabled]="isLoading"
+          class="btn btn-primary">
+          <span *ngIf="isLoading">⏳</span>
+          <span *ngIf="!isLoading">🔍</span>
+          {{ isLoading ? 'Running...' : 'Run Manual Check' }}
+        </button>
+        
+        <button 
+          (click)="refreshData()" 
+          [disabled]="isLoading"
+          class="btn btn-secondary">
+          🔄 Refresh Data
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upcoming Expirations -->
+  <div class="upcoming-expirations">
+    <h3>📅 Upcoming Expirations (Next 7 Days)</h3>
+    
+    <div *ngIf="upcomingExpirations.length === 0" class="no-data">
+      <p>✅ No subscriptions expiring in the next 7 days</p>
+    </div>
+
+    <div *ngIf="upcomingExpirations.length > 0" class="expiration-list">
+      <div 
+        *ngFor="let subscription of upcomingExpirations" 
+        class="expiration-item"
+        [ngClass]="getExpirationStatusClass(getDaysUntilExpiration(subscription.endDate))">
+        
+        <div class="expiration-header">
+          <h4>{{ subscription.supplier?.name || 'Unknown Supplier' }}</h4>
+          <span class="plan-type">{{ subscription.planType | uppercase }}</span>
+        </div>
+        
+        <div class="expiration-details">
+          <div class="detail-item">
+            <strong>End Date:</strong> {{ subscription.endDate | date:'medium' }}
+          </div>
+          
+          <div class="detail-item">
+            <strong>Days Remaining:</strong> 
+            <span class="days-remaining" [ngClass]="getExpirationStatusClass(getDaysUntilExpiration(subscription.endDate))">
+              {{ getDaysUntilExpiration(subscription.endDate) }} days
+            </span>
+          </div>
+          
+          <div class="detail-item">
+            <strong>Price:</strong> ${{ subscription.price }}
+          </div>
+          
+          <div class="detail-item">
+            <strong>Payment Status:</strong> 
+            <span class="payment-status" [ngClass]="'status-' + subscription.paymentStatus">
+              {{ subscription.paymentStatus }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Information Section -->
+  <div class="info-section">
+    <div class="info-card">
+      <h3>ℹ️ How It Works</h3>
+      <ul>
+        <li><strong>Automatic Expiration:</strong> The system automatically checks for expired subscriptions daily at midnight (UTC)</li>
+        <li><strong>Manual Check:</strong> You can run a manual expiration check at any time using the button above</li>
+        <li><strong>Upcoming Expirations:</strong> Shows subscriptions that will expire within the next 7 days</li>
+        <li><strong>Status Colors:</strong> 
+          <span class="status-normal">Normal</span> (7+ days), 
+          <span class="status-warning">Warning</span> (3-7 days), 
+          <span class="status-critical">Critical</span> (0-3 days), 
+          <span class="status-expired">Expired</span> (0 days)
+        </li>
+      </ul>
+    </div>
+  </div>
+</div> 

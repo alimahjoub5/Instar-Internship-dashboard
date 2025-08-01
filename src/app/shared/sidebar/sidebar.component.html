@@ -1,11 +1,68 @@
 <aside class="sidebar">
-  <nav>
-    <ul>
-      <li *ngFor="let item of sidebarItems" [class.logout]="item.label === 'Logout'">
-        <a [routerLink]="item.route" routerLinkActive="active" [class.active]="isActive(item.route)">
-          {{ item.label }}
-        </a>
-      </li>
-    </ul>
+  <!-- Sidebar Header -->
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <div class="logo-icon">🏢</div>
+      <div class="logo-text">
+        <span class="logo-title">Admin Panel</span>
+        <span class="logo-subtitle">Management System</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title">Main Menu</div>
+      <ul class="nav-list">
+        <li *ngFor="let item of sidebarItems" 
+            [class.logout]="item.label === 'Logout'"
+            [class.special]="item.label === 'Dashboard'">
+          <a [routerLink]="item.route" 
+             routerLinkActive="active" 
+             [class.active]="isActive(item.route)"
+             [class.special-active]="item.label === 'Dashboard' && isActive(item.route)">
+            <div class="nav-item-icon">{{ getItemIcon(item.label) }}</div>
+            <span class="nav-item-text">{{ item.label }}</span>
+            <div class="nav-item-indicator"></div>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="sidebar-stats">
+      <div class="stats-title">Quick Stats</div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-icon">👥</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ quickStats?.users || 0 }}</div>
+            <div class="stat-label">Users</div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">📦</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ quickStats?.products || 0 }}</div>
+            <div class="stat-label">Products</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Profile Section -->
+    <div class="sidebar-profile">
+      <div class="profile-avatar">
+        <div class="avatar-circle">
+          <span class="avatar-text">A</span>
+        </div>
+        <div class="profile-status online"></div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name">Admin User</div>
+        <div class="profile-role">Administrator</div>
+      </div>
+    </div>
   </nav>
 </aside> 

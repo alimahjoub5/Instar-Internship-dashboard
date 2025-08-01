@@ -1,0 +1,159 @@
+<!-- Dashboard Home Template -->
+<div class="dashboard-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <h3>Error Loading Dashboard</h3>
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="loadDashboardData()">Retry</button>
+  </div>
+
+  <!-- Main Dashboard Content -->
+  <div *ngIf="!isLoading && !error" class="dashboard-content">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <div class="welcome-content">
+        <h1 class="welcome-title">Welcome to Your Dashboard</h1>
+        <p class="welcome-subtitle">Here's what's happening with your business today</p>
+        <div class="welcome-stats">
+          <div class="welcome-stat">
+            <span class="stat-number">{{ formatNumber(dashboardStats?.users?.total || 0) }}</span>
+            <span class="stat-label">Total Users</span>
+          </div>
+          <div class="welcome-stat">
+            <span class="stat-number">{{ formatNumber(dashboardStats?.products?.total || 0) }}</span>
+            <span class="stat-label">Products</span>
+          </div>
+          <div class="welcome-stat">
+            <span class="stat-number">{{ formatCurrency(dashboardStats?.sales?.total || 0) }}</span>
+            <span class="stat-label">Total Sales</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Stats Grid -->
+    <div class="stats-grid">
+      <!-- Users Card -->
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <h3>Utilisateurs</h3>
+          <p class="stat-number">{{ formatNumber(dashboardStats?.users?.total || 0) }}</p>
+          <p class="stat-change" [class]="parseFloat(dashboardStats?.users?.growth || '0') >= 0 ? 'positive' : 'negative'">
+            {{ parseFloat(dashboardStats?.users?.growth || '0') >= 0 ? '+' : '' }}{{ dashboardStats?.users?.growth || '0' }}% ce mois
+          </p>
+        </div>
+      </div>
+
+      <!-- Products Card -->
+      <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-content">
+          <h3>Produits</h3>
+          <p class="stat-number">{{ formatNumber(dashboardStats?.products?.total || 0) }}</p>
+          <p class="stat-change" [class]="parseFloat(dashboardStats?.products?.growth || '0') >= 0 ? 'positive' : 'negative'">
+            {{ parseFloat(dashboardStats?.products?.growth || '0') >= 0 ? '+' : '' }}{{ dashboardStats?.products?.growth || '0' }}% ce mois
+          </p>
+        </div>
+      </div>
+
+      <!-- Sales Card -->
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+          <h3>Ventes</h3>
+          <p class="stat-number">{{ formatCurrency(dashboardStats?.sales?.total || 0) }}</p>
+          <p class="stat-change" [class]="parseFloat(dashboardStats?.sales?.growth || '0') >= 0 ? 'positive' : 'negative'">
+            {{ parseFloat(dashboardStats?.sales?.growth || '0') >= 0 ? '+' : '' }}{{ dashboardStats?.sales?.growth || '0' }}% ce mois
+          </p>
+        </div>
+      </div>
+
+      <!-- Orders Card -->
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-content">
+          <h3>Commandes</h3>
+          <p class="stat-number">{{ formatNumber(dashboardStats?.sales?.orders || 0) }}</p>
+          <p class="stat-change positive">+12% ce mois</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Stats Section -->
+    <div class="additional-stats">
+      <h2 class="section-title">Additional Statistics</h2>
+      <div class="stat-row">
+        <div class="mini-stat">
+          <div class="mini-stat-icon">💳</div>
+          <div class="mini-stat-content">
+            <h4>Abonnements Actifs</h4>
+            <p>{{ formatNumber(dashboardStats?.subscriptions?.active || 0) }}</p>
+          </div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-icon">🏭</div>
+          <div class="mini-stat-content">
+            <h4>Fournisseurs</h4>
+            <p>{{ formatNumber(dashboardStats?.suppliers?.total || 0) }}</p>
+          </div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-icon">📁</div>
+          <div class="mini-stat-content">
+            <h4>Catégories</h4>
+            <p>{{ formatNumber(dashboardStats?.categories?.total || 0) }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Feed Section -->
+    <div class="activity-section">
+      <h2 class="section-title">Recent Activity</h2>
+      <div class="activity-list">
+        <div *ngFor="let activity of activityFeed" class="activity-item">
+          <div class="activity-icon">{{ activity.icon }}</div>
+          <div class="activity-content">
+            <h4>{{ activity.title }}</h4>
+            <p>{{ activity.description }}</p>
+            <span class="activity-time">{{ getTimeAgo(activity.timestamp) }}</span>
+          </div>
+        </div>
+        <div *ngIf="activityFeed.length === 0" class="no-activities">
+          <p>No recent activities</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <h2 class="section-title">Quick Actions</h2>
+      <div class="actions-grid">
+        <a routerLink="/dash-adm/users/adduser" class="action-btn">
+          <div class="action-icon">👤</div>
+          <span>Add User</span>
+        </a>
+        <a routerLink="/dash-adm/products/add-product" class="action-btn">
+          <div class="action-icon">📦</div>
+          <span>Add Product</span>
+        </a>
+        <a routerLink="/dash-adm/suppliers/add-supplier" class="action-btn">
+          <div class="action-icon">🏭</div>
+          <span>Add Supplier</span>
+        </a>
+        <a routerLink="/dash-adm/subscriptions/create-subscription" class="action-btn">
+          <div class="action-icon">💳</div>
+          <span>Create Subscription</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -90,6 +90,19 @@ export class SubscriptionListComponent implements OnInit {
     return this.subscriptionService.isSubscriptionExpired(subscription);
   }
 
+  getExpirationStatus(subscription: Subscription): string {
+    const daysRemaining = this.getDaysRemaining(subscription);
+    if (daysRemaining <= 0) return 'expired';
+    if (daysRemaining <= 3) return 'critical';
+    if (daysRemaining <= 7) return 'warning';
+    return 'normal';
+  }
+
+  getExpirationStatusClass(subscription: Subscription): string {
+    const status = this.getExpirationStatus(subscription);
+    return `expiration-${status}`;
+  }
+
   cancelSubscription(id: string) {
     if (confirm('Are you sure you want to cancel this subscription?')) {
       this.subscriptionService.cancelSubscription(id).subscribe({

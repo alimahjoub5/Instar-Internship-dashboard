@@ -206,6 +206,19 @@ export class SubscriptionService {
     return this.apiService.get('/subscription/stats');
   }
 
+  // Automatic expiration methods
+  manualExpirationCheck(): Observable<any> {
+    return this.apiService.post('/subscription/expire-check', {});
+  }
+
+  getExpirationStats(): Observable<any> {
+    return this.apiService.get('/subscription/expiration-stats');
+  }
+
+  getUpcomingExpirations(): Observable<any> {
+    return this.apiService.get('/subscription/upcoming-expirations');
+  }
+
   // Helper Methods
   isSubscriptionActive(subscription: Subscription): boolean {
     if (subscription.status !== 'active') return false;

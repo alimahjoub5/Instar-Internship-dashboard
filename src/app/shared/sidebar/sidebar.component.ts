@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { DashboardService, QuickStats } from '../services/dashboard.service';
 
 export interface SidebarItem {
   label: string;
@@ -15,7 +16,7 @@ export interface SidebarItem {
   standalone: true,
   imports: [CommonModule, RouterModule]
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   sidebarItems: SidebarItem[] = [
     { label: 'Dashboard', route: '/dash-adm/dashboard' },
     { label: 'Users', route: '/dash-adm/users' },
@@ -30,9 +31,43 @@ export class SidebarComponent {
   ];
   @Input() currentView: string = 'dashboard';
 
-  constructor(private router: Router) {}
+  quickStats: QuickStats | null = null;
+
+  constructor(private router: Router, private dashboardService: DashboardService) {}
+
+  ngOnInit(): void {
+    this.loadQuickStats();
+  }
+
+  loadQuickStats(): void {
+    this.dashboardService.getQuickStats().subscribe({
+      next: (stats) => {
+        this.quickStats = stats;
+      },
+      error: (error) => {
+        console.error('Error loading quick stats:', error);
+      }
+    });
+  }
 
   isActive(route: string): boolean {
     return this.router.url.includes(route);
+  }
+
+  getItemIcon(label: string): string {
+    const iconMap: { [key: string]: string } = {
+      'Dashboard': '📊',
+      'Users': '👥',
+      'Products': '📦',
+      'Catégories': '📁',
+      'Sous-catégories': '📂',
+      'Suppliers': '🏭',
+      'Subscriptions': '💳',
+      'Subscription Plans': '📋',
+      'Expiration Management': '⏰',
+      'Settings': '⚙️',
+      'Logout': '🚪'
+    };
+    return iconMap[label] || '📄';
   }
 } 
