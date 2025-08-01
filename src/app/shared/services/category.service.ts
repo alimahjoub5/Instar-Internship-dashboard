@@ -4,7 +4,7 @@ import { ApiService } from './api.service';
 
 export interface Category {
   _id?: string;
-  name: string;
+  title: string;
   description?: string;
   image?: string;
   createdAt?: Date;

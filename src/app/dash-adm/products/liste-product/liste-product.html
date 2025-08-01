@@ -4,7 +4,7 @@
       <input type="text" placeholder="Search by name..." [(ngModel)]="searchTerm" (input)="onSearchChange()" />
       <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
         <option value="">All Categories</option>
-        <option *ngFor="let cat of categories" [value]="cat.name">{{ cat.name }}</option>
+        <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.title }}</option>
       </select>
       <select [(ngModel)]="selectedSupplier" (change)="onSupplierChange()">
         <option value="">All Suppliers</option>
@@ -30,7 +30,7 @@
       <tr *ngFor="let product of filteredProducts">
         <td>{{ product.name }}</td>
         <td>{{ product.price }}</td>
-        <td>{{ product.category }}</td>
+        <td>{{ getCategoryName(product.category) }}</td>
         <td>{{ getSupplierName(product.supplier) }}</td>
         <td>{{ product.quantity3D ?? '-' }}</td>
         <td>

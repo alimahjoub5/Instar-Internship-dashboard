@@ -13,6 +13,9 @@ export class ApiService {
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
+    if (!token) {
+      console.warn('⚠️ Aucun token d\'authentification trouvé. L\'utilisateur devrait être connecté.');
+    }
     return new HttpHeaders({
       'Content-Type': 'application/json',
       ...(token && { 'Authorization': `Bearer ${token}` })
@@ -34,9 +37,19 @@ export class ApiService {
   }
 
   put<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}${endpoint}`, data, {
-      headers: this.getHeaders()
-    });
+    // Check if data is FormData
+    if (data instanceof FormData) {
+      const token = localStorage.getItem('token');
+      const headers = new HttpHeaders();
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+      return this.http.put<T>(`${this.baseUrl}${endpoint}`, data, { headers });
+    } else {
+      return this.http.put<T>(`${this.baseUrl}${endpoint}`, data, {
+        headers: this.getHeaders()
+      });
+    }
   }
 
   delete<T>(endpoint: string): Observable<T> {
@@ -49,5 +62,16 @@ export class ApiService {
     return this.http.patch<T>(`${this.baseUrl}${endpoint}`, data, {
       headers: this.getHeaders()
     });
+  }
+
+  // Check if user is authenticated
+  isAuthenticated(): boolean {
+    const token = localStorage.getItem('token');
+    return !!token;
+  }
+
+  // Get current token
+  getToken(): string | null {
+    return localStorage.getItem('token');
   }
 } 

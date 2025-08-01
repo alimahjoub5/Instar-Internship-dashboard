@@ -18,8 +18,8 @@ export class ProfileAdminComponent implements OnInit {
 
   ngOnInit() {
     // À adapter selon la logique d'authentification : ici on suppose que l'admin est le user connecté
-    const adminId = localStorage.getItem('adminId'); // à remplacer par la vraie logique
-    if (adminId) {
+    const adminId = localStorage.getItem('adminId') || localStorage.getItem('userId'); // à remplacer par la vraie logique
+    if (adminId && adminId !== 'undefined' && adminId !== 'null') {
       this.userService.getUserById(adminId).subscribe({
         next: (user) => {
           this.admin = user;

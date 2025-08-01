@@ -24,7 +24,7 @@ export class NavbarComponent implements OnInit {
 
   loadUserInfo() {
     const userId = localStorage.getItem('userId');
-    if (userId) {
+    if (userId && userId !== 'undefined' && userId !== 'null') {
       this.userService.getUserById(userId).subscribe({
         next: (user: any) => {
           this.userName = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User';
@@ -36,6 +36,10 @@ export class NavbarComponent implements OnInit {
           this.userEmail = '';
         }
       });
+    } else {
+      // Set default values if no user ID is available
+      this.userName = 'User';
+      this.userEmail = '';
     }
   }
 

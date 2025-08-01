@@ -35,6 +35,10 @@ export class ConsultProductComponent implements OnInit {
   editingReview: Review | null = null;
   has3DModel: boolean = false;
   showUpload3D = false;
+  
+  // 3D Models navigation
+  all3DModels: any[] = [];
+  current3DModelIndex: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -55,22 +59,30 @@ export class ConsultProductComponent implements OnInit {
         next: (product) => {
           this.product = product;
           this.product3DId = product._id || '';
+          console.log('Product ID for 3D models:', this.product3DId);
           // Check if a 3D model exists for this product
           this.productService.getAll3DProducts(this.product3DId).subscribe({
             next: (models) => {
+              console.log('3D Models found:', models);
               if (Array.isArray(models) && models.length > 0) {
                 this.has3DModel = true;
-                const file = models[0]?.image3D || '';
-                // Correction ici : on construit l'URL complète si besoin
-                this.model3DUrl = file.startsWith('http') ? file : `http://localhost:9002/uploads/${file}`;
+                this.all3DModels = models;
+                this.current3DModelIndex = 0;
+                this.loadCurrent3DModel();
               } else {
                 this.has3DModel = false;
                 this.model3DUrl = '';
+                this.all3DModels = [];
+                this.current3DModelIndex = 0;
+                console.log('No 3D models found for product');
               }
             },
-            error: () => {
+            error: (err) => {
+              console.error('Error loading 3D models:', err);
               this.has3DModel = false;
               this.model3DUrl = '';
+              this.all3DModels = [];
+              this.current3DModelIndex = 0;
             }
           });
           this.isLoading = false;
@@ -166,6 +178,42 @@ export class ConsultProductComponent implements OnInit {
     console.log('Back to list');
   }
 
+  // 3D Model Navigation Methods
+  loadCurrent3DModel() {
+    if (this.all3DModels.length > 0 && this.current3DModelIndex >= 0 && this.current3DModelIndex < this.all3DModels.length) {
+      const currentModel = this.all3DModels[this.current3DModelIndex];
+      const file = currentModel?.image3D || '';
+      if (file && file.trim() !== '') {
+        this.model3DUrl = file.startsWith('http') ? file : `http://localhost:9002/api/uploads/${file}`;
+      } else {
+        this.model3DUrl = '';
+      }
+    }
+  }
+
+  next3DModel() {
+    if (this.all3DModels.length > 0) {
+      this.current3DModelIndex = (this.current3DModelIndex + 1) % this.all3DModels.length;
+      this.loadCurrent3DModel();
+    }
+  }
+
+  previous3DModel() {
+    if (this.all3DModels.length > 0) {
+      this.current3DModelIndex = this.current3DModelIndex === 0 
+        ? this.all3DModels.length - 1 
+        : this.current3DModelIndex - 1;
+      this.loadCurrent3DModel();
+    }
+  }
+
+  goTo3DModel(index: number) {
+    if (index >= 0 && index < this.all3DModels.length) {
+      this.current3DModelIndex = index;
+      this.loadCurrent3DModel();
+    }
+  }
+
   onUpload3DClose() {
     this.showUpload3D = false;
     // Recharge les données du produit (et donc le modèle 3D)
@@ -181,16 +229,21 @@ export class ConsultProductComponent implements OnInit {
             next: (models) => {
               if (Array.isArray(models) && models.length > 0) {
                 this.has3DModel = true;
-                const file = models[0]?.image3D || '';
-                this.model3DUrl = file.startsWith('http') ? file : `http://localhost:9002/uploads/${file}`;
+                this.all3DModels = models;
+                this.current3DModelIndex = 0;
+                this.loadCurrent3DModel();
               } else {
                 this.has3DModel = false;
                 this.model3DUrl = '';
+                this.all3DModels = [];
+                this.current3DModelIndex = 0;
               }
             },
             error: () => {
               this.has3DModel = false;
               this.model3DUrl = '';
+              this.all3DModels = [];
+              this.current3DModelIndex = 0;
             }
           });
           this.isLoading = false;

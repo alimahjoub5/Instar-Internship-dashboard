@@ -72,16 +72,50 @@ export class ThreeViewerComponent implements OnInit, OnDestroy, OnChanges {
     // Loader
     this.isLoading = true;
     // Charger le modèle 3D
-    if (this.modelUrl) {
+    if (this.modelUrl && this.modelUrl.trim() !== '') {
       const loader = new GLTFLoader();
+      
       loader.load(this.modelUrl, (gltf: { scene: THREE.Object3D<THREE.Object3DEventMap>; }) => {
+        console.log('✅ Modèle 3D chargé avec succès');
         this.scene.add(gltf.scene);
         this.frameObject(gltf.scene);
         this.isLoading = false;
-      }, undefined, (error: any) => {
-        console.error('Erreur chargement modèle 3D:', error);
+      }, (progress: { loaded: number; total: number }) => {
+        // Progress callback - could be used to show loading progress
+        console.log('📊 Progression chargement:', (progress.loaded / progress.total * 100) + '%');
+      }, (error: any) => {
+        console.error('❌ Erreur chargement modèle 3D:', error);
+        console.error('📋 URL du modèle:', this.modelUrl);
         this.isLoading = false;
+        
+        // Vérifier si c'est un problème de format de fichier
+        if (error.message && error.message.includes('Unexpected token')) {
+          console.error('⚠️  Le fichier ne semble pas être un fichier GLTF/GLB valide');
+          this.showErrorState('Format de fichier invalide. Seuls les fichiers GLTF (.gltf) et GLB (.glb) sont supportés.');
+        } else {
+          this.showErrorState('Erreur lors du chargement du modèle 3D.');
+        }
       });
+    } else {
+      this.isLoading = false;
+      this.showErrorState();
+    }
+  }
+
+  private showErrorState(message: string = 'Le modèle 3D n\'a pas pu être chargé.') {
+    // Clear the renderer container and show error message
+    if (this.rendererContainer && this.rendererContainer.nativeElement) {
+      this.rendererContainer.nativeElement.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #fff; text-align: center; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px;">
+          <div>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" style="margin-bottom: 16px; opacity: 0.7;">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#ffffff" stroke-width="2"/>
+            </svg>
+            <h3 style="margin: 0 0 8px 0; font-size: 1.2rem; color: #ffffff;">Modèle 3D Indisponible</h3>
+            <p style="margin: 0; font-size: 0.9rem; opacity: 0.9; color: #ffffff;">${message}</p>
+          </div>
+        </div>
+      `;
     }
   }
 

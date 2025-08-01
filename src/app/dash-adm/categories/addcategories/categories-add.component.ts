@@ -23,7 +23,7 @@ export class CategoriesAddComponent {
   constructor(private categoryService: CategoryService, private router: Router) {}
 
   submit() {
-    if (!this.category.name) { this.error = 'Nom requis'; return; }
+    if (!this.category.title) { this.error = 'Nom requis'; return; }
     this.isSubmitting = true;
     this.categoryService.createCategory(this.category as Category).subscribe({
       next: () => this.router.navigate(['/dash-adm/categories']),

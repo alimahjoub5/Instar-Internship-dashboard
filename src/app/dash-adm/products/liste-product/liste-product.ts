@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Product3D } from '../../../shared/services/product.service';
 import { Product3DService } from '../../../shared/services/product3d.service';
+import { ApiService } from '../../../shared/services/api.service';
+import { AuthService } from '../../../shared/services/auth.service';
 
 type ProductWith3D = Product & { quantity3D?: number };
 
@@ -35,27 +37,57 @@ export class ListeProductComponent implements OnInit {
     private categoryService: CategoryService,
     private supplierService: SupplierService,
     private router: Router,
-    private product3DService: Product3DService
+    private product3DService: Product3DService,
+    private apiService: ApiService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
+    // Check authentication
+    if (!this.authService.isAuthenticated()) {
+      console.error('User not authenticated. Redirecting to login...');
+      this.authService.redirectToLoginIfNotAuthenticated();
+      return;
+    }
+
     this.fetchProducts();
     this.categoryService.getAllCategories().subscribe({
-      next: (cats) => this.categories = cats,
-      error: () => this.categories = []
+      next: (cats: any) => {
+        if (Array.isArray(cats)) {
+          this.categories = cats;
+        } else if (cats && cats.data && Array.isArray(cats.data)) {
+          this.categories = cats.data;
+        } else if (cats && cats.categories && Array.isArray(cats.categories)) {
+          this.categories = cats.categories;
+        } else if (cats && cats.results && Array.isArray(cats.results)) {
+          this.categories = cats.results;
+        } else {
+          this.categories = [];
+        }
+      },
+      error: (err) => {
+        this.categories = [];
+      }
     });
     this.supplierService.getAllSuppliers().subscribe({
-      next: (sups) => this.suppliers = sups,
-      error: () => this.suppliers = []
+      next: (sups: any) => {
+        this.suppliers = Array.isArray(sups) ? sups : [];
+      },
+      error: (err) => {
+        this.suppliers = [];
+      }
     });
   }
 
   fetchProducts() {
     this.isLoading = true;
     this.productService.getAllProducts().subscribe({
-      next: (data: Product[]) => {
+      next: (data: any) => {
+        // Check if data is an array, if not, set empty array
+        const productsArray = Array.isArray(data) ? data : [];
+        
         // Pour chaque produit, on va chercher la quantité 3D
-        const productPromises = data.map(async (product) => {
+        const productPromises = productsArray.map(async (product) => {
           const prod = product as ProductWith3D;
           try {
             const product3Ds = await this.productService.getAll3DProducts(prod._id || '').toPromise();
@@ -74,6 +106,8 @@ export class ListeProductComponent implements OnInit {
       error: (err: any) => {
         this.error = 'Failed to load products.';
         this.isLoading = false;
+        this.products = [];
+        this.filteredProducts = [];
       }
     });
   }
@@ -98,12 +132,25 @@ export class ListeProductComponent implements OnInit {
   }
 
   deleteProduct(id: string | undefined) {
-    if (!id) return;
+    console.log('Attempting to delete product with ID:', id);
+    if (!id) {
+      console.log('No ID provided, returning');
+      return;
+    }
     if (confirm('Are you sure you want to delete this product?')) {
+      console.log('User confirmed deletion, calling API');
       this.productService.deleteProduct(id).subscribe({
-        next: () => this.fetchProducts(),
-        error: () => alert('Failed to delete product.')
+        next: (response) => {
+          console.log('Product deleted successfully:', response);
+          this.fetchProducts();
+        },
+        error: (err) => {
+          console.error('Error deleting product:', err);
+          alert('Failed to delete product.');
+        }
       });
+    } else {
+      console.log('User cancelled deletion');
     }
   }
 
@@ -134,5 +181,12 @@ export class ListeProductComponent implements OnInit {
     if (!supplierId) return '';
     const supplier = this.suppliers.find(s => s._id === supplierId || s.name === supplierId);
     return supplier ? supplier.name : supplierId;
+  }
+
+  // Helper method to get category name by ID
+  getCategoryName(categoryId: string | undefined): string {
+    if (!categoryId) return '';
+    const category = this.categories.find(c => c._id === categoryId || c.title === categoryId);
+    return category ? category.title : categoryId;
   }
 }

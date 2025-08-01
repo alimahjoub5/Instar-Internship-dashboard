@@ -33,7 +33,7 @@ export class CategoriesEditComponent implements OnInit {
   }
 
   submit() {
-    if (!this.category.name || !this.id) { this.error = 'Nom requis'; return; }
+    if (!this.category.title || !this.id) { this.error = 'Nom requis'; return; }
     this.isSubmitting = true;
     this.categoryService.updateCategory(this.id, this.category).subscribe({
       next: () => this.router.navigate(['/dash-adm/categories']),

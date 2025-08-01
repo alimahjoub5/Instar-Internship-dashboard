@@ -23,11 +23,11 @@ export class Product3DService {
   }
 
   create3DProduct(formData: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}/3Dproducts`, formData);
+    return this.http.post(`${this.apiUrl}/3Dproducts/upload`, formData);
   }
 
   create3DProductWithProgress(formData: FormData) {
-    return this.http.post<HttpEvent<any>>(`${this.apiUrl}/3Dproducts`, formData, {
+    return this.http.post<HttpEvent<any>>(`${this.apiUrl}/3Dproducts/upload`, formData, {
       reportProgress: true,
       observe: 'events'
     });
