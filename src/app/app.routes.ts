@@ -26,6 +26,8 @@ import { SubscriptionListComponent } from './dash-adm/subscriptions/subscription
 import { CreateSubscriptionComponent } from './dash-adm/subscriptions/create-subscription/create-subscription.component';
 import { SubscriptionStatsComponent } from './dash-adm/subscriptions/subscription-stats/subscription-stats.component';
 import { SubscriptionDetailsComponent } from './dash-adm/subscriptions/subscription-details/subscription-details.component';
+import { SubscriptionPlansListComponent } from './dash-adm/subscriptions/subscription-plans/subscription-plans-list.component';
+import { SubscriptionPlanFormComponent } from './dash-adm/subscriptions/subscription-plans/subscription-plan-form.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -60,6 +62,9 @@ export const routes: Routes = [
       { path: 'subscriptions', component: SubscriptionListComponent },
       { path: 'subscriptions/create', component: CreateSubscriptionComponent },
       { path: 'subscriptions/stats', component: SubscriptionStatsComponent },
+      { path: 'subscriptions/plans', component: SubscriptionPlansListComponent },
+      { path: 'subscriptions/plans/add', component: SubscriptionPlanFormComponent },
+      { path: 'subscriptions/plans/edit/:id', component: SubscriptionPlanFormComponent },
       { path: 'subscriptions/:id', component: SubscriptionDetailsComponent },
     ]
   },

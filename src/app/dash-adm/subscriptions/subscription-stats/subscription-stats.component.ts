@@ -128,4 +128,49 @@ export class SubscriptionStatsComponent implements OnInit {
         return 'primary';
     }
   }
+
+  getCancelledPercentage(): number {
+    if (!this.stats?.totalSubscriptions) return 0;
+    return (this.stats.cancelledSubscriptions / this.stats.totalSubscriptions) * 100;
+  }
+
+  getActionIcon(action: string): string {
+    switch (action) {
+      case 'created':
+        return 'add_circle';
+      case 'cancelled':
+        return 'cancel';
+      case 'renewed':
+        return 'refresh';
+      case 'expired':
+        return 'schedule';
+      default:
+        return 'info';
+    }
+  }
+
+  getActionColor(action: string): string {
+    switch (action) {
+      case 'created':
+        return 'primary';
+      case 'cancelled':
+        return 'warn';
+      case 'renewed':
+        return 'accent';
+      case 'expired':
+        return 'default';
+      default:
+        return 'primary';
+    }
+  }
+
+  getGrowthRate(current: number, previous: number): number {
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return ((current - previous) / previous) * 100;
+  }
+
+  getTotalRevenue(): number {
+    if (!this.stats?.planStats) return 0;
+    return this.stats.planStats.reduce((total, plan) => total + plan.totalRevenue, 0);
+  }
 } 

@@ -109,6 +109,28 @@ export interface SubscriptionStats {
     newSubscriptions: number;
     revenue: number;
   }>;
+  // Additional properties for the stats component
+  weeklyStats?: {
+    newSubscriptions: number;
+    cancelledSubscriptions: number;
+    revenue: number;
+  };
+  monthlyStats?: {
+    newSubscriptions: number;
+    cancelledSubscriptions: number;
+    revenue: number;
+  };
+  yearlyStats?: {
+    newSubscriptions: number;
+    cancelledSubscriptions: number;
+    revenue: number;
+  };
+  topSuppliers?: Array<{
+    _id: string;
+    supplierName: string;
+    totalSubscriptions: number;
+    totalRevenue: number;
+  }>;
 }
 
 @Injectable({

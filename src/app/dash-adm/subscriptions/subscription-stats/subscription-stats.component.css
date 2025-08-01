@@ -82,6 +82,10 @@
   border-left: 4px solid #ef6c00;
 }
 
+.stat-card.cancelled {
+  border-left: 4px solid #d32f2f;
+}
+
 .stat-card.revenue {
   border-left: 4px solid #1976d2;
 }
@@ -506,6 +510,10 @@ mat-chip {
 
 .stat-card.pending .stat-header mat-icon {
   color: #ef6c00;
+}
+
+.stat-card.cancelled .stat-header mat-icon {
+  color: #d32f2f;
 }
 
 .stat-card.revenue .stat-header mat-icon {

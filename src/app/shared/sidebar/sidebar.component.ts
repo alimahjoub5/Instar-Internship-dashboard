@@ -24,6 +24,7 @@ export class SidebarComponent {
     { label: 'Sous-catégories', route: '/dash-adm/subcategories' },
     { label: 'Suppliers', route: '/dash-adm/suppliers' },
     { label: 'Subscriptions', route: '/dash-adm/subscriptions' },
+    { label: 'Subscription Plans', route: '/dash-adm/subscriptions/plans' },
     { label: 'Settings', route: '/dash-adm/settings' },
     { label: 'Logout', route: '/login' }
   ];
