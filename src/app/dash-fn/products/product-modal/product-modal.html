@@ -3,17 +3,17 @@
   <button class="close-btn" (click)="onClose()">&times;</button>
   <div *ngIf="product">
     <h2 class="modal-title">
-      <span class="modal-product-name">{{ product?.name }}</span>
-      <span *ngIf="product?.reference" class="modal-ref">- {{ product?.reference }}</span>
+      <span class="modal-product-name">{{ product.name }}</span>
+      <span *ngIf="product?.reference" class="modal-ref">- {{ product.reference }}</span>
     </h2>
     <div class="modal-category-subcat">
-      <span>{{ product?.category }}</span>
-      <span *ngIf="product?.subCategory"> / {{ product?.subCategory }}</span>
+      <span>{{ product.category }}</span>
+      <span *ngIf="product?.subCategory"> / {{ product.subCategory }}</span>
     </div>
     <hr class="modal-divider" />
-    <img [src]="product?.image" alt="{{ product?.name }}" class="product-image" />
+    <img [src]="product.image" alt="{{ product.name }}" class="product-image" />
     <div class="modal-description-wide">
-      <strong>Description:</strong> {{ product?.description }}
+      <strong>Description:</strong> {{ product.description }}
     </div>
     <div class="promotion-container">
       <span class="modal-promotion" *ngIf="product.promotion">Promotion: {{ promotionPercentage }}%</span>
@@ -89,9 +89,9 @@
     </div>
     
     <div class="modal-bottom-row">
-      <span class="modal-price">{{ product?.price | currency }}</span>
-      <span class="modal-sales" [class.out-of-sales]="product?.sales === 0">
-        {{ product?.sales === 0 ? 'not sold' : ('sales: ' + product?.sales) }}
+      <span class="modal-price">{{ product.price | currency }}</span>
+      <span class="modal-sales" [class.out-of-sales]="product.sales === 0">
+        {{ product.sales === 0 ? 'not sold' : ('sales: ' + product.sales) }}
       </span>
       <span class="modal-supplier" *ngIf="product?.supplier"><span class="modal-supplier-label">Supplier:</span> {{ product?.supplier }}</span>
     </div>

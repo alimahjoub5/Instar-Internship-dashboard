@@ -1,7 +1,7 @@
 <div class="carousel-container">
   <button class="carousel-arrow left" (click)="prev()" aria-label="Previous product">&#8592;</button>
   <div class="carousel-main-image" *ngIf="currentProduct">
-    <img [src]="currentProduct.images?.[0]"
+    <img [src]="currentProduct.image"
          [alt]="currentProduct.name || 'Product image'"
          (click)="selectProduct(currentProduct)"
          tabindex="0"
