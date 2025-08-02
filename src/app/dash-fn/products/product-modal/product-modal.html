@@ -86,7 +86,6 @@
         <div class="form-actions">
           <button type="button" class="cancel-btn" (click)="togglePromotionForm()">Cancel</button>
           <button type="submit" class="save-btn" [disabled]="!promotionForm.valid">Save</button>
-          <!-- Add Delete button that only shows when a promotion exists -->
           <button type="button" class="delete-btn" *ngIf="product.promotion" (click)="deletePromotion()">Delete</button>
         </div>
       </form>
@@ -100,4 +99,5 @@
       <span class="modal-supplier" *ngIf="product?.supplier"><span class="modal-supplier-label">Supplier:</span> {{ product.supplier }}</span>
     </div>
   </div>
+  <app-confirmation></app-confirmation>
 </div>

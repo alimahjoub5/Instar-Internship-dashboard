@@ -5,12 +5,14 @@ import { Product, ProductService } from '../../../shared/services/product.servic
 import { Promotion, PromotionService } from '../../../shared/services/promotion.service';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { ConfirmationComponent } from "../../confirmation/confirmation.component";
+import { ConfirmationService } from '../../../shared/services/confirmation.service';
 
 @Component({
   selector: 'app-product-modal',
   templateUrl: './product-modal.html',
   styleUrls: ['./product-modal.css'],
-  imports: [CommonModule, CurrencyPipe, FormsModule],
+  imports: [CommonModule, CurrencyPipe, FormsModule, ConfirmationComponent],
   standalone: true
 })
 export class ProductModal implements OnChanges, AfterViewInit, OnInit {
@@ -37,7 +39,8 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
 
   constructor(
     private promotionService: PromotionService,
-    private productService: ProductService
+    private productService: ProductService,
+     private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit() {
@@ -155,8 +158,6 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
 
   savePromotion() {
     if (this.product && this.promotionData.discountPercentage && this.promotionData.text) {
-      this.isSaving = true;
-      
       // Convert string dates back to Date objects
       const startDate = new Date(this.promotionData.startDate as string);
       const endDate = new Date(this.promotionData.endDate as string);
@@ -171,69 +172,102 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
         text: this.promotionData.text || ''
       };
       
-      // If we have an existing promotion, update it instead of creating a new one
+      // If we have an existing promotion, show confirmation before updating
       if (this.currentPromotion && this.currentPromotion._id) {
         promotion._id = this.currentPromotion._id;
         
-        this.promotionService.updatePromotion(this.currentPromotion._id, promotion).pipe(
-          tap((updatedPromotion) => {
-            console.log('Promotion updated successfully:', updatedPromotion);
-            this.currentPromotion = updatedPromotion;
-            
-            // Emit the updated promotion to parent component
-            this.savePromotionEvent.emit(updatedPromotion);
-          }),
-          catchError((error) => {
-            console.error('Error updating promotion:', error);
-            return of(null);
-          }),
-          finalize(() => {
-            this.isSaving = false;
-            this.showPromotionForm = false;
-          })
-        ).subscribe();
+        this.confirmationService.confirm({
+          title: 'Update Promotion',
+          message: 'Are you sure you want to update this promotion?',
+          confirmText: 'Update',
+          cancelText: 'Cancel',
+          type: 'warning'
+        }).then(result => {
+          if (result) {
+            this.isSaving = true;
+            this.updatePromotion(promotion);
+          }
+        });
       } else {
-        // Create a new promotion
-        this.promotionService.createPromotion(promotion).pipe(
-          tap((savedPromotion) => {
-            console.log('Promotion saved successfully:', savedPromotion);
-            this.currentPromotion = savedPromotion;
-            
-            // 2. Update the product's promotion attribute to true
-            if (this.product && this.product._id) {
-              this.productService.updateProduct(this.product._id, { promotion: true }).pipe(
-                tap((updatedProduct) => {
-                  console.log('Product updated with promotion flag:', updatedProduct);
-                  
-                  // Update the local product object
-                  if (this.product) {
-                    this.product.promotion = true;
-                  }
-                  
-                  // Emit the saved promotion to parent component
-                  this.savePromotionEvent.emit(savedPromotion);
-                }),
-                catchError((error) => {
-                  console.error('Error updating product:', error);
-                  return of(null);
-                })
-              ).subscribe();
-            }
-          }),
-          catchError((error) => {
-            console.error('Error saving promotion:', error);
-            return of(null);
-          }),
-          finalize(() => {
-            this.isSaving = false;
-            this.showPromotionForm = false;
-          })
-        ).subscribe();
+        // Create a new promotion - no confirmation needed
+        this.isSaving = true;
+        this.createPromotion(promotion);
       }
     }
   }
+   private updatePromotion(promotion: Promotion) {
+    this.promotionService.updatePromotion(promotion._id!, promotion).pipe(
+      tap((updatedPromotion) => {
+        console.log('Promotion updated successfully:', updatedPromotion);
+        this.currentPromotion = updatedPromotion;
+        
+        // Emit the updated promotion to parent component
+        this.savePromotionEvent.emit(updatedPromotion);
+      }),
+      catchError((error) => {
+        console.error('Error updating promotion:', error);
+        return of(null);
+      }),
+      finalize(() => {
+        this.isSaving = false;
+        this.showPromotionForm = false;
+      })
+    ).subscribe();
+  }
+  private createPromotion(promotion: Promotion) {
+    this.promotionService.createPromotion(promotion).pipe(
+      tap((savedPromotion) => {
+        console.log('Promotion saved successfully:', savedPromotion);
+        this.currentPromotion = savedPromotion;
+        
+        // Update the product's promotion attribute to true
+        if (this.product && this.product._id) {
+          this.productService.updateProduct(this.product._id, { promotion: true }).pipe(
+            tap((updatedProduct) => {
+              console.log('Product updated with promotion flag:', updatedProduct);
+              
+              // Update the local product object
+              if (this.product) {
+                this.product.promotion = true;
+              }
+              
+              // Emit the saved promotion to parent component
+              this.savePromotionEvent.emit(savedPromotion);
+            }),
+            catchError((error) => {
+              console.error('Error updating product:', error);
+              return of(null);
+            })
+          ).subscribe();
+        }
+      }),
+      catchError((error) => {
+        console.error('Error saving promotion:', error);
+        return of(null);
+      }),
+      finalize(() => {
+        this.isSaving = false;
+        this.showPromotionForm = false;
+      })
+    ).subscribe();
+  }
   
-  deletePromotion() {
+    deletePromotion() {
+    this.confirmationService.confirm({
+      title: 'Delete Promotion',
+      message: 'Are you sure you want to delete this promotion? This action cannot be undone.',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      type: 'danger'
+    }).then(result => {
+      if (result) {
+        this.performDeletePromotion();
+      }
+    });
+  }
+  
+  // Extract the delete logic to a separate method
+  private performDeletePromotion() {
     if (this.product && this.product._id && this.currentPromotion && this.currentPromotion._id) {
       this.isSaving = true;
       

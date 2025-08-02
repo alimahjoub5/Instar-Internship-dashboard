@@ -11,8 +11,8 @@ export interface Product {
   subCategory?: string;
   image: string;
   stock: number;
-  sales?: number;
-  rating?: number;
+  sales: number;
+  rating: number;
   rate?: number;
   reviews?: any[];
   specifications?: any;
