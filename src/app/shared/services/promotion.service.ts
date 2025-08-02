@@ -28,6 +28,10 @@ export class PromotionService {
     return this.apiService.get('/promotions');
   }
 
+  getPromotionsForProduct(product: string): Observable<Promotion> {
+    return this.apiService.get(`/promotions/${product}`);
+  }
+
   getPromotionById(id: string): Observable<Promotion> {
     return this.apiService.get(`/promotions/${id}`);
   }
@@ -44,12 +48,7 @@ export class PromotionService {
   getActivePromotions(): Observable<Promotion[]> {
     return this.apiService.get('/promotions', { isActive: true });
   }
-
-  // Get promotions for a specific product
-  getPromotionsForProduct(productId: string): Observable<Promotion[]> {
-    return this.apiService.get(`/promotions/product/${productId}`);
-  }
-
+  
   // Get current promotions (between start and end date)
   getCurrentPromotions(): Observable<Promotion[]> {
     const now = new Date().toISOString();

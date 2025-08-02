@@ -8,7 +8,7 @@
     </h2>
     <div class="modal-category-subcat">
       <span>{{ product.category }}</span>
-      <span *ngIf="product?.subCategory"> / {{ product.subCategory }}</span>
+      <span *ngIf="product.subCategory"> / {{ product.subCategory }}</span>
     </div>
     <hr class="modal-divider" />
     <img [src]="product.image" alt="{{ product.name }}" class="product-image" />
@@ -18,7 +18,9 @@
     <div class="promotion-container">
       <span class="modal-promotion" *ngIf="product.promotion">Promotion: {{ promotionPercentage }}%</span>
       <span class="modal-promotion no-promotion" *ngIf="!product.promotion">No Promotion</span>
-      <button class="modify-promotion-btn" (click)="togglePromotionForm()">Modify</button>
+      <!-- Conditionally show Modify or Promote Product button -->
+      <button class="modify-promotion-btn" *ngIf="product.promotion" (click)="togglePromotionForm()">Modify</button>
+      <button class="modify-promotion-btn" *ngIf="!product.promotion" (click)="togglePromotionForm()">Promote Product</button>
     </div>
     
     <!-- Promotion Form - Hidden by default -->
@@ -84,6 +86,8 @@
         <div class="form-actions">
           <button type="button" class="cancel-btn" (click)="togglePromotionForm()">Cancel</button>
           <button type="submit" class="save-btn" [disabled]="!promotionForm.valid">Save</button>
+          <!-- Add Delete button that only shows when a promotion exists -->
+          <button type="button" class="delete-btn" *ngIf="product.promotion" (click)="deletePromotion()">Delete</button>
         </div>
       </form>
     </div>
@@ -93,7 +97,7 @@
       <span class="modal-sales" [class.out-of-sales]="product.sales === 0">
         {{ product.sales === 0 ? 'not sold' : ('sales: ' + product.sales) }}
       </span>
-      <span class="modal-supplier" *ngIf="product?.supplier"><span class="modal-supplier-label">Supplier:</span> {{ product?.supplier }}</span>
+      <span class="modal-supplier" *ngIf="product?.supplier"><span class="modal-supplier-label">Supplier:</span> {{ product.supplier }}</span>
     </div>
   </div>
 </div>

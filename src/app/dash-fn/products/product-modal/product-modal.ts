@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges, AfterViewInit, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Product, ProductService } from '../../../shared/services/product.service';
@@ -10,24 +10,28 @@ import { of } from 'rxjs';
   selector: 'app-product-modal',
   templateUrl: './product-modal.html',
   styleUrls: ['./product-modal.css'],
-  imports: [CommonModule, CurrencyPipe, DatePipe, FormsModule],
+  imports: [CommonModule, CurrencyPipe, FormsModule],
   standalone: true
 })
-export class ProductModal implements OnChanges, AfterViewInit {
+export class ProductModal implements OnChanges, AfterViewInit, OnInit {
   @Input() product: Product | null = null;
   @Output() close = new EventEmitter<void>();
   @Output() savePromotionEvent = new EventEmitter<Promotion>();
 
   showModal = false;
   showPromotionForm = false;
-  promotionPercentage = 45; // Default value, you can replace this with actual data
+  promotionPercentage = 20; // Default value, you can replace this with actual data
   isSaving = false;
+  currentPromotion: Promotion | null = null;
   
-  promotionData: Partial<Promotion> = {
+  promotionData: Partial<Omit<Promotion, 'startDate' | 'endDate'>> & {
+    startDate: string;
+    endDate: string;
+  } = {
     discountPercentage: 0,
     newPrice: 0,
-    startDate: new Date(),
-    endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)), // Default to 1 month from now
+    startDate: new Date().toISOString().split('T')[0],
+    endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString().split('T')[0], // Default to 1 month from now
     text: ''
   };
 
@@ -36,17 +40,68 @@ export class ProductModal implements OnChanges, AfterViewInit {
     private productService: ProductService
   ) {}
 
+  ngOnInit() {
+    this.fetchPromotionData();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['product'] && this.product) {
       setTimeout(() => this.showModal = true, 10);
       // Reset form when product changes
-      this.resetPromotionForm();
+      this.fetchPromotionData();
     }
   }
 
   ngAfterViewInit() {
     if (this.product) {
       setTimeout(() => this.showModal = true, 10);
+    }
+  }
+
+  fetchPromotionData() {
+    if (this.product && this.product._id && this.product.promotion) {
+      this.promotionService.getPromotionsForProduct(this.product._id).pipe(
+        tap((promotion) => {
+           if (promotion) {
+            this.currentPromotion = promotion;
+            console.log(this.currentPromotion);
+            
+            // Update the promotionPercentage for display
+            this.promotionPercentage = this.currentPromotion.discountPercentage;
+            
+            // Format dates as yyyy-MM-dd for HTML date inputs
+            const startDate = new Date(this.currentPromotion.startDate);
+            const endDate = new Date(this.currentPromotion.endDate);
+            
+            const formattedStartDate = startDate.toISOString().split('T')[0]; // Gets yyyy-MM-dd
+            const formattedEndDate = endDate.toISOString().split('T')[0]; // Gets yyyy-MM-dd
+            
+            // Pre-fill the form with current promotion data
+            this.promotionData = {
+              _id: this.currentPromotion._id,
+              product: this.product?._id,
+              discountPercentage: this.currentPromotion.discountPercentage,
+              newPrice: this.currentPromotion.newPrice,
+              startDate: formattedStartDate,
+              endDate: formattedEndDate,
+              image: this.currentPromotion.image,
+              text: this.currentPromotion.text
+            };
+          } else {
+            // No promotions found despite product.promotion being true
+            console.warn('No promotions found for this product despite promotion flag');
+            this.resetPromotionForm();
+          }
+        }),
+        catchError((error) => {
+          console.error('Error fetching promotions for product:', error);
+          this.resetPromotionForm();
+          return of(null);
+        })
+      ).subscribe();
+    } else {
+      // No promotion, just reset the form
+      this.resetPromotionForm();
     }
   }
 
@@ -57,20 +112,25 @@ export class ProductModal implements OnChanges, AfterViewInit {
 
   togglePromotionForm() {
     this.showPromotionForm = !this.showPromotionForm;
-    if (this.showPromotionForm && this.product) {
-      // Initialize form with product data
-      this.resetPromotionForm();
-    }
+    
   }
 
   resetPromotionForm() {
     if (this.product) {
+      const today = new Date();
+      const nextMonth = new Date();
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      
+      // Format dates as yyyy-MM-dd
+      const formattedStartDate = today.toISOString().split('T')[0];
+      const formattedEndDate = nextMonth.toISOString().split('T')[0];
+      
       this.promotionData = {
         product: this.product._id,
         discountPercentage: this.promotionPercentage || 0,
         newPrice: this.calculateDiscountedPrice(this.product.price, this.promotionPercentage || 0),
-        startDate: new Date(),
-        endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
         image: this.product.image,
         text: ''
       };
@@ -97,49 +157,142 @@ export class ProductModal implements OnChanges, AfterViewInit {
     if (this.product && this.promotionData.discountPercentage && this.promotionData.text) {
       this.isSaving = true;
       
+      // Convert string dates back to Date objects
+      const startDate = new Date(this.promotionData.startDate as string);
+      const endDate = new Date(this.promotionData.endDate as string);
+      
       const promotion: Promotion = {
         product: this.product._id || '',
         discountPercentage: this.promotionData.discountPercentage,
         newPrice: this.promotionData.newPrice as number,
-        startDate: this.promotionData.startDate as Date,
-        endDate: this.promotionData.endDate as Date,
+        startDate: startDate,
+        endDate: endDate,
         image: this.product.image,
         text: this.promotionData.text || ''
       };
       
-      // 1. Save the promotion using the promotion service
-      this.promotionService.createPromotion(promotion).pipe(
-        tap((savedPromotion) => {
-          console.log('Promotion saved successfully:', savedPromotion);
+      // If we have an existing promotion, update it instead of creating a new one
+      if (this.currentPromotion && this.currentPromotion._id) {
+        promotion._id = this.currentPromotion._id;
+        
+        this.promotionService.updatePromotion(this.currentPromotion._id, promotion).pipe(
+          tap((updatedPromotion) => {
+            console.log('Promotion updated successfully:', updatedPromotion);
+            this.currentPromotion = updatedPromotion;
+            
+            // Emit the updated promotion to parent component
+            this.savePromotionEvent.emit(updatedPromotion);
+          }),
+          catchError((error) => {
+            console.error('Error updating promotion:', error);
+            return of(null);
+          }),
+          finalize(() => {
+            this.isSaving = false;
+            this.showPromotionForm = false;
+          })
+        ).subscribe();
+      } else {
+        // Create a new promotion
+        this.promotionService.createPromotion(promotion).pipe(
+          tap((savedPromotion) => {
+            console.log('Promotion saved successfully:', savedPromotion);
+            this.currentPromotion = savedPromotion;
+            
+            // 2. Update the product's promotion attribute to true
+            if (this.product && this.product._id) {
+              this.productService.updateProduct(this.product._id, { promotion: true }).pipe(
+                tap((updatedProduct) => {
+                  console.log('Product updated with promotion flag:', updatedProduct);
+                  
+                  // Update the local product object
+                  if (this.product) {
+                    this.product.promotion = true;
+                  }
+                  
+                  // Emit the saved promotion to parent component
+                  this.savePromotionEvent.emit(savedPromotion);
+                }),
+                catchError((error) => {
+                  console.error('Error updating product:', error);
+                  return of(null);
+                })
+              ).subscribe();
+            }
+          }),
+          catchError((error) => {
+            console.error('Error saving promotion:', error);
+            return of(null);
+          }),
+          finalize(() => {
+            this.isSaving = false;
+            this.showPromotionForm = false;
+          })
+        ).subscribe();
+      }
+    }
+  }
+  
+  deletePromotion() {
+    if (this.product && this.product._id && this.currentPromotion && this.currentPromotion._id) {
+      this.isSaving = true;
+      
+      // Delete the promotion
+      this.promotionService.deletePromotion(this.currentPromotion._id).pipe(
+        tap(() => {
+          console.log('Promotion deleted successfully');
           
-          // 2. Update the product's promotion attribute to true
-          if (this.product && this.product._id) {
-            this.productService.updateProduct(this.product._id, { promotion: true }).pipe(
-              tap((updatedProduct) => {
-                console.log('Product updated with promotion flag:', updatedProduct);
-                
-                // Update the local product object
-                if (this.product) {
-                  this.product.promotion = true;
-                }
-                
-                // Emit the saved promotion to parent component
-                this.savePromotionEvent.emit(savedPromotion);
-              }),
-              catchError((error) => {
-                console.error('Error updating product:', error);
-                return of(null);
-              })
-            ).subscribe();
-          }
+          // Update the product's promotion attribute to false
+          this.productService.updateProduct(this.product!._id!, { promotion: false }).pipe(
+            tap((updatedProduct) => {
+              console.log('Product updated after promotion deletion:', updatedProduct);
+              
+              // Update the local product object
+              if (this.product) {
+                this.product.promotion = false;
+              }
+              
+              // Reset promotion data
+              this.currentPromotion = null;
+              this.resetPromotionForm();
+              
+              // Close the promotion form
+              this.showPromotionForm = false;
+            }),
+            catchError((error) => {
+              console.error('Error updating product after promotion deletion:', error);
+              return of(null);
+            })
+          ).subscribe();
         }),
         catchError((error) => {
-          console.error('Error saving promotion:', error);
+          console.error('Error deleting promotion:', error);
           return of(null);
         }),
         finalize(() => {
           this.isSaving = false;
+        })
+      ).subscribe();
+    } else if (this.product && this.product._id) {
+      // No current promotion found, just update the product flag
+      this.productService.updateProduct(this.product._id, { promotion: false }).pipe(
+        tap((updatedProduct) => {
+          console.log('Product updated (no promotions found):', updatedProduct);
+          
+          // Update the local product object
+          if (this.product) {
+            this.product.promotion = false;
+          }
+          
+          // Close the promotion form
           this.showPromotionForm = false;
+        }),
+        catchError((error) => {
+          console.error('Error updating product (no promotions found):', error);
+          return of(null);
+        }),
+        finalize(() => {
+          this.isSaving = false;
         })
       ).subscribe();
     }
