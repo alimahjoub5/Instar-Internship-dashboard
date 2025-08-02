@@ -24,11 +24,11 @@
           <div class="profile-info-row">
             <mat-icon>security</mat-icon>
             <ng-container *ngIf="is2FAEnabled; else activate2FATemplate">
-              <span class="badge-2fa-active">2FA Activated</span>
-              <a class="link-2fa-deactivate" (click)="deactivate2FA()">Deactivate</a>
+              <span class="badge-2fa-active">2FA Enabled</span>
+              <a class="link-2fa-deactivate" (click)="deactivate2FA()">Disable</a>
             </ng-container>
             <ng-template #activate2FATemplate>
-              <button class="btn-2fa" (click)="activate2FA()">Activate 2FA</button>
+              <button class="btn-2fa" (click)="activate2FA()">Enable 2FA</button>
             </ng-template>
           </div>
         </div>
