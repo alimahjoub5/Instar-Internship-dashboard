@@ -1,0 +1,17 @@
+<div class="confirmation-overlay" *ngIf="visible" (click)="cancel()">
+  <div class="confirmation-dialog" [ngClass]="data?.type || 'info'" (click)="stopPropagation($event)">
+    <div class="confirmation-header">
+      <h3>{{ data?.title }}</h3>
+      <button class="close-button" (click)="cancel()">&times;</button>
+    </div>
+    <div class="confirmation-body">
+      <p>{{ data?.message }}</p>
+    </div>
+    <div class="confirmation-footer">
+      <button class="cancel-button" (click)="cancel()">{{ data?.cancelText || 'Cancel' }}</button>
+      <button class="confirm-button" [ngClass]="data?.type || 'info'" (click)="confirm()">
+        {{ data?.confirmText || 'Confirm' }}
+      </button>
+    </div>
+  </div>
+</div>
