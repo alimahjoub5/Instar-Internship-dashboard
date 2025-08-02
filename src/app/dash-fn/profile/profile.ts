@@ -9,13 +9,14 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from "../../shared/shared.module";
 import { Sidebar } from '../sidebar/sidebar';
 import { FnFooter } from '../fn-footer/fn-footer';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
     Sidebar,
-    MatCardModule, MatDividerModule, MatIconModule, TitleCasePipe, CommonModule, SharedModule, FnFooter
+    MatCardModule, MatDividerModule, MatIconModule, TitleCasePipe, CommonModule, SharedModule, FnFooter,RouterModule
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.css'

@@ -38,6 +38,9 @@ export const routes: Routes = [
   { path: 'dash-fn', component: DashFn,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {path : 'dashboard', component:Dashboard},
+      {path : 'profile', component:ProfileComponent},
+      {path : 'products', component:Products},
     ]
    },
   { path: 'sidebar', component: Sidebar },

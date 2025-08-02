@@ -1,7 +1,7 @@
 <app-sidebarfn>
   <nav class="products-breadcrumb">
-    <span>Dashboard</span> <span class="breadcrumb-separator">&gt;</span> <span class="breadcrumb-current">Products</span>
-  </nav>
+  <span routerLink="/dash-fn">Dashboard</span> <span class="breadcrumb-separator">&gt;</span> <span class="breadcrumb-current">Products</span>
+</nav>
   <div class="products-carousel-row">
     <app-products-carousel [products]="products" (productSelected)="openProductModal($event)"></app-products-carousel>
   </div>

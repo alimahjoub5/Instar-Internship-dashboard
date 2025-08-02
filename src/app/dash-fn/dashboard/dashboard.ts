@@ -3,12 +3,11 @@ import { FnFooter } from '../fn-footer/fn-footer';
 import { Sidebar } from '../sidebar/sidebar';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { Product, ProductService } from '../../shared/services/product.service';
-import { MatDivider } from "@angular/material/divider";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FnFooter, Sidebar, NgxChartsModule, MatDivider],
+  imports: [FnFooter, Sidebar, NgxChartsModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
