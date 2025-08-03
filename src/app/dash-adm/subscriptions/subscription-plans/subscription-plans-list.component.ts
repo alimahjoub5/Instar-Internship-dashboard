@@ -86,7 +86,7 @@ export class SubscriptionPlansListComponent implements OnInit {
     } else if (duration === 12) {
       return '1 year';
     } else {
-      return `${duration} months`;
+      return `${duration} days`;
     }
   }
 
