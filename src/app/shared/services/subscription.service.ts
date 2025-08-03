@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 
 export interface SubscriptionPlan {
@@ -145,23 +146,23 @@ export class SubscriptionService {
   }
 
   getSubscriptionPlanById(id: string): Observable<SubscriptionPlan> {
-    return this.apiService.get(`/subscription-plan/${id}`);
+    return this.apiService.get(`/subscription-plans/${id}`);
   }
 
   getSubscriptionPlanByType(type: string): Observable<SubscriptionPlan> {
-    return this.apiService.get(`/subscription-plan/type/${type}`);
+    return this.apiService.get(`/subscription-plans/type/${type}`);
   }
 
   createSubscriptionPlan(plan: SubscriptionPlan): Observable<SubscriptionPlan> {
-    return this.apiService.post('/subscription-plan', plan);
+    return this.apiService.post('/subscription-plans', plan);
   }
 
   updateSubscriptionPlan(id: string, plan: Partial<SubscriptionPlan>): Observable<SubscriptionPlan> {
-    return this.apiService.put(`/subscription-plan/${id}`, plan);
+    return this.apiService.put(`/subscription-plans/${id}`, plan);
   }
 
   deleteSubscriptionPlan(id: string): Observable<any> {
-    return this.apiService.delete(`/subscription-plan/${id}`);
+    return this.apiService.delete(`/subscription-plans/${id}`);
   }
 
   // Subscription Methods
@@ -171,52 +172,56 @@ export class SubscriptionService {
     paymentMethod: string;
     autoRenew?: boolean;
   }): Observable<Subscription> {
-    return this.apiService.post('/subscription', subscription);
+    return this.apiService.post('/subscriptions', subscription);
   }
 
   getAllSubscriptions(): Observable<Subscription[]> {
-    return this.apiService.get('/subscriptions');
+    return this.apiService.get('/subscriptions').pipe(
+      map((response: any) => response.subscriptions || response)
+    );
   }
 
   getSubscriptionById(id: string): Observable<Subscription> {
-    return this.apiService.get(`/subscription/${id}`);
+    return this.apiService.get(`/subscriptions/${id}`);
   }
 
   getSubscriptionsBySupplier(supplierId: string): Observable<Subscription[]> {
-    return this.apiService.get(`/subscriptions/supplier/${supplierId}`);
+    return this.apiService.get(`/subscriptions/supplier/${supplierId}`).pipe(
+      map((response: any) => response.subscriptions || response)
+    );
   }
 
   updateSubscription(id: string, subscription: Partial<Subscription>): Observable<Subscription> {
-    return this.apiService.put(`/subscription/${id}`, subscription);
+    return this.apiService.put(`/subscriptions/${id}`, subscription);
   }
 
   cancelSubscription(id: string, reason?: string): Observable<Subscription> {
-    return this.apiService.put(`/subscription/${id}/cancel`, { reason });
+    return this.apiService.put(`/subscriptions/${id}/cancel`, { reason });
   }
 
   renewSubscription(id: string): Observable<Subscription> {
-    return this.apiService.put(`/subscription/${id}/renew`, {});
+    return this.apiService.put(`/subscriptions/${id}/renew`, {});
   }
 
   updatePaymentStatus(id: string, paymentStatus: string): Observable<Subscription> {
-    return this.apiService.put(`/subscription/${id}/payment-status`, { paymentStatus });
+    return this.apiService.put(`/subscriptions/${id}/payment-status`, { paymentStatus });
   }
 
   getSubscriptionStats(): Observable<SubscriptionStats> {
-    return this.apiService.get('/subscription/stats');
+    return this.apiService.get('/subscriptions/stats');
   }
 
   // Automatic expiration methods
   manualExpirationCheck(): Observable<any> {
-    return this.apiService.post('/subscription/expire-check', {});
+    return this.apiService.post('/subscriptions/expire-check', {});
   }
 
   getExpirationStats(): Observable<any> {
-    return this.apiService.get('/subscription/expiration-stats');
+    return this.apiService.get('/subscriptions/expiration-stats');
   }
 
   getUpcomingExpirations(): Observable<any> {
-    return this.apiService.get('/subscription/upcoming-expirations');
+    return this.apiService.get('/subscriptions/upcoming-expirations');
   }
 
   // Helper Methods

@@ -15,11 +15,18 @@ export class DashboardHomeComponent implements OnInit {
   activityFeed: ActivityFeed[] = [];
   isLoading = true;
   error: string | null = null;
+  selectedPeriod = 'month';
+  revenueStats: any[] = [];
+  topProducts: any[] = [];
+  topSuppliers: any[] = [];
 
   constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
     this.loadDashboardData();
+    this.loadRevenueStats();
+    this.loadTopProducts();
+    this.loadTopSuppliers();
   }
 
   loadDashboardData(): void {
@@ -50,26 +57,91 @@ export class DashboardHomeComponent implements OnInit {
     });
   }
 
+  loadRevenueStats(): void {
+    this.dashboardService.getRevenueStats(this.selectedPeriod).subscribe({
+      next: (stats) => {
+        this.revenueStats = stats;
+      },
+      error: (error) => {
+        console.error('Error loading revenue stats:', error);
+      }
+    });
+  }
+
+  loadTopProducts(): void {
+    this.dashboardService.getTopProducts().subscribe({
+      next: (products) => {
+        this.topProducts = products;
+      },
+      error: (error) => {
+        console.error('Error loading top products:', error);
+      }
+    });
+  }
+
+  loadTopSuppliers(): void {
+    this.dashboardService.getTopSuppliers().subscribe({
+      next: (suppliers) => {
+        this.topSuppliers = suppliers;
+      },
+      error: (error) => {
+        console.error('Error loading top suppliers:', error);
+      }
+    });
+  }
+
+  onPeriodChange(period: string): void {
+    this.selectedPeriod = period;
+    this.loadRevenueStats();
+  }
+
   formatNumber(num: number): string {
     return num.toLocaleString();
   }
 
   formatCurrency(amount: number): string {
-    return `${amount.toLocaleString()} DT`;
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
   }
 
-  getTimeAgo(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    if (diffInSeconds < 60) return 'Just now';
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
-    return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  formatDate(date: string): string {
+    return new Date(date).toLocaleDateString();
   }
 
-  parseFloat(value: string): number {
-    return parseFloat(value);
+  getActivityIcon(type: string): string {
+    const icons: { [key: string]: string } = {
+      user: '👤',
+      product: '📦',
+      sale: '💰',
+      review: '⭐',
+      subscription: '📋'
+    };
+    return icons[type] || '📄';
+  }
+
+  getStatusColor(status: string): string {
+    const colors: { [key: string]: string } = {
+      active: 'green',
+      pending: 'orange',
+      expired: 'red',
+      cancelled: 'gray'
+    };
+    return colors[status] || 'blue';
+  }
+
+  getMaxRevenue(): number {
+    if (!this.revenueStats || this.revenueStats.length === 0) {
+      return 1;
+    }
+    return Math.max(...this.revenueStats.map(stat => stat.total));
+  }
+
+  refreshData(): void {
+    this.loadDashboardData();
+    this.loadRevenueStats();
+    this.loadTopProducts();
+    this.loadTopSuppliers();
   }
 } 

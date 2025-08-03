@@ -124,7 +124,22 @@ export class Upload3DComponent {
       error: (error) => {
         console.error('❌ Erreur upload:', error);
         console.error('📋 Détails erreur:', error.error);
-        this.uploadResult = 'Erreur lors de l\'upload: ' + (error.error?.error || error.message || 'Erreur inconnue');
+        
+        let errorMessage = 'Erreur lors de l\'upload';
+        
+        if (error.status === 404) {
+          errorMessage = 'Route non trouvée. Vérifiez que le serveur backend est démarré.';
+        } else if (error.status === 401) {
+          errorMessage = 'Erreur d\'authentification. Veuillez vous reconnecter.';
+        } else if (error.status === 400) {
+          errorMessage = error.error?.message || 'Données invalides';
+        } else if (error.status === 500) {
+          errorMessage = 'Erreur serveur. Veuillez réessayer plus tard.';
+        } else {
+          errorMessage = error.error?.error || error.message || 'Erreur inconnue';
+        }
+        
+        this.uploadResult = errorMessage;
         this.isSubmitting = false;
         this.uploadProgress = 0;
       }

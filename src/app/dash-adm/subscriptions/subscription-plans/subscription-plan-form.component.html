@@ -9,7 +9,7 @@
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="isLoading" class="loading-container">
+  <div *ngIf="isLoading || !isFormReady" class="loading-container">
     <mat-spinner></mat-spinner>
     <p>{{ isEditMode ? 'Loading plan details...' : 'Creating plan...' }}</p>
   </div>
@@ -22,7 +22,7 @@
   </div>
 
   <!-- Form -->
-  <form *ngIf="!isLoading" [formGroup]="planForm" (ngSubmit)="onSubmit()" class="plan-form">
+  <form *ngIf="!isLoading && isFormReady && planForm" [formGroup]="planForm" (ngSubmit)="onSubmit()" class="plan-form">
     <div class="form-grid">
       <!-- Basic Information -->
       <mat-card class="form-card">

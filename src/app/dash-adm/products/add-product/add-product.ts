@@ -59,31 +59,44 @@ export class AddProductComponent implements OnInit {
     }
 
     // Load categories
+    console.log('Loading categories...');
     this.categoryService.getAllCategories().subscribe({
       next: (cats: any) => {
+        console.log('Categories response:', cats);
         if (Array.isArray(cats)) {
           this.categories = cats;
+          console.log('Categories loaded (array):', this.categories.length);
         } else if (cats && cats.data && Array.isArray(cats.data)) {
           this.categories = cats.data;
+          console.log('Categories loaded (data):', this.categories.length);
         } else if (cats && cats.categories && Array.isArray(cats.categories)) {
           this.categories = cats.categories;
+          console.log('Categories loaded (categories):', this.categories.length);
         } else if (cats && cats.results && Array.isArray(cats.results)) {
           this.categories = cats.results;
+          console.log('Categories loaded (results):', this.categories.length);
         } else {
           this.categories = [];
+          console.log('No categories found, using empty array');
         }
+        console.log('Final categories:', this.categories);
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error loading categories:', err);
         this.categories = [];
       }
     });
 
     // Load suppliers
+    console.log('Loading suppliers...');
     this.supplierService.getAllSuppliers().subscribe({
       next: (sups: any) => {
+        console.log('Suppliers response:', sups);
         this.suppliers = Array.isArray(sups) ? sups : [];
+        console.log('Suppliers loaded:', this.suppliers.length);
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error loading suppliers:', err);
         this.suppliers = [];
       }
     });

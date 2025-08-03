@@ -39,10 +39,11 @@ import { UserService } from '../../../shared/services/user.service';
   styleUrls: ['./subscription-plan-form.component.css']
 })
 export class SubscriptionPlanFormComponent implements OnInit {
-  planForm: FormGroup;
+  planForm!: FormGroup;
   isEditMode = false;
   planId: string | null = null;
   isLoading = false;
+  isFormReady = false;
   error: string | null = null;
 
   planTypes = [
@@ -58,6 +59,27 @@ export class SubscriptionPlanFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) {
+    // Form will be initialized in ngOnInit
+  }
+
+  ngOnInit() {
+    if (!this.userService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // Ensure form is properly initialized
+    this.initializeForm();
+
+    this.planId = this.route.snapshot.paramMap.get('id');
+    if (this.planId) {
+      this.isEditMode = true;
+      this.loadPlan();
+    }
+  }
+
+  private initializeForm() {
+    console.log('Initializing subscription plan form...');
     this.planForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       type: ['', Validators.required],
@@ -77,25 +99,17 @@ export class SubscriptionPlanFormComponent implements OnInit {
         whiteLabel: [false]
       })
     });
-  }
-
-  ngOnInit() {
-    if (!this.userService.isAuthenticated()) {
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    this.planId = this.route.snapshot.paramMap.get('id');
-    if (this.planId) {
-      this.isEditMode = true;
-      this.loadPlan();
-    }
+    console.log('Form initialized:', this.planForm);
+    console.log('Features group:', this.planForm.get('features'));
+    this.isFormReady = true;
   }
 
   loadPlan() {
     this.isLoading = true;
+    console.log('Loading subscription plan with ID:', this.planId);
     this.subscriptionService.getSubscriptionPlanById(this.planId!).subscribe({
       next: (plan) => {
+        console.log('Plan loaded successfully:', plan);
         this.planForm.patchValue({
           name: plan.name,
           type: plan.type,
@@ -104,28 +118,43 @@ export class SubscriptionPlanFormComponent implements OnInit {
           description: plan.description,
           isActive: plan.isActive,
           features: {
-            maxProducts: plan.features.maxProducts,
-            maxImages: plan.features.maxImages,
-            analytics: plan.features.analytics,
-            prioritySupport: plan.features.prioritySupport,
-            customBranding: plan.features.customBranding,
-            apiAccess: plan.features.apiAccess,
-            advancedReporting: plan.features.advancedReporting,
-            bulkOperations: plan.features.bulkOperations,
-            whiteLabel: plan.features.whiteLabel
+            maxProducts: plan.features?.maxProducts || 10,
+            maxImages: plan.features?.maxImages || 5,
+            analytics: plan.features?.analytics || false,
+            prioritySupport: plan.features?.prioritySupport || false,
+            customBranding: plan.features?.customBranding || false,
+            apiAccess: plan.features?.apiAccess || false,
+            advancedReporting: plan.features?.advancedReporting || false,
+            bulkOperations: plan.features?.bulkOperations || false,
+            whiteLabel: plan.features?.whiteLabel || false
           }
         });
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error loading plan:', error);
-        this.error = 'Failed to load subscription plan';
+        let errorMessage = 'Failed to load subscription plan';
+        
+        if (error.status === 404) {
+          errorMessage = 'Subscription plan not found';
+        } else if (error.status === 401) {
+          errorMessage = 'Authentication required';
+        } else if (error.status === 500) {
+          errorMessage = 'Server error occurred';
+        }
+        
+        this.error = errorMessage;
         this.isLoading = false;
       }
     });
   }
 
   onSubmit() {
+    if (!this.planForm) {
+      console.error('Form not initialized');
+      return;
+    }
+    
     if (this.planForm.valid) {
       this.isLoading = true;
       const planData = this.planForm.value;
@@ -174,6 +203,10 @@ export class SubscriptionPlanFormComponent implements OnInit {
   }
 
   getFieldError(fieldName: string): string {
+    if (!this.planForm) {
+      return '';
+    }
+    
     const field = this.planForm.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) {

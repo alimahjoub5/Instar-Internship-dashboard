@@ -20,6 +20,7 @@ export interface Product {
   createdAt?: Date;
   updatedAt?: Date;
   image?: string;
+  materials?: string;
   dimensions?: {
     height?: number;
     width?: number;

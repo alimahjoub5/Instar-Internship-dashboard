@@ -11,7 +11,7 @@
     <div class="error-icon">⚠️</div>
     <h3>Error Loading Dashboard</h3>
     <p>{{ error }}</p>
-    <button class="retry-btn" (click)="loadDashboardData()">Retry</button>
+    <button class="retry-btn" (click)="refreshData()">Retry</button>
   </div>
 
   <!-- Main Dashboard Content -->
@@ -36,80 +36,169 @@
           </div>
         </div>
       </div>
+      <div class="refresh-section">
+        <button class="refresh-btn" (click)="refreshData()">
+          🔄 Refresh Data
+        </button>
+      </div>
     </div>
 
     <!-- Main Stats Grid -->
     <div class="stats-grid">
       <!-- Users Card -->
       <div class="stat-card">
-        <div class="stat-icon">👥</div>
-        <div class="stat-content">
-          <h3>Utilisateurs</h3>
-          <p class="stat-number">{{ formatNumber(dashboardStats?.users?.total || 0) }}</p>
-          <p class="stat-change" [class]="parseFloat(dashboardStats?.users?.growth || '0') >= 0 ? 'positive' : 'negative'">
-            {{ parseFloat(dashboardStats?.users?.growth || '0') >= 0 ? '+' : '' }}{{ dashboardStats?.users?.growth || '0' }}% ce mois
-          </p>
+        <div class="stat-header">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <h3>Users</h3>
+            <p class="stat-number">{{ formatNumber(dashboardStats?.users?.total || 0) }}</p>
+            <span class="stat-growth positive">{{ dashboardStats?.users?.growth }}</span>
+          </div>
+        </div>
+        <div class="stat-details">
+          <div class="recent-items">
+            <h4>Recent Users</h4>
+            <div *ngFor="let user of dashboardStats?.users?.recent?.slice(0, 3)" class="recent-item">
+              <span class="item-name">{{ user.name }}</span>
+              <span class="item-date">{{ formatDate(user.createdAt) }}</span>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Products Card -->
       <div class="stat-card">
-        <div class="stat-icon">📦</div>
-        <div class="stat-content">
-          <h3>Produits</h3>
-          <p class="stat-number">{{ formatNumber(dashboardStats?.products?.total || 0) }}</p>
-          <p class="stat-change" [class]="parseFloat(dashboardStats?.products?.growth || '0') >= 0 ? 'positive' : 'negative'">
-            {{ parseFloat(dashboardStats?.products?.growth || '0') >= 0 ? '+' : '' }}{{ dashboardStats?.products?.growth || '0' }}% ce mois
-          </p>
+        <div class="stat-header">
+          <div class="stat-icon">📦</div>
+          <div class="stat-info">
+            <h3>Products</h3>
+            <p class="stat-number">{{ formatNumber(dashboardStats?.products?.total || 0) }}</p>
+            <span class="stat-growth positive">{{ dashboardStats?.products?.growth }}</span>
+          </div>
+        </div>
+        <div class="stat-details">
+          <div class="recent-items">
+            <h4>Recent Products</h4>
+            <div *ngFor="let product of dashboardStats?.products?.recent?.slice(0, 3)" class="recent-item">
+              <span class="item-name">{{ product.name }}</span>
+              <span class="item-price">{{ formatCurrency(product.price) }}</span>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Sales Card -->
       <div class="stat-card">
-        <div class="stat-icon">💰</div>
-        <div class="stat-content">
-          <h3>Ventes</h3>
-          <p class="stat-number">{{ formatCurrency(dashboardStats?.sales?.total || 0) }}</p>
-          <p class="stat-change" [class]="parseFloat(dashboardStats?.sales?.growth || '0') >= 0 ? 'positive' : 'negative'">
-            {{ parseFloat(dashboardStats?.sales?.growth || '0') >= 0 ? '+' : '' }}{{ dashboardStats?.sales?.growth || '0' }}% ce mois
-          </p>
+        <div class="stat-header">
+          <div class="stat-icon">💰</div>
+          <div class="stat-info">
+            <h3>Sales</h3>
+            <p class="stat-number">{{ formatCurrency(dashboardStats?.sales?.total || 0) }}</p>
+            <span class="stat-growth positive">{{ dashboardStats?.sales?.growth }}</span>
+          </div>
+        </div>
+        <div class="stat-details">
+          <div class="recent-items">
+            <h4>Recent Sales</h4>
+            <div *ngFor="let sale of dashboardStats?.sales?.recent?.slice(0, 3)" class="recent-item">
+              <span class="item-name">{{ sale.product?.name || 'Product' }}</span>
+              <span class="item-price">{{ formatCurrency(sale.amount) }}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Orders Card -->
+      <!-- Subscriptions Card -->
       <div class="stat-card">
-        <div class="stat-icon">📋</div>
-        <div class="stat-content">
-          <h3>Commandes</h3>
-          <p class="stat-number">{{ formatNumber(dashboardStats?.sales?.orders || 0) }}</p>
-          <p class="stat-change positive">+12% ce mois</p>
+        <div class="stat-header">
+          <div class="stat-icon">📋</div>
+          <div class="stat-info">
+            <h3>Active Subscriptions</h3>
+            <p class="stat-number">{{ formatNumber(dashboardStats?.subscriptions?.active || 0) }}</p>
+            <span class="stat-label">Active Plans</span>
+          </div>
+        </div>
+        <div class="stat-details">
+          <div class="subscription-info">
+            <div class="info-item">
+              <span class="label">Total Suppliers:</span>
+              <span class="value">{{ formatNumber(dashboardStats?.suppliers?.total || 0) }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Categories:</span>
+              <span class="value">{{ formatNumber(dashboardStats?.categories?.total || 0) }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Additional Stats Section -->
-    <div class="additional-stats">
-      <h2 class="section-title">Additional Statistics</h2>
-      <div class="stat-row">
-        <div class="mini-stat">
-          <div class="mini-stat-icon">💳</div>
-          <div class="mini-stat-content">
-            <h4>Abonnements Actifs</h4>
-            <p>{{ formatNumber(dashboardStats?.subscriptions?.active || 0) }}</p>
+    <!-- Revenue Analytics Section -->
+    <div class="analytics-section">
+      <div class="section-header">
+        <h2>Revenue Analytics</h2>
+        <div class="period-selector">
+          <button 
+            *ngFor="let period of ['week', 'month', 'year']" 
+            [class.active]="selectedPeriod === period"
+            (click)="onPeriodChange(period)"
+            class="period-btn">
+            {{ period | titlecase }}
+          </button>
+        </div>
+      </div>
+      
+      <div class="revenue-chart">
+        <div *ngIf="revenueStats.length > 0" class="chart-container">
+          <div *ngFor="let stat of revenueStats.slice(0, 7)" class="chart-bar">
+            <div class="bar" [style.height.%]="(stat.total / getMaxRevenue()) * 100"></div>
+            <span class="bar-label">{{ formatCurrency(stat.total) }}</span>
           </div>
         </div>
-        <div class="mini-stat">
-          <div class="mini-stat-icon">🏭</div>
-          <div class="mini-stat-content">
-            <h4>Fournisseurs</h4>
-            <p>{{ formatNumber(dashboardStats?.suppliers?.total || 0) }}</p>
+        <div *ngIf="revenueStats.length === 0" class="no-data">
+          <p>No revenue data available for this period</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Performers Section -->
+    <div class="performers-section">
+      <div class="performers-grid">
+        <!-- Top Products -->
+        <div class="performer-card">
+          <div class="card-header">
+            <h3>🏆 Top Products</h3>
+          </div>
+          <div class="performer-list">
+            <div *ngFor="let product of topProducts.slice(0, 5); let i = index" class="performer-item">
+              <div class="rank">{{ i + 1 }}</div>
+              <div class="performer-info">
+                <span class="name">{{ product.name }}</span>
+                <span class="details">{{ formatCurrency(product.totalSales) }}</span>
+              </div>
+              <div class="performer-stats">
+                <span class="orders">{{ product.totalOrders }} orders</span>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="mini-stat">
-          <div class="mini-stat-icon">📁</div>
-          <div class="mini-stat-content">
-            <h4>Catégories</h4>
-            <p>{{ formatNumber(dashboardStats?.categories?.total || 0) }}</p>
+
+        <!-- Top Suppliers -->
+        <div class="performer-card">
+          <div class="card-header">
+            <h3>🏆 Top Suppliers</h3>
+          </div>
+          <div class="performer-list">
+            <div *ngFor="let supplier of topSuppliers.slice(0, 5); let i = index" class="performer-item">
+              <div class="rank">{{ i + 1 }}</div>
+              <div class="performer-info">
+                <span class="name">{{ supplier.name }}</span>
+                <span class="details">{{ supplier.email }}</span>
+              </div>
+              <div class="performer-stats">
+                <span class="products">{{ supplier.productCount }} products</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -117,41 +206,49 @@
 
     <!-- Activity Feed Section -->
     <div class="activity-section">
-      <h2 class="section-title">Recent Activity</h2>
-      <div class="activity-list">
-        <div *ngFor="let activity of activityFeed" class="activity-item">
-          <div class="activity-icon">{{ activity.icon }}</div>
+      <div class="section-header">
+        <h2>📊 Recent Activity</h2>
+      </div>
+      <div class="activity-feed">
+        <div *ngFor="let activity of activityFeed.slice(0, 8)" class="activity-item">
+          <div class="activity-icon">{{ getActivityIcon(activity.type) }}</div>
           <div class="activity-content">
             <h4>{{ activity.title }}</h4>
             <p>{{ activity.description }}</p>
-            <span class="activity-time">{{ getTimeAgo(activity.timestamp) }}</span>
+            <span class="activity-time">{{ formatDate(activity.timestamp) }}</span>
           </div>
         </div>
-        <div *ngIf="activityFeed.length === 0" class="no-activities">
-          <p>No recent activities</p>
+        <div *ngIf="activityFeed.length === 0" class="no-activity">
+          <p>No recent activity</p>
         </div>
       </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-      <h2 class="section-title">Quick Actions</h2>
+    <!-- Quick Actions Section -->
+    <div class="quick-actions-section">
+      <div class="section-header">
+        <h2>⚡ Quick Actions</h2>
+      </div>
       <div class="actions-grid">
-        <a routerLink="/dash-adm/users/adduser" class="action-btn">
+        <a routerLink="/dash-adm/products/add-product" class="action-card">
+          <div class="action-icon">➕</div>
+          <h3>Add Product</h3>
+          <p>Create a new product</p>
+        </a>
+        <a routerLink="/dash-adm/users/add" class="action-card">
           <div class="action-icon">👤</div>
-          <span>Add User</span>
+          <h3>Add User</h3>
+          <p>Create a new user account</p>
         </a>
-        <a routerLink="/dash-adm/products/add-product" class="action-btn">
-          <div class="action-icon">📦</div>
-          <span>Add Product</span>
+        <a routerLink="/dash-adm/suppliers/add" class="action-card">
+          <div class="action-icon">🏢</div>
+          <h3>Add Supplier</h3>
+          <p>Register a new supplier</p>
         </a>
-        <a routerLink="/dash-adm/suppliers/add-supplier" class="action-btn">
-          <div class="action-icon">🏭</div>
-          <span>Add Supplier</span>
-        </a>
-        <a routerLink="/dash-adm/subscriptions/create-subscription" class="action-btn">
-          <div class="action-icon">💳</div>
-          <span>Create Subscription</span>
+        <a routerLink="/dash-adm/subscriptions/create" class="action-card">
+          <div class="action-icon">📋</div>
+          <h3>Create Subscription</h3>
+          <p>Set up a new subscription</p>
         </a>
       </div>
     </div>

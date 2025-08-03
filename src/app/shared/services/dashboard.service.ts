@@ -68,4 +68,19 @@ export class DashboardService {
   getQuickStats(): Observable<QuickStats> {
     return this.apiService.get('/dashboard/quick-stats');
   }
+
+  // Get revenue statistics
+  getRevenueStats(period: string = 'month'): Observable<any[]> {
+    return this.apiService.get(`/dashboard/revenue-stats?period=${period}`);
+  }
+
+  // Get top products
+  getTopProducts(): Observable<any[]> {
+    return this.apiService.get('/dashboard/top-products');
+  }
+
+  // Get top suppliers
+  getTopSuppliers(): Observable<any[]> {
+    return this.apiService.get('/dashboard/top-suppliers');
+  }
 } 

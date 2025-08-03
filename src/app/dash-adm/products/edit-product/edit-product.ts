@@ -58,6 +58,8 @@ export class EditProductComponent implements OnInit {
             this.productForm.get('dimensions')?.patchValue((product as any).dimensions);
           }
           this.currentImage = product.image || null;
+        },
+        error: () => {
           this.error = 'Failed to load product.';
         }
       });
