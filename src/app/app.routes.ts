@@ -11,7 +11,7 @@ import { SettingsComponent } from './dash-adm/settings/settings';
 import { Reset } from './auth/reset/reset';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { Sidebar } from './dash-fn/sidebar/sidebar';
-import { ProfileComponent } from './dash-fn/profile/profile';
+import { Profile } from './dash-fn/profile/profile';
 import { Products } from './dash-fn/products/products';
 import { Dashboard } from './dash-fn/dashboard/dashboard';
 import { TestcompComponent } from './testcomp/testcomp.component';
@@ -35,18 +35,17 @@ export const routes: Routes = [
     ]
   },
 
-  { path: 'dash-fn', component: DashFn,
+  { path: 'dash-fn', 
+    component: Dashboard,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      {path : 'dashboard', component:Dashboard},
-      {path : 'profile', component:ProfileComponent},
+      {path : 'profile', component:Profile},
       {path : 'products', component:Products},
     ]
    },
   { path: 'sidebar', component: Sidebar },
-  {path : 'profile', component:ProfileComponent},
-  {path : 'products', component:Products},
-  {path : 'dashboard', component:Dashboard},
+  // {path : 'profile', component:Profile},
+  // {path : 'products', component:Products},
+  // {path : 'dashboard', component:Dashboard},
   {path : 'testcomp', component:TestcompComponent},
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
