@@ -40,7 +40,7 @@ export class LoginComponent {
               this.router.navigate(['/dash-adm']);
               this.isLoading = false;
             }else if(profile.role === 'user') {
-              this.router.navigate(['/dash-user']);
+              this.router.navigate(['/dash-fn']);
               this.isLoading = false;
               }
           },
