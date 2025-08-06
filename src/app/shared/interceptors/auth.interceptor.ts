@@ -39,15 +39,14 @@ function handle401Error(
 ): Observable<any> {
   if (!isRefreshing) {
     isRefreshing = true;
-    const refreshToken = localStorage.getItem('refreshToken');
-    const userId = localStorage.getItem('userId');
+    const refreshToken = userService.getRefreshToken();
+    const userId = userService.getUserId();
 
     if (refreshToken && userId) {
       return userService.refreshToken(refreshToken, userId).pipe(
         switchMap((response) => {
           isRefreshing = false;
-          userService.setToken(response.token);
-          localStorage.setItem('refreshToken', response.refreshtoken);
+          userService.storeAuthData(response);
           
           // Retry the original request with new token
           const newRequest = request.clone({
@@ -60,8 +59,6 @@ function handle401Error(
         catchError((error) => {
           isRefreshing = false;
           userService.removeToken();
-          localStorage.removeItem('refreshToken');
-          localStorage.removeItem('userId');
           router.navigate(['/login']);
           return throwError(() => error);
         })
@@ -74,4 +71,4 @@ function handle401Error(
     }
   }
   return throwError(() => new Error('Token refresh in progress'));
-} 
+}

@@ -155,9 +155,45 @@ export class UserService {
 
   removeToken(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('uid');
+    localStorage.removeItem('refreshToken');
   }
 
   isAuthenticated(): boolean {
     return !!this.getToken();
   }
-} 
+
+  // User ID Management
+  setUserId(uid: string): void {
+    localStorage.setItem('uid', uid);
+  }
+
+  getUserId(): string | null {
+    return localStorage.getItem('uid');
+  }
+
+  // Refresh Token Management
+  setRefreshToken(refreshToken: string): void {
+    localStorage.setItem('refreshToken', refreshToken);
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refreshToken');
+  }
+
+  // Get current user profile
+  getUserProfile(): Observable<User> {
+    const uid = this.getUserId();
+    if (!uid) {
+      throw new Error('User not authenticated');
+    }
+    return this.getProfileById(uid);
+  }
+
+  // Store authentication data from login response
+  storeAuthData(authResponse: AuthResponse): void {
+    this.setToken(authResponse.token);
+    this.setUserId(authResponse.Uid);
+    this.setRefreshToken(authResponse.refreshtoken);
+  }
+}

@@ -33,13 +33,22 @@ export class LoginComponent {
 
     this.userService.login({ email: this.email, password: this.password }).subscribe({
       next: (response) => {
-        this.userService.setToken(response.token);
-        localStorage.setItem('refreshToken', response.refreshtoken);
-        localStorage.setItem('userId', response.Uid);
-        
-        // Navigate based on user role (you might want to get this from user profile)
-        this.router.navigate(['/dash-adm']);
-        this.isLoading = false;
+        this.userService.storeAuthData(response);
+        this.userService.getProfileById(response.Uid).subscribe({
+          next: (profile) => {
+           if(profile.role === 'admin') {
+              this.router.navigate(['/dash-adm']);
+              this.isLoading = false;
+            }else if(profile.role === 'user') {
+              this.router.navigate(['/dash-user']);
+              this.isLoading = false;
+              }
+          },
+          error: (err) => {
+            console.error('Error fetching user profile:', err);
+            this.error = 'Failed to fetch user profile. Please try again.';
+          }
+        });
       },
       error: (error) => {
         console.error('Login error:', error);
@@ -48,4 +57,4 @@ export class LoginComponent {
       }
     });
   }
-} 
+}

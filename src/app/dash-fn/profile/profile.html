@@ -1,40 +1,258 @@
 <app-sidebarfn>
   <nav class="products-breadcrumb">
-  <span routerLink="/dash-fn">Dashboard</span> <span class="breadcrumb-separator">&gt;</span> <span class="breadcrumb-current">Profile</span>
-</nav>
-  <div class="profile-card-wide">
-    <div class="profile-main-row">
-      <div class="profile-left-col">
-        <img [src]="user.imageUrl" alt="User Avatar" class="profile-avatar-large" *ngIf="user.imageUrl">
-        <div class="profile-name-block">
-          <h2 class="profile-main-name">{{ user.firstName }} {{ user.lastName }}</h2>
-          <span class="profile-main-role"><mat-icon>verified_user</mat-icon> {{ user.role | titlecase }}</span>
+    <span routerLink="/dash-fn">Dashboard</span> <span class="breadcrumb-separator">&gt;</span> <span class="breadcrumb-current">Profile</span>
+  </nav>
+  
+  <div class="account-settings-container">
+    <h1 class="account-settings-title">Account settings</h1>
+    
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+      <mat-icon class="loading-spinner">refresh</mat-icon>
+      <p>Loading profile...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-container">
+      <mat-icon class="error-icon">warning</mat-icon>
+      <p>{{ error }}</p>
+      <button class="btn-primary" (click)="refreshProfile()">Try Again</button>
+    </div>
+
+    <!-- Account Settings Layout - Only show when no error and not loading -->
+    <div *ngIf="!loading && !error" class="account-settings-layout">
+      <!-- Left sidebar navigation -->
+      <div class="settings-sidebar">
+        <div class="settings-nav-item" [class.active]="activeTab === 'profile'" (click)="setActiveTab('profile')">
+          <mat-icon>person</mat-icon>
+          <span>Profile Settings</span>
+        </div>
+        <div class="settings-nav-item" [class.active]="activeTab === 'password'" (click)="setActiveTab('password')">
+          <mat-icon>lock</mat-icon>
+          <span>Password</span>
+        </div>
+        <div class="settings-nav-item" [class.active]="activeTab === 'notifications'" (click)="setActiveTab('notifications')">
+          <mat-icon>notifications</mat-icon>
+          <span>Notifications</span>
+        </div>
+        <div class="settings-nav-item" [class.active]="activeTab === 'verification'" (click)="setActiveTab('verification')">
+          <mat-icon>verified_user</mat-icon>
+          <span>Verification</span>
         </div>
       </div>
-      <div class="profile-right-col">
-        <div class="profile-info-panel">
-          <h3><mat-icon>contact_mail</mat-icon> Contact Information</h3>
-          <div class="profile-info-row"><mat-icon>email</mat-icon> <span>{{ user.email }}</span></div>
-          <div class="profile-info-row" *ngIf="user.phone"><mat-icon>phone</mat-icon> <span>{{ user.phone }}</span></div>
-          <div class="profile-info-row" *ngIf="user.address"><mat-icon>home</mat-icon> <span>{{ user.address }}</span></div>
-        </div>
-        <div class="profile-info-panel">
-          <h3><mat-icon>lock</mat-icon> Account</h3>
-          <div class="profile-info-row"><mat-icon>lock</mat-icon> <span>Password: ••••••••</span></div>
-          <div class="profile-info-row">
-            <mat-icon>security</mat-icon>
-            <ng-container *ngIf="is2FAEnabled; else activate2FATemplate">
-              <span class="badge-2fa-active">2FA Enabled</span>
-              <a class="link-2fa-deactivate" (click)="deactivate2FA()">Disable</a>
-            </ng-container>
-            <ng-template #activate2FATemplate>
-              <button class="btn-2fa" (click)="activate2FA()">Enable 2FA</button>
-            </ng-template>
+      
+      <!-- Main content area -->
+      <div class="settings-content">
+        <!-- Profile Settings Tab -->
+        <div *ngIf="activeTab === 'profile'" class="tab-content">
+          <div class="tab-header">
+            <h2>Profile Settings</h2>
+            <button class="btn-secondary refresh-btn" (click)="refreshProfile()" [disabled]="loading">
+              <mat-icon>refresh</mat-icon>
+              Refresh
+            </button>
           </div>
+          <!-- Profile photo section -->
+          <div class="profile-photo-section">
+            <div class="profile-photo-container">
+              <img [src]="user.imageUrl" alt="User Avatar" class="profile-photo" *ngIf="user.imageUrl">
+              <div class="photo-edit-icon">
+                <mat-icon>photo_camera</mat-icon>
+              </div>
+            </div>
+            <div class="photo-actions">
+              <button class="btn-primary">Upload New</button>
+              <button class="btn-secondary">Delete avatar</button>
+            </div>
+          </div>
+          
+          <!-- Profile form -->
+          <div class="profile-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First Name <span class="required">*</span></label>
+                <input type="text" id="firstName" class="form-control" [(ngModel)]="user.firstName" required>
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name <span class="required">*</span></label>
+                <input type="text" id="lastName" class="form-control" [(ngModel)]="user.lastName" required>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">Email <span class="required">*</span></label>
+                <input type="email" id="email" class="form-control" [(ngModel)]="user.email" required>
+              </div>
+              <div class="form-group">
+                <label for="recoveryEmail">Recovery Email</label>
+                <input type="email" id="recoveryEmail" class="form-control" [(ngModel)]="user.recoveryEmail" placeholder="Enter recovery email (optional)">
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="phone">Mobile Number</label>
+                <div class="phone-input-group">
+                  <div class="country-select">
+                    <span class="flag-icon">🇳🇬</span>
+                    <span class="dropdown-arrow">▼</span>
+                  </div>
+                  <input type="tel" id="phone" class="form-control phone-number" [(ngModel)]="user.phone">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="birthDate">Birth Date</label>
+                <input type="date" id="birthDate" class="form-control" [(ngModel)]="user.birthDate">
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label>Gender</label>
+                <div class="radio-group">
+                  <div class="radio-option">
+                    <input type="radio" id="male" name="gender" value="male" [(ngModel)]="user.gender">
+                    <label for="male">Male</label>
+                  </div>
+                  <div class="radio-option">
+                    <input type="radio" id="female" name="gender" value="female" [(ngModel)]="user.gender">
+                    <label for="female">Female</label>
+                  </div>
+                  <div class="radio-option">
+                    <input type="radio" id="prefer-not-to-say" name="gender" value="" [(ngModel)]="user.gender">
+                    <label for="prefer-not-to-say">Prefer not to say</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label for="address">Address</label>
+                <textarea id="address" class="form-control" rows="3" [(ngModel)]="user.address" placeholder="Enter your address (optional)"></textarea>
+              </div>
+            </div>
+            
+            <div class="form-actions">
+              <button class="btn-save" (click)="saveProfileChanges()" [disabled]="loading">
+                <mat-icon *ngIf="loading" class="loading-spinner">refresh</mat-icon>
+                {{ loading ? 'Saving...' : 'Save Changes' }}
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Password Tab -->
+        <div *ngIf="activeTab === 'password'" class="tab-content">
+          <div class="password-form">
+            <h2 class="tab-title">Change Password</h2>
+            <p class="tab-description">Update your password to keep your account secure.</p>
+            
+            <form #passwordForm="ngForm" (ngSubmit)="changePassword()">
+              <div class="form-group">
+                <label for="currentPassword">Current Password <span class="required">*</span></label>
+                <div class="password-input-group">
+                  <input 
+                    [type]="showCurrentPassword ? 'text' : 'password'" 
+                    id="currentPassword" 
+                    class="form-control" 
+                    [(ngModel)]="passwordData.currentPassword"
+                    name="currentPassword"
+                    required
+                    placeholder="Enter your current password">
+                  <button type="button" class="password-toggle" (click)="togglePasswordVisibility('current')">
+                    <mat-icon>{{ showCurrentPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="newPassword">New Password <span class="required">*</span></label>
+                <div class="password-input-group">
+                  <input 
+                    [type]="showNewPassword ? 'text' : 'password'" 
+                    id="newPassword" 
+                    class="form-control" 
+                    [(ngModel)]="passwordData.newPassword"
+                    name="newPassword"
+                    required
+                    minlength="8"
+                    placeholder="Enter your new password">
+                  <button type="button" class="password-toggle" (click)="togglePasswordVisibility('new')">
+                    <mat-icon>{{ showNewPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                </div>
+                <div class="password-requirements">
+                  <small>Password must be at least 8 characters long</small>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="confirmPassword">Confirm New Password <span class="required">*</span></label>
+                <div class="password-input-group">
+                  <input 
+                    [type]="showConfirmPassword ? 'text' : 'password'" 
+                    id="confirmPassword" 
+                    class="form-control" 
+                    [(ngModel)]="passwordData.confirmPassword"
+                    name="confirmPassword"
+                    required
+                    placeholder="Confirm your new password">
+                  <button type="button" class="password-toggle" (click)="togglePasswordVisibility('confirm')">
+                    <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  </button>
+                </div>
+                <div *ngIf="passwordData.newPassword && passwordData.confirmPassword && passwordData.newPassword !== passwordData.confirmPassword" class="error-message">
+                  <small>Passwords do not match</small>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="recoveryEmailPassword">Recovery Email <span class="required">*</span></label>
+                <input 
+                  type="email" 
+                  id="recoveryEmailPassword" 
+                  class="form-control" 
+                  [(ngModel)]="passwordData.recoveryEmail"
+                  name="recoveryEmailPassword"
+                  required
+                  placeholder="Enter your recovery email for verification">
+                <div class="field-description">
+                  <small>Please enter your recovery email to verify your identity before changing your password</small>
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button type="submit" class="btn-save" [disabled]="!passwordForm.valid || passwordData.newPassword !== passwordData.confirmPassword || loading">
+                  <mat-icon *ngIf="loading" class="loading-spinner">refresh</mat-icon>
+                  {{ loading ? 'Updating...' : 'Update Password' }}
+                </button>
+                <button type="button" class="btn-secondary" (click)="resetPasswordForm()" [disabled]="loading">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Notifications Tab -->
+        <div *ngIf="activeTab === 'notifications'" class="tab-content">
+          <h2 class="tab-title">Notification Settings</h2>
+          <p class="tab-description">Manage your notification preferences.</p>
+          <!-- Add notification settings here -->
+        </div>
+        
+        <!-- Verification Tab -->
+        <div *ngIf="activeTab === 'verification'" class="tab-content">
+          <h2 class="tab-title">Account Verification</h2>
+          <p class="tab-description">Verify your account for enhanced security.</p>
+          <!-- Add verification settings here -->
         </div>
       </div>
     </div>
   </div>
+  
   <app-fn-footer></app-fn-footer>
 </app-sidebarfn>
 
