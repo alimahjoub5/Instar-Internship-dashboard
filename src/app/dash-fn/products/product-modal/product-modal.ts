@@ -331,4 +331,18 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
       ).subscribe();
     }
   }
+
+  getProductImages(): string[] {
+    if (!this.product) {
+      return [];
+    }
+    
+    // If product has images array, use it; otherwise use the main image
+    if (this.product.images && this.product.images.length > 0) {
+      return this.product.images;
+    }
+    
+    // Fallback to main product image
+    return [this.product.image];
+  }
 }

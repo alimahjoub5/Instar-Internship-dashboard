@@ -12,6 +12,24 @@
     </div>
     <hr class="modal-divider" />
     <img [src]="product.image" alt="{{ product.name }}" class="product-image" />
+    
+    <!-- Image Gallery Section -->
+    <div class="image-gallery-section">
+      <div class="gallery-container">
+        <div class="image-list">
+          <!-- Display product images or fallback to main image -->
+          <div class="gallery-image" *ngFor="let image of getProductImages()">
+            <img [src]="image" alt="Product image" class="gallery-thumb" />
+          </div>
+        </div>
+        <button class="add-image-btn" type="button" title="Add Image">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
     <div class="modal-description-wide">
       <strong>Description:</strong> {{ product.description }}
     </div>
