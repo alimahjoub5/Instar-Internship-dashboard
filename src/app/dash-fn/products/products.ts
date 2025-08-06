@@ -44,7 +44,7 @@ export class Products {
   selectedProduct: Product | null = null;
 
   // Pagination properties
-  pageSize = 9;
+  pageSize = 8;
   currentPage = 1;
 
   constructor(private productService: ProductService) {}
