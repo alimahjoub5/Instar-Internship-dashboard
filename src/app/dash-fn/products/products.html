@@ -1,5 +1,4 @@
-<app-sidebarfn>
-  <nav class="products-breadcrumb">
+<nav class="products-breadcrumb">
   <span routerLink="/dash-fn">Dashboard</span> <span class="breadcrumb-separator">&gt;</span> <span class="breadcrumb-current">Products</span>
 </nav>
   <div class="products-carousel-row">
@@ -76,5 +75,3 @@
     </div>
     <app-product-modal *ngIf="selectedProduct" [product]="selectedProduct" (close)="closeProductModal()"></app-product-modal>
   </div>
-  <app-fn-footer></app-fn-footer>
-</app-sidebarfn>

@@ -23,13 +23,12 @@ interface PasswordData {
   selector: 'app-profile',
   standalone: true,
   imports: [
-    Sidebar,
     MatCardModule, 
     MatDividerModule, 
     MatIconModule, 
     CommonModule, 
     SharedModule, 
-    FnFooter,
+
     RouterModule,
     FormsModule
   ],

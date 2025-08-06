@@ -1,47 +1,5 @@
 <app-sidebarfn>
-  <div class="dashboard-content">
-    <h2>Dashboard Overview</h2>
-    <div class="stats-cards">
-      <div class="stat-card">
-        <h3>Total Products</h3>
-        <p>{{ totalProducts }}</p>
-      </div>
-      <div class="stat-card">
-        <h3>Total Sales</h3>
-        <p>{{ totalSales }}</p>
-      </div>
-      <div class="stat-card">
-        <h3>Average Rating</h3>
-        <p>{{ avgRating }}</p>
-      </div>
-    </div>
-    <div class="charts-section">
-      <div class="chart-card">
-        <h4>Sales by Product</h4>
-        <ngx-charts-bar-vertical
-          [results]="salesData"
-          [view]="view"
-          [scheme]="colorScheme"
-          [xAxis]="true"
-          [yAxis]="true"
-          [legend]="false"
-          [showXAxisLabel]="true"
-          [showYAxisLabel]="true"
-          xAxisLabel="Product"
-          yAxisLabel="Sales">
-        </ngx-charts-bar-vertical>
-      </div>
-      <div class="chart-card">
-        <h4>Products by Category</h4>
-        <ngx-charts-pie-chart
-          [results]="categoryData"
-          [view]="view"
-          [scheme]="colorScheme"
-          [legend]="true"
-          [labels]="true">
-        </ngx-charts-pie-chart>
-      </div>
-    </div>
-  </div>
+  <!-- Router outlet for child components -->
+  <router-outlet></router-outlet>
 </app-sidebarfn>
 <app-fn-footer></app-fn-footer>

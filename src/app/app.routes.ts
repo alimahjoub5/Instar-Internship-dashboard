@@ -14,6 +14,7 @@ import { Sidebar } from './dash-fn/sidebar/sidebar';
 import { Profile } from './dash-fn/profile/profile';
 import { Products } from './dash-fn/products/products';
 import { Dashboard } from './dash-fn/dashboard/dashboard';
+import { DashboardContent } from './dash-fn/dashboard-content/dashboard-content';
 import { TestcompComponent } from './testcomp/testcomp.component';
 
 export const routes: Routes = [
@@ -38,13 +39,13 @@ export const routes: Routes = [
   { path: 'dash-fn', 
     component: Dashboard,
     children: [
-      {path : 'profile', component:Profile},
-      {path : 'products', component:Products},
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardContent },
+      { path: 'profile', component: Profile },
+      { path: 'products', component: Products }
     ]
    },
   { path: 'sidebar', component: Sidebar },
-  // {path : 'profile', component:Profile},
-  // {path : 'products', component:Products},
   // {path : 'dashboard', component:Dashboard},
   {path : 'testcomp', component:TestcompComponent},
   { path: '', redirectTo: '/login', pathMatch: 'full' }
