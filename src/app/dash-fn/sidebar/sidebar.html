@@ -1,23 +1,111 @@
-<mat-drawer-container class="sidebar-container" style="margin-top: 20px;">
+<mat-drawer-container class="sidebar-container">
   <mat-drawer #drawer class="sidebar" mode="over">
-    <mat-toolbar color="primary" class="sidebar-toolbar">
-      <span>Navigation</span>
-    </mat-toolbar>
-    <mat-nav-list>
-      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
-        <mat-icon>dashboard</mat-icon>
-        <span>Dashboard</span>
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+        <span class="sidebar-title">Instar</span>
+      </div>
+      <div class="sidebar-subtitle">Dashboard</div>
+    </div>
+
+    <!-- Navigation List -->
+    <mat-nav-list class="sidebar-nav">
+      <a mat-list-item routerLink="/dash-fn/dashboard" routerLinkActive="active-link" class="nav-item">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 13H11V3H3V13ZM3 21H11V15H3V21ZM13 21H21V11H13V21ZM13 3V9H21V3H13Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="nav-text">Dashboard</span>
       </a>
-       <a mat-list-item routerLink="/products" routerLinkActive="active-link">
-        <mat-icon>Product</mat-icon>
-        <span>Products</span>
+      <a mat-list-item routerLink="/dash-fn/products" routerLinkActive="active-link" class="nav-item">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 7H4V5C4 4.45 4.45 4 5 4H19C19.55 4 20 4.45 20 5V7ZM20 8V19C20 19.55 19.55 20 19 20H5C4.45 20 4 19.55 4 19V8H20ZM9 10V12H15V10H9Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="nav-text">Products</span>
       </a>
-      <a mat-list-item routerLink="/profile" routerLinkActive="active-link">
-        <mat-icon>person</mat-icon>
-        <span>Profile</span>
+      <a mat-list-item routerLink="/dash-fn/profile" routerLinkActive="active-link" class="nav-item">
+        <div class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="nav-text">Profile</span>
       </a>
-    
+       <a mat-list-item  class="nav-item">
+        <div class="nav-icon">
+         
+        </div>
+        
+      </a>
+       <a mat-list-item  class="nav-item">
+        <div class="nav-icon">
+         
+        </div>
+        
+      </a>
+       <a mat-list-item  class="nav-item">
+        <div class="nav-icon">
+         
+        </div>
+        
+      </a>
+       <a mat-list-item  class="nav-item">
+        <div class="nav-icon">
+         
+        </div>
+        
+      </a>
+       <a mat-list-item  class="nav-item">
+        <div class="nav-icon">
+         
+        </div>
+        
+      </a> <a mat-list-item  class="nav-item">
+        <div class="nav-icon">
+         
+        </div>
+        
+      </a> <a mat-list-item  class="nav-item">
+        <div class="nav-icon">
+         
+        </div>
+        
+      </a> <a mat-list-item  class="nav-item">
+        <div class="nav-icon">
+         
+        </div>
+        
+      </a> <a mat-list-item  class="nav-item">
+        <div class="nav-icon">
+         
+        </div>
+        
+      </a>
     </mat-nav-list>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <div class="footer-logo">
+        <svg class="footer-logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+        <span class="footer-title">Instar Dashboard</span>
+      </div>
+      <div class="footer-version">v2.0.1</div>
+      <div class="footer-copyright">
+        © 2024 Instar Inc.
+      </div>
+    </div>
   </mat-drawer>
 
   <div class="main-content">
@@ -26,13 +114,16 @@
         <mat-icon>menu</mat-icon>
       </button>
       <div class="navbar-center">
-        <mat-form-field class="search-bar" appearance="outline">
-          <mat-label>Search</mat-label>
-          <input matInput placeholder="Search...">
-          <button mat-icon-button matSuffix>
-            <mat-icon>search</mat-icon>
-          </button>
-        </mat-form-field>
+        <div class="logo-container">
+          <div class="navbar-logo">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="app-name">Instar</span>
+        </div>
       </div>
       <div class="navbar-right">
         <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
