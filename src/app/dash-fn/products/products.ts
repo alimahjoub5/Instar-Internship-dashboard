@@ -17,9 +17,7 @@ import { ProductService } from '../../shared/services/product.service';
   imports: [
     CommonModule,
     ProductCard,
-    Sidebar,
     ProductModal,
-    FnFooter,
     ProductsCarousel,
     FormsModule
   ],

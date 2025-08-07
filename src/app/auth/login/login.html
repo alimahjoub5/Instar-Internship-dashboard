@@ -1,24 +1,81 @@
-<div class="login-container">
-  <div class="login-logo">🔒</div>
-  <h2>Sign In</h2>
-  <form (ngSubmit)="login()">
-    <div class="input-group">
-      <span class="input-icon">📧</span>
-      <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required />
+<div class="clean-container">
+  <div class="glass-card">
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="logo-container">
+        <div class="logo-glow">
+          <div class="logo-icon">🔒</div>
+        </div>
+        <h1 class="brand-title">Instar</h1>
+      </div>
+      
+      <div class="welcome-section">
+        <p class="welcome-text">Welcome back!</p>
+        <h2 class="main-title">Sign In to Your Account</h2>
+        <p class="subtitle">Enter your credentials to access your dashboard</p>
+      </div>
     </div>
-    <div class="input-group">
-      <span class="input-icon">🔑</span>
-      <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" placeholder="Password" required />
-      <button type="button" class="show-btn" (click)="showPassword = !showPassword" tabindex="-1">
-        {{ showPassword ? 'Hide' : 'Show' }}
-      </button>
+
+    <!-- Form Section -->
+    <div class="form-section">
+      <form (ngSubmit)="login()" class="login-form">
+        <div class="form-group">
+          <h3 class="group-title">Account Information</h3>
+          
+          <div class="modern-input">
+            <label class="input-label">Email Address</label>
+            <div class="input-wrapper">
+              <input 
+                type="email" 
+                [(ngModel)]="email" 
+                name="email" 
+                placeholder="Enter your email" 
+                required 
+                class="input-field"
+              />
+              <span class="input-icon">📧</span>
+            </div>
+          </div>
+
+          <div class="modern-input">
+            <label class="input-label">Password</label>
+            <div class="input-wrapper">
+              <input 
+                [type]="showPassword ? 'text' : 'password'" 
+                [(ngModel)]="password" 
+                name="password" 
+                placeholder="Enter your password" 
+                required 
+                class="input-field"
+              />
+              <span class="input-icon">🔑</span>
+              <button 
+                type="button" 
+                class="password-toggle" 
+                (click)="showPassword = !showPassword" 
+                tabindex="-1"
+              >
+                {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="error" class="error-message">{{ error }}</div>
+
+        <button type="submit" class="primary-btn" [disabled]="isLoading">
+          {{ isLoading ? 'Signing in...' : 'Sign In' }}
+        </button>
+      </form>
+
+      <div class="additional-links">
+         <a routerLink="/auth/reset" class="forgot-link">Forgot your password?</a>
+       </div>
+
+       <div class="signup-section">
+         <p class="signup-text">Don't have an account?</p>
+         <a routerLink="/auth/signup" class="signup-link">Create Account</a>
+       </div>
     </div>
-    <button type="submit" class="login-btn" [disabled]="isLoading">
-      {{ isLoading ? 'Logging in...' : 'Login' }}
-    </button>
-    <div *ngIf="error" class="error">{{ error }}</div>
-  </form>
-  <div class="forgot-link">
-    <a routerLink="/reset">Forgot password?</a>
   </div>
-</div> 
+</div>

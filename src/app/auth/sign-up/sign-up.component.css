@@ -1,0 +1,525 @@
+/* Clean Container */
+.futuristic-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  background: #f9fafb;
+  overflow-x: hidden;
+}
+
+/* Remove animated background for clean design */
+
+/* White Card */
+.glass-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 900px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: slideUp 0.8s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header Section */
+.header-section {
+  text-align: center;
+  padding: 3rem 2rem 2rem;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.logo-glow {
+  position: relative;
+  padding: 1rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.05) 0%, rgba(66, 165, 245, 0.05) 100%);
+  border: 1px solid rgba(25, 118, 210, 0.1);
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  color: #1976d2;
+}
+
+.brand-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  color: #333;
+  letter-spacing: 2px;
+}
+
+.welcome-text {
+  color: #333;
+}
+
+.main-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* Form Section */
+.form-section {
+  padding: 2rem;
+  max-height: 70vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+  background: white;
+}
+
+.form-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.form-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.form-section::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.modern-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Profile Upload Section */
+.profile-upload-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.upload-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #f9f9f9;
+  border: 3px dashed #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.upload-container:hover {
+  background: #f0f0f0;
+  border-color: #1976d2;
+  transform: scale(1.05);
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+  text-align: center;
+}
+
+.upload-icon {
+  font-size: 3rem !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  opacity: 0.7;
+}
+
+.upload-text {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.image-preview-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.profile-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.remove-btn {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ff4757 !important;
+  color: white !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(255, 71, 87, 0.3);
+}
+
+/* Form Groups */
+.form-group {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.form-group:hover {
+  background: #f5f5f5;
+  border-color: #d1d5db;
+}
+
+.group-title {
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.group-title::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: #1976d2;
+  border-radius: 2px;
+}
+
+/* Input Grid */
+.input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.input-container {
+  position: relative;
+}
+
+/* Modern Input Styling */
+.modern-input {
+  width: 100%;
+}
+
+.modern-input .mat-mdc-form-field-flex {
+  background: white !important;
+  border-radius: 4px !important;
+  border: 1px solid #ddd !important;
+  transition: all 0.3s ease !important;
+}
+
+.modern-input:hover .mat-mdc-form-field-flex {
+  border-color: #bbb !important;
+}
+
+.modern-input.mat-focused .mat-mdc-form-field-flex {
+  border-color: #1976d2 !important;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2) !important;
+}
+
+.modern-input .mat-mdc-form-field-label {
+  color: #666 !important;
+}
+
+.modern-input.mat-focused .mat-mdc-form-field-label {
+  color: #1976d2 !important;
+}
+
+.modern-input .mat-mdc-input-element {
+  color: #333 !important;
+}
+
+.modern-input .mat-mdc-input-element::placeholder {
+  color: #999 !important;
+}
+
+.modern-input .mat-icon {
+  color: #666 !important;
+}
+
+.modern-input.mat-focused .mat-icon {
+  color: #1976d2 !important;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Terms Container */
+.terms-container {
+  margin-bottom: 2rem;
+}
+
+.modern-checkbox {
+  color: #333;
+}
+
+.modern-checkbox .mat-mdc-checkbox-frame {
+  border-color: #ddd !important;
+}
+
+.modern-checkbox.mat-mdc-checkbox-checked .mat-mdc-checkbox-background {
+  background-color: #1976d2 !important;
+}
+
+.terms-link {
+  color: #1976d2;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.terms-link:hover {
+  color: #1565c0;
+  text-decoration: underline;
+}
+
+.terms-error {
+  color: #ff4757;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+/* Action Section */
+.action-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.primary-btn {
+  background: #1976d2 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  min-width: 200px !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+}
+
+.primary-btn:hover {
+  background: #1565c0 !important;
+}
+
+.primary-btn:disabled {
+  background: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+}
+
+.signin-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #333;
+}
+
+.signin-text {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.signin-link {
+  color: #1976d2 !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 4px !important;
+  transition: all 0.3s ease !important;
+}
+
+.signin-link:hover {
+  background: #f5f5f5 !important;
+  color: #1565c0 !important;
+}
+
+/* Footer Container */
+.footer-container {
+  position: relative;
+  z-index: 1;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 900px;
+}
+
+/* Error Styling */
+.mat-mdc-form-field-error {
+  color: #ff4757 !important;
+  font-size: 0.8rem !important;
+}
+
+/* Select Dropdown Styling */
+.mat-mdc-select-panel {
+  background: white !important;
+  border-radius: 4px !important;
+  border: 1px solid #ddd !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.mat-mdc-option {
+  color: #333 !important;
+}
+
+.mat-mdc-option:hover {
+  background: #f5f5f5 !important;
+}
+
+.mat-mdc-option.mat-mdc-option-active {
+  background: #e3f2fd !important;
+  color: #1976d2 !important;
+}
+
+/* Datepicker Styling */
+.mat-datepicker-popup {
+  background: white !important;
+  border-radius: 4px !important;
+  border: 1px solid #ddd !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .futuristic-container {
+    padding: 1rem;
+  }
+  
+  .glass-card {
+    max-width: 100%;
+    margin: 0;
+  }
+  
+  .header-section {
+    padding: 2rem 1rem 1.5rem;
+  }
+  
+  .brand-title {
+    font-size: 2rem;
+  }
+  
+  .main-title {
+    font-size: 1.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .form-section {
+    padding: 1.5rem;
+    max-height: 60vh;
+  }
+  
+  .input-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .logo-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .upload-container {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .upload-icon {
+    font-size: 2.5rem !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+  }
+  
+  .primary-btn {
+    min-width: 100% !important;
+  }
+  
+  .action-section {
+    width: 100%;
+  }
+  
+  .signin-section {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-group {
+    padding: 1rem;
+  }
+  
+  .group-title {
+    font-size: 1rem;
+  }
+  
+  .modern-form {
+    gap: 1.5rem;
+  }
+  
+  .header-section {
+    padding: 1.5rem 1rem;
+  }
+  
+  .brand-title {
+    font-size: 1.8rem;
+  }
+}

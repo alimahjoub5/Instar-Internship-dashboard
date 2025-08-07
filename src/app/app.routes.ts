@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login';
+import { SignUpComponent } from './auth/sign-up/sign-up.component';
 import { DashFn } from './dash-fn/dash-fn';
 import { DashAdmComponent } from './dash-adm/dash-adm';
 import { UserComponent } from './dash-adm/users/user/user.component';
@@ -18,12 +19,19 @@ import { DashboardContent } from './dash-fn/dashboard-content/dashboard-content'
 import { TestcompComponent } from './testcomp/testcomp.component';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'reset', component: Reset },
+  // Auth routes
+  { path: 'auth/login', component: LoginComponent },
+  { path: 'auth/signup', component: SignUpComponent },
+  { path: 'auth/reset', component: Reset },
+  
+  // Legacy routes for backward compatibility
+  // { path: 'login', redirectTo: 'auth/login', pathMatch: 'full' },
+  // { path: 'signup', redirectTo: 'auth/signup', pathMatch: 'full' },
+  // { path: 'reset', redirectTo: 'auth/reset', pathMatch: 'full' },
   { 
     path: 'dash-adm', 
     component: DashAdmComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardHomeComponent },
@@ -38,6 +46,7 @@ export const routes: Routes = [
 
   { path: 'dash-fn', 
     component: Dashboard,
+    canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardContent },
@@ -45,8 +54,8 @@ export const routes: Routes = [
       { path: 'products', component: Products }
     ]
    },
-  { path: 'sidebar', component: Sidebar },
+  // { path: 'sidebar', component: Sidebar },
   // {path : 'dashboard', component:Dashboard},
-  {path : 'testcomp', component:TestcompComponent},
-  { path: '', redirectTo: '/login', pathMatch: 'full' }
+  // {path : 'testcomp', component:TestcompComponent},
+  { path: '', redirectTo: '/auth/login', pathMatch: 'full' }
 ];
