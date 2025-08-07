@@ -1,0 +1,142 @@
+<div class="add-supplier-container">
+  <div class="header">
+    <h2>{{ isEditMode ? 'Edit Supplier' : 'Add New Supplier' }}</h2>
+    <button mat-button routerLink="/dash-adm/suppliers">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Suppliers
+    </button>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <div *ngIf="isLoading" class="loading">
+        <mat-spinner></mat-spinner>
+        <p>{{ isEditMode ? 'Loading supplier details...' : 'Processing...' }}</p>
+      </div>
+
+      <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading" class="supplier-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Supplier Name *</mat-label>
+            <input matInput formControlName="name" placeholder="Enter supplier name">
+            <mat-error *ngIf="supplierForm.get('name')?.hasError('required') && isSubmitted">
+              {{ getErrorMessage('name') }}
+            </mat-error>
+            <mat-error *ngIf="supplierForm.get('name')?.hasError('minlength') && isSubmitted">
+              {{ getErrorMessage('name') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="Enter email address">
+            <mat-error *ngIf="supplierForm.get('email')?.hasError('email') && isSubmitted">
+              {{ getErrorMessage('email') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Phone Number *</mat-label>
+            <input matInput formControlName="phone" placeholder="Enter phone number">
+            <mat-error *ngIf="supplierForm.get('phone')?.hasError('required') && isSubmitted">
+              Phone is required
+            </mat-error>
+            <mat-error *ngIf="supplierForm.get('phone')?.hasError('pattern') && isSubmitted">
+              {{ getErrorMessage('phone') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Address *</mat-label>
+            <input matInput formControlName="address" placeholder="Enter address">
+            <mat-error *ngIf="supplierForm.get('address')?.hasError('required') && isSubmitted">
+              Address is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Marque *</mat-label>
+            <input matInput formControlName="marque" placeholder="Enter marque">
+            <mat-error *ngIf="supplierForm.get('marque')?.hasError('required') && isSubmitted">
+              Marque is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>RIB *</mat-label>
+            <input matInput formControlName="rib" placeholder="Enter RIB">
+            <mat-error *ngIf="supplierForm.get('rib')?.hasError('required') && isSubmitted">
+              RIB is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Password *</mat-label>
+            <input matInput formControlName="password" type="password" placeholder="Enter password">
+            <mat-error *ngIf="supplierForm.get('password')?.hasError('required') && isSubmitted">
+              Password is required
+            </mat-error>
+          </mat-form-field>
+
+          <div class="form-field">
+            <label for="imageUpload"><b>Image</b></label>
+            <input id="imageUpload" type="file" (change)="onImageSelected($event)" accept="image/*">
+            <div *ngIf="imagePreview" class="image-preview">
+              <img [src]="imagePreview" alt="Image Preview" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Web Site</mat-label>
+            <input matInput formControlName="webSite" placeholder="https://example.com">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>User ID</mat-label>
+            <input matInput formControlName="userId" placeholder="Enter user ID">
+          </mat-form-field>
+        </div>
+
+        <!-- Removed fields: contactPerson, description, status, notes, taxId, country, city -->
+
+        <mat-form-field appearance="outline" class="form-field full-width">
+          <mat-label>Address</mat-label>
+          <textarea matInput formControlName="address" rows="3" placeholder="Enter full address"></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="4" placeholder="Enter supplier description"></textarea>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-button type="button" (click)="onCancel()" [disabled]="isLoading">
+            Cancel
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || supplierForm.invalid">
+            <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+            <span *ngIf="!isLoading">{{ isEditMode ? 'Update Supplier' : 'Create Supplier' }}</span>
+          </button>
+        </div>
+
+        <div *ngIf="successMessage" class="success-message">
+          <mat-icon>check_circle</mat-icon>
+          {{ successMessage }}
+        </div>
+
+        <div *ngIf="errorMessage" class="error-message">
+          <mat-icon>error</mat-icon>
+          {{ errorMessage }}
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div> 

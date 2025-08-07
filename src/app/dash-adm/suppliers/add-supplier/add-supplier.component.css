@@ -1,0 +1,163 @@
+.add-supplier-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #666;
+}
+
+.loading mat-spinner {
+  margin-bottom: 16px;
+}
+
+.supplier-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  border-radius: 4px;
+  margin-top: 16px;
+}
+
+.success-message mat-icon {
+  color: #2e7d32;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 4px;
+  margin-top: 16px;
+}
+
+.error-message mat-icon {
+  color: #c62828;
+}
+
+mat-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+mat-form-field {
+  margin-bottom: 8px;
+}
+
+.image-preview {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+.image-preview img {
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  max-width: 100px;
+  max-height: 100px;
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
+}
+
+input[type="file"] {
+  background: #fafafa;
+  border-radius: 4px;
+  padding: 6px 0;
+  font-size: 15px;
+  color: #333;
+  border: none;
+  outline: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .add-supplier-container {
+    padding: 10px;
+  }
+  
+  .header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h2 {
+    font-size: 20px;
+  }
+  
+  .supplier-form {
+    gap: 16px;
+  }
+} 

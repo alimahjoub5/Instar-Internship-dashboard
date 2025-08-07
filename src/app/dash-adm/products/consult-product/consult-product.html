@@ -1,0 +1,114 @@
+<!-- Popup modal pour ajout 3D -->
+<div class="modal-backdrop" *ngIf="showUpload3D">
+  <div class="modal-content">
+    <button class="close-btn" (click)="showUpload3D = false">&times;</button>
+    <app-upload-3d [product3DId]="product3DId" (close)="showUpload3D = false"></app-upload-3d>
+  </div>
+</div>
+
+<!-- Bouton pour ouvrir la popup -->
+<button class="open-upload-btn" (click)="showUpload3D = true">Ajouter un modèle 3D</button>
+
+<div class="consult-product-container" *ngIf="product">
+  <div class="product-header">
+    <img *ngIf="product.image" [src]="product.image" alt="Product Image" class="product-header-img" />
+    <div class="product-header-info">
+      <h2>{{ product.name }} <span *ngIf="product.promotion" class="badge-promo">Promo</span></h2>
+      <div class="product-header-meta">
+        <span class="product-ref">Ref: {{ product.reference }}</span>
+        <span class="product-category">{{ product.category }}<ng-container *ngIf="product.subCategory"> &rsaquo; {{ product.subCategory }}</ng-container></span>
+        <span class="product-supplier">Supplier: {{ getSupplierName(product.supplier) }}</span>
+      </div>
+      <div class="product-header-rating">
+        <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
+          <span class="star" [class.filled]="product.rate && product.rate >= star">&#9733;</span>
+        </ng-container>
+        <span class="rate-value">{{ product.rate || 0 }}/5</span>
+      </div>
+    </div>
+  </div>
+  <hr class="product-separator" />
+  <div class="product-main-horizontal">
+    <div class="product-visuals">
+      <div *ngIf="has3DModel && model3DUrl" class="model-3d-container">
+        <app-three-viewer [modelUrl]="model3DUrl"></app-three-viewer>
+        
+        <!-- Navigation Controls -->
+        <div *ngIf="all3DModels.length > 1" class="model-3d-navigation">
+          <button class="nav-btn prev-btn" (click)="previous3DModel()" title="Previous Model">
+            &#8592;
+          </button>
+          
+          <div class="model-indicators">
+            <button 
+              *ngFor="let model of all3DModels; let i = index" 
+              class="indicator-btn" 
+              [class.active]="i === current3DModelIndex"
+              (click)="goTo3DModel(i)"
+              [title]="'Model ' + (i + 1)">
+              {{ i + 1 }}
+            </button>
+          </div>
+          
+          <button class="nav-btn next-btn" (click)="next3DModel()" title="Next Model">
+            &#8594;
+          </button>
+        </div>
+        
+        <div class="model-counter" *ngIf="all3DModels.length > 1">
+          Model {{ current3DModelIndex + 1 }} of {{ all3DModels.length }}
+        </div>
+      </div>
+      
+      <div *ngIf="!has3DModel" class="no-3d-model">
+        <div class="no-model-content">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#5c6bc0" stroke-width="2"/>
+          </svg>
+          <h3>No 3D Model Available</h3>
+          <p>This product doesn't have a 3D model yet.</p>
+          <button class="upload-3d-btn" (click)="showUpload3D = true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2"/>
+            </svg>
+            Upload 3D Model
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="product-main-info">
+      <div class="product-info-card">
+        <div class="product-info-row">
+          <span class="product-info-label">Price</span>
+          <span class="product-info-value price">{{ product.price | currency }}</span>
+        </div>
+        <div class="product-info-row">
+          <span class="product-info-label">Sales</span>
+          <span class="product-info-value">{{ product.sales }}</span>
+        </div>
+        <div class="product-info-row" *ngIf="product.description">
+          <span class="product-info-label">Description</span>
+          <span class="product-info-value">{{ product.description }}</span>
+        </div>
+        <div class="product-info-row" *ngIf="product.dimensions">
+          <span class="product-info-label">Dimensions</span>
+          <span class="product-info-value">
+            <ng-container *ngIf="product.dimensions.height">H: <b>{{ product.dimensions.height }}</b> </ng-container>
+            <ng-container *ngIf="product.dimensions.width">W: <b>{{ product.dimensions.width }}</b> </ng-container>
+            <ng-container *ngIf="product.dimensions.length">L: <b>{{ product.dimensions.length }}</b> </ng-container>
+            <ng-container *ngIf="product.dimensions.radius">R: <b>{{ product.dimensions.radius }}</b></ng-container>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="view-reviews-btn" [routerLink]="['/dash-adm/reviews', product._id]" style="margin: 32px auto 32px auto;">
+    <span class="back-icon">&#9733;</span> View All Reviews
+  </button>
+  <hr class="product-separator" />
+  <button class="back-btn" (click)="goBack()">
+    <span class="back-icon">&#8592;</span> Back to List
+  </button>
+</div>
+<div *ngIf="isLoading">Loading product...</div>
+<div *ngIf="error" class="error">{{ error }}</div>

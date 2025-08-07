@@ -40,11 +40,7 @@ export class AddUserComponent implements OnInit {
   isEdit = false;
   userId: string | null = null;
 
-  roles = [
-    { value: 'user', label: 'User' },
-    { value: 'vendor', label: 'Vendor' },
-    { value: 'admin', label: 'Administrator' }
-  ];
+  // Removed roles array
 
   genders = [
     { value: '', label: 'Not specified' },
@@ -62,13 +58,13 @@ export class AddUserComponent implements OnInit {
       firstName: ['', [Validators.required, Validators.minLength(2)]],
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      recoveryEmail: ['', [Validators.email]],
+      recoveryEmail: ['', []], // Enlever Validators.email ici
       password: ['', [Validators.required, Validators.minLength(6)]],
       phone: [''],
       address: [''],
       gender: [''],
       birthDate: [''],
-      role: ['user', Validators.required],
+      role: ['user'],
       imageUrl: [''],
       ban: [false]
     });
@@ -86,6 +82,16 @@ export class AddUserComponent implements OnInit {
         this.userForm.get('password')?.updateValueAndValidity();
       });
     }
+    // Ajout d'un validateur conditionnel pour recoveryEmail
+    this.userForm.get('recoveryEmail')?.valueChanges.subscribe(value => {
+      const control = this.userForm.get('recoveryEmail');
+      if (value) {
+        control?.setValidators([Validators.email]);
+      } else {
+        control?.clearValidators();
+      }
+      control?.updateValueAndValidity({ emitEvent: false });
+    });
   }
 
   onSubmit() {

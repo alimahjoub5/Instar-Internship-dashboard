@@ -1,0 +1,151 @@
+<div class="create-subscription-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>add_circle</mat-icon>
+        Create New Subscription
+      </mat-card-title>
+      <mat-card-subtitle>
+        Create a new subscription for a supplier
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="subscriptionForm" (ngSubmit)="onSubmit()" class="subscription-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Select Supplier</mat-label>
+            <mat-select formControlName="supplierId" required (selectionChange)="checkExistingSubscription($event.value)">
+                             <mat-option *ngFor="let supplier of suppliers" [value]="supplier._id">
+                 {{ supplier.name }} - {{ supplier.email || supplier.phone }}
+                 <span *ngIf="supplier.hasActiveSubscription" class="subscription-status">
+                   (Has Active Subscription)
+                 </span>
+                 <span *ngIf="supplier.hasCancelledSubscription" class="subscription-status cancelled">
+                   (Can Create New Subscription)
+                 </span>
+               </mat-option>
+            </mat-select>
+            <mat-error *ngIf="subscriptionForm.get('supplierId')?.hasError('required')">
+              Supplier is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Select Plan</mat-label>
+            <mat-select formControlName="planType" required>
+              <mat-option *ngFor="let plan of subscriptionPlans" [value]="plan.type">
+                {{ plan.name }} - {{ formatPrice(plan.price) }}/{{ plan.duration }} month(s)
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="subscriptionForm.get('planType')?.hasError('required')">
+              Plan is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Payment Method</mat-label>
+            <mat-select formControlName="paymentMethod" required>
+              <mat-option value="card">Credit Card</mat-option>
+              <mat-option value="bank_transfer">Bank Transfer</mat-option>
+              <mat-option value="paypal">PayPal</mat-option>
+            </mat-select>
+            <mat-error *ngIf="subscriptionForm.get('paymentMethod')?.hasError('required')">
+              Payment method is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-checkbox formControlName="autoRenew">
+            Enable auto-renewal
+          </mat-checkbox>
+        </div>
+
+        <!-- Plan Details -->
+        <div *ngIf="getSelectedPlan()" class="plan-details">
+          <h3>Plan Details</h3>
+          <div class="plan-info">
+            <div class="plan-header">
+              <h4>{{ getSelectedPlan()?.name }}</h4>
+              <div class="plan-price">{{ formatPrice(getSelectedPlan()?.price || 0) }}</div>
+            </div>
+            <p class="plan-description">{{ getPlanDescription(subscriptionForm.get('planType')?.value) }}</p>
+            
+            <div class="plan-features">
+              <h5>Features:</h5>
+              <ul>
+                <li *ngIf="getPlanFeatures(subscriptionForm.get('planType')?.value).maxProducts">
+                  Up to {{ getPlanFeatures(subscriptionForm.get('planType')?.value).maxProducts }} products
+                </li>
+                <li *ngIf="getPlanFeatures(subscriptionForm.get('planType')?.value).maxImages">
+                  Up to {{ getPlanFeatures(subscriptionForm.get('planType')?.value).maxImages }} images per product
+                </li>
+                <li *ngIf="getPlanFeatures(subscriptionForm.get('planType')?.value).analytics">
+                  Analytics dashboard
+                </li>
+                <li *ngIf="getPlanFeatures(subscriptionForm.get('planType')?.value).prioritySupport">
+                  Priority support
+                </li>
+                <li *ngIf="getPlanFeatures(subscriptionForm.get('planType')?.value).customBranding">
+                  Custom branding
+                </li>
+                <li *ngIf="getPlanFeatures(subscriptionForm.get('planType')?.value).apiAccess">
+                  API access
+                </li>
+                <li *ngIf="getPlanFeatures(subscriptionForm.get('planType')?.value).advancedReporting">
+                  Advanced reporting
+                </li>
+                <li *ngIf="getPlanFeatures(subscriptionForm.get('planType')?.value).bulkOperations">
+                  Bulk operations
+                </li>
+                <li *ngIf="getPlanFeatures(subscriptionForm.get('planType')?.value).whiteLabel">
+                  White label solution
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div *ngIf="successMessage" class="success-message">
+          <mat-icon>check_circle</mat-icon>
+          {{ successMessage }}
+        </div>
+
+        <div *ngIf="errorMessage" class="error-message">
+          <mat-icon>error</mat-icon>
+          {{ errorMessage }}
+          <div *ngIf="errorMessage.includes('already has an active subscription')" class="warning-actions">
+            <button mat-button color="primary" routerLink="/dash-adm/subscriptions">
+              View All Subscriptions
+            </button>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button 
+            type="button" 
+            mat-button 
+            (click)="onCancel()"
+            [disabled]="isLoading">
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            mat-raised-button 
+            color="primary"
+            [disabled]="subscriptionForm.invalid || isLoading">
+            <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+            <span *ngIf="!isLoading">Create Subscription</span>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div> 

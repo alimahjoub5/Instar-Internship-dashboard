@@ -1,0 +1,25 @@
+<div class="subcategories-add-container">
+  <h2>Ajouter Sous-catégorie</h2>
+  <form (ngSubmit)="submit()">
+    <div>
+      <label>Nom :</label>
+      <input [(ngModel)]="subcategory.name" name="name" required />
+    </div>
+    <div>
+      <label>Description :</label>
+      <input [(ngModel)]="subcategory.description" name="description" />
+    </div>
+    <div>
+      <label>Catégorie :</label>
+      <select [(ngModel)]="subcategory.category" name="category" required>
+        <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.title }}</option>
+      </select>
+    </div>
+    <div>
+      <label>Image (URL) :</label>
+      <input [(ngModel)]="subcategory.image" name="image" />
+    </div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <button type="submit" [disabled]="isSubmitting">Ajouter</button>
+  </form>
+</div> 

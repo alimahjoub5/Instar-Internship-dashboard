@@ -133,7 +133,7 @@ export class UserService {
   }
 
   banUser(id: string, ban: boolean): Observable<any> {
-    return this.apiService.put('/banUser', { id, ban });
+    return this.apiService.put('/users/ban', { id, ban });
   }
 
   deleteUser(id: string): Observable<any> {
@@ -142,6 +142,10 @@ export class UserService {
 
   getUserByEmail(email: string): Observable<any> {
     return this.apiService.post('/getAllUserEmails', { email });
+  }
+
+  getUserById(id: string): Observable<User> {
+    return this.apiService.get(`/users/byId?id=${id}`);
   }
 
   // Token Management

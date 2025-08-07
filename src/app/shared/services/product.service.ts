@@ -22,24 +22,22 @@ export interface Product {
   promotion?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  materials?: string;
+  dimensions?: {
+    height?: number;
+    width?: number;
+    length?: number;
+    radius?: number;
+  };
+  quantity3D?: number; // Ajout pour la quantité liée au product3d
 }
 
 export interface Product3D {
   _id?: string;
   prodId: string;
-  modelUrl: string;
-  textureUrl?: string;
-  scale?: number;
-  position?: {
-    x: number;
-    y: number;
-    z: number;
-  };
-  rotation?: {
-    x: number;
-    y: number;
-    z: number;
-  };
+  image3D: string;
+  imageCouleurs: string;
+  quantity: number;
 }
 
 @Injectable({
@@ -48,7 +46,7 @@ export interface Product3D {
 export class ProductService {
   constructor(private apiService: ApiService) { }
 
-  // Basic CRUD Operations
+  // Product CRUD
   createProduct(productData: Product): Observable<Product> {
     return this.apiService.post('/products', productData);
   }
@@ -69,7 +67,6 @@ export class ProductService {
     return this.apiService.delete(`/products/${id}`);
   }
 
-  // Advanced Product Features
   getSortedProducts(): Observable<Product[]> {
     return this.apiService.get('/products/sorted');
   }
@@ -79,54 +76,43 @@ export class ProductService {
   }
 
   getProductsByCategoryAndSubcategory(category: string, subCategory: string): Observable<Product[]> {
-    return this.apiService.get(`/products/${category}/${subCategory}`);
+    return this.apiService.get(`/products/category/${category}/subcategory/${subCategory}`);
   }
 
-  // 3D Product Operations
+  // 3D Product CRUD
   create3DProduct(product3DData: Product3D): Observable<Product3D> {
-    return this.apiService.post('/products/3d', product3DData);
+    return this.apiService.post('/3Dproducts', product3DData);
   }
 
   get3DProductById(id: string): Observable<Product3D> {
-    return this.apiService.get(`/products/3d/${id}`);
+    return this.apiService.get(`/3Dproducts/${id}`);
   }
 
   getAll3DProducts(productId: string): Observable<Product3D[]> {
-    return this.apiService.get(`/products/3d/all/${productId}`);
+    return this.apiService.get(`/3Dproducts/all/${productId}`);
   }
 
-  // Search and Filter Methods
-  searchProducts(query: string): Observable<Product[]> {
-    return this.apiService.get('/products', { search: query });
+  // Upload product image
+  uploadProductImage(productId: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('id', productId);
+    formData.append('image', file);
+    return this.apiService.put('/uploadproductsimage', formData);
   }
 
-  getProductsByPriceRange(minPrice: number, maxPrice: number): Observable<Product[]> {
-    return this.apiService.get('/products', { minPrice, maxPrice });
+  // Upload 3D color image
+  upload3DColorImage(product3DId: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('id', product3DId);
+    formData.append('image', file);
+    return this.apiService.put('/uploadcolorimage', formData);
   }
 
-  getProductsByStock(stock: number): Observable<Product[]> {
-    return this.apiService.get('/products', { stock });
-  }
-
-  // Utility Methods
-  getCategories(): Observable<string[]> {
-    return this.apiService.get('/products/categories');
-  }
-
-  getSubCategories(category: string): Observable<string[]> {
-    return this.apiService.get(`/products/subcategories/${category}`);
-  }
-
-  // Product Statistics
-  getProductStats(): Observable<any> {
-    return this.apiService.get('/products/stats');
-  }
-
-  getTopSellingProducts(limit: number = 10): Observable<Product[]> {
-    return this.apiService.get('/products/top-selling', { limit });
-  }
-
-  getLowStockProducts(threshold: number = 10): Observable<Product[]> {
-    return this.apiService.get('/products/low-stock', { threshold });
+  // Upload 3D file
+  upload3DFile(product3DId: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('id', product3DId);
+    formData.append('file', file);
+    return this.apiService.put('/uploadcolorfile', formData);
   }
 } 

@@ -1,0 +1,252 @@
+.create-subscription-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.subscription-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.plan-details {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 16px;
+}
+
+.plan-details h3 {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.plan-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.plan-header h4 {
+  margin: 0;
+  color: #1976d2;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.plan-price {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.plan-description {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.plan-features {
+  margin-top: 16px;
+}
+
+.plan-features h5 {
+  margin: 0 0 12px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.plan-features ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: none;
+}
+
+.plan-features li {
+  padding: 4px 0;
+  color: #555;
+  position: relative;
+}
+
+.plan-features li::before {
+  content: "✓";
+  color: #2e7d32;
+  font-weight: bold;
+  position: absolute;
+  left: -20px;
+}
+
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #e8f5e8;
+  color: #2e7d32;
+  border-radius: 6px;
+  border: 1px solid #c8e6c9;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 6px;
+  border: 1px solid #ffcdd2;
+}
+
+.form-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.form-actions button {
+  min-width: 120px;
+}
+
+/* Material Design Enhancements */
+mat-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+mat-card-header {
+  padding: 24px 24px 0;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+mat-card-subtitle {
+  margin-top: 8px;
+  color: #666;
+}
+
+mat-card-content {
+  padding: 24px;
+}
+
+mat-form-field {
+  margin-bottom: 8px;
+}
+
+mat-checkbox {
+  margin-top: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .create-subscription-container {
+    padding: 10px;
+  }
+
+  .plan-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .plan-price {
+    font-size: 20px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+/* Loading State */
+button[mat-raised-button] mat-spinner {
+  margin-right: 8px;
+}
+
+/* Form Field Styling */
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-select {
+  width: 100%;
+}
+
+/* Checkbox Styling */
+.mat-mdc-checkbox {
+  margin-top: 16px;
+}
+
+/* Card Styling */
+mat-card {
+  margin-bottom: 24px;
+}
+
+/* Icon Styling */
+mat-icon {
+  color: #1976d2;
+}
+
+.success-message mat-icon {
+  color: #2e7d32;
+}
+
+.error-message mat-icon {
+  color: #c62828;
+}
+
+.warning-actions {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #ffcdd2;
+}
+
+.warning-actions button {
+  margin-right: 8px;
+}
+
+.subscription-status {
+  color: #f57c00;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.subscription-status.cancelled {
+  color: #2e7d32;
+} 

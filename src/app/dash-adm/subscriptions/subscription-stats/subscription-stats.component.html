@@ -1,0 +1,244 @@
+<div class="subscription-stats-container">
+  <div class="stats-header">
+    <h1>
+      <mat-icon>analytics</mat-icon>
+      Subscription Analytics Dashboard
+    </h1>
+    <p>Comprehensive overview of subscription performance, revenue metrics, and supplier activity</p>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Loading comprehensive subscription statistics...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-container">
+    <mat-icon>error</mat-icon>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && stats" class="stats-content">
+    <!-- Overview Cards -->
+    <div class="stats-grid">
+      <!-- Total Subscriptions -->
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>subscriptions</mat-icon>
+            <h3>Total Subscriptions</h3>
+          </div>
+          <div class="stat-value">{{ stats.totalSubscriptions }}</div>
+          <div class="stat-description">All time subscriptions</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Active Subscriptions -->
+      <mat-card class="stat-card active">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>check_circle</mat-icon>
+            <h3>Active Subscriptions</h3>
+          </div>
+          <div class="stat-value">{{ stats.activeSubscriptions }}</div>
+          <div class="stat-description">{{ getActivePercentage() | number:'1.1-1' }}% of total</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Expired Subscriptions -->
+      <mat-card class="stat-card expired">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>schedule</mat-icon>
+            <h3>Expired Subscriptions</h3>
+          </div>
+          <div class="stat-value">{{ stats.expiredSubscriptions }}</div>
+          <div class="stat-description">{{ getExpiredPercentage() | number:'1.1-1' }}% of total</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Cancelled Subscriptions -->
+      <mat-card class="stat-card cancelled">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>cancel</mat-icon>
+            <h3>Cancelled Subscriptions</h3>
+          </div>
+          <div class="stat-value">{{ stats.cancelledSubscriptions }}</div>
+          <div class="stat-description">{{ getCancelledPercentage() | number:'1.1-1' }}% of total</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Total Revenue -->
+      <mat-card class="stat-card revenue">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>attach_money</mat-icon>
+            <h3>Total Revenue</h3>
+          </div>
+          <div class="stat-value">{{ formatCurrency(getTotalRevenue()) }}</div>
+          <div class="stat-description">All time revenue</div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Average Revenue per Subscription -->
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-header">
+            <mat-icon>trending_up</mat-icon>
+            <h3>Avg Revenue/Subscription</h3>
+          </div>
+          <div class="stat-value">{{ formatCurrency(getTotalRevenue() / (stats.totalSubscriptions || 1)) }}</div>
+          <div class="stat-description">Average per subscription</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Time-based Statistics -->
+    <div class="time-stats-section">
+      <h2>Performance Over Time</h2>
+      <div class="time-stats-grid">
+        <!-- Weekly Stats -->
+        <mat-card class="time-stat-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>calendar_today</mat-icon>
+              This Week
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="time-stat-item">
+              <span class="label">New Subscriptions:</span>
+              <span class="value">{{ stats.weeklyStats?.newSubscriptions || 0 }}</span>
+            </div>
+            <div class="time-stat-item">
+              <span class="label">Cancelled:</span>
+              <span class="value cancelled">{{ stats.weeklyStats?.cancelledSubscriptions || 0 }}</span>
+            </div>
+            <div class="time-stat-item">
+              <span class="label">Revenue:</span>
+              <span class="value revenue">{{ formatCurrency(stats.weeklyStats?.revenue || 0) }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Monthly Stats -->
+        <mat-card class="time-stat-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>calendar_month</mat-icon>
+              This Month
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="time-stat-item">
+              <span class="label">New Subscriptions:</span>
+              <span class="value">{{ stats.monthlyStats?.newSubscriptions || 0 }}</span>
+            </div>
+            <div class="time-stat-item">
+              <span class="label">Cancelled:</span>
+              <span class="value cancelled">{{ stats.monthlyStats?.cancelledSubscriptions || 0 }}</span>
+            </div>
+            <div class="time-stat-item">
+              <span class="label">Revenue:</span>
+              <span class="value revenue">{{ formatCurrency(stats.monthlyStats?.revenue || 0) }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Yearly Stats -->
+        <mat-card class="time-stat-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>calendar_view_year</mat-icon>
+              This Year
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="time-stat-item">
+              <span class="label">New Subscriptions:</span>
+              <span class="value">{{ stats.yearlyStats?.newSubscriptions || 0 }}</span>
+            </div>
+            <div class="time-stat-item">
+              <span class="label">Cancelled:</span>
+              <span class="value cancelled">{{ stats.yearlyStats?.cancelledSubscriptions || 0 }}</span>
+            </div>
+            <div class="time-stat-item">
+              <span class="label">Revenue:</span>
+              <span class="value revenue">{{ formatCurrency(stats.yearlyStats?.revenue || 0) }}</span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Plan Distribution -->
+    <div *ngIf="stats?.planStats" class="plan-distribution">
+      <h2>Plan Distribution</h2>
+      <div class="plan-stats-grid">
+        <mat-card *ngFor="let plan of stats.planStats" class="plan-stat-card">
+          <mat-card-content>
+            <div class="plan-stat-header">
+              <mat-chip [color]="getPlanColor(plan._id)" selected>
+                {{ plan._id | titlecase }}
+              </mat-chip>
+            </div>
+            <div class="plan-stat-value">{{ plan.count }}</div>
+            <div class="plan-stat-description">subscriptions</div>
+            <div class="plan-stat-revenue">{{ formatCurrency(plan.totalRevenue) }}</div>
+            <div class="plan-stat-revenue-label">total revenue</div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Top Suppliers -->
+    <div *ngIf="stats?.supplierStats" class="top-suppliers-section">
+      <h2>Top Performing Suppliers</h2>
+      <div class="suppliers-grid">
+        <mat-card *ngFor="let supplier of stats.supplierStats; let i = index" class="supplier-card">
+          <mat-card-content>
+            <div class="supplier-rank">#{{ i + 1 }}</div>
+            <div class="supplier-name">{{ supplier.supplierName }}</div>
+            <div class="supplier-stats">
+              <div class="supplier-stat">
+                <span class="label">Subscriptions:</span>
+                <span class="value">{{ supplier.totalSubscriptions }}</span>
+              </div>
+              <div class="supplier-stat">
+                <span class="label">Total Spent:</span>
+                <span class="value revenue">{{ formatCurrency(supplier.totalRevenue) }}</span>
+              </div>
+              <div class="supplier-stat">
+                <span class="label">Last Activity:</span>
+                <span class="value">{{ formatDate(supplier.lastSubscriptionDate) }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div *ngIf="stats?.recentActivity" class="recent-activity-section">
+      <h2>Recent Activity</h2>
+      <div class="activity-list">
+        <mat-card *ngFor="let activity of stats.recentActivity" class="activity-card">
+          <mat-card-content>
+            <div class="activity-header">
+              <mat-icon color="primary">trending_up</mat-icon>
+              <div class="activity-info">
+                <div class="activity-title">
+                  {{ activity.newSubscriptions }} New Subscriptions
+                </div>
+                <div class="activity-subtitle">
+                  Revenue: {{ formatCurrency(activity.revenue) }}
+                </div>
+              </div>
+              <div class="activity-amount">{{ formatCurrency(activity.revenue) }}</div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div> 

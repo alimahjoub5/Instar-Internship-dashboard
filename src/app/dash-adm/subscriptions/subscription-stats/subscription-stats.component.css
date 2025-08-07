@@ -1,0 +1,539 @@
+.subscription-stats-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.stats-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.stats-header h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 0 8px 0;
+  font-size: 32px;
+  font-weight: 500;
+  color: #333;
+}
+
+.stats-header p {
+  margin: 0;
+  color: #666;
+  font-size: 16px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 16px;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 16px;
+  background-color: #ffebee;
+  border-radius: 8px;
+  color: #c62828;
+}
+
+.stats-content {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.stat-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card.active {
+  border-left: 4px solid #2e7d32;
+}
+
+.stat-card.expired {
+  border-left: 4px solid #c62828;
+}
+
+.stat-card.pending {
+  border-left: 4px solid #ef6c00;
+}
+
+.stat-card.cancelled {
+  border-left: 4px solid #d32f2f;
+}
+
+.stat-card.revenue {
+  border-left: 4px solid #1976d2;
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-header mat-icon {
+  color: #1976d2;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.stat-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+}
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.stat-description {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+.section h2 {
+  margin: 0 0 24px 0;
+  font-size: 24px;
+  font-weight: 500;
+  color: #333;
+}
+
+.plan-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.plan-stat-card {
+  border-radius: 8px;
+  text-align: center;
+}
+
+.plan-stat-header {
+  margin-bottom: 16px;
+}
+
+.plan-stat-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.plan-stat-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.plan-stat-revenue {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 4px;
+}
+
+.plan-stat-revenue-label {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.plan-stat-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.breakdown-item .label {
+  color: #666;
+}
+
+.breakdown-item .value {
+  font-weight: 600;
+  color: #333;
+}
+
+.trends-card {
+  border-radius: 8px;
+}
+
+.trends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.trend-item {
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.trend-date {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.trend-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trend-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.trend-stat .label {
+  color: #666;
+}
+
+.trend-stat .value {
+  font-weight: 600;
+  color: #333;
+}
+
+.suppliers-card {
+  border-radius: 8px;
+}
+
+.suppliers-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+  color: #333;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+  align-items: center;
+}
+
+.table-row:hover {
+  background-color: #fafafa;
+}
+
+.cell {
+  font-size: 14px;
+}
+
+.supplier-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.supplier-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.supplier-email {
+  font-size: 12px;
+  color: #666;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-badge.active {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+
+.cell.revenue {
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.payment-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.payment-method-card {
+  border-radius: 8px;
+  text-align: center;
+}
+
+.payment-method-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.payment-method-header mat-icon {
+  color: #1976d2;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.payment-method-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.payment-method-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.payment-method-description {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.payment-method-revenue {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2e7d32;
+  margin-bottom: 4px;
+}
+
+.payment-method-revenue-label {
+  font-size: 12px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.activity-card {
+  border-radius: 8px;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.activity-item {
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+.activity-date {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.activity-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.activity-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.activity-stat .label {
+  color: #666;
+}
+
+.activity-stat .value {
+  font-weight: 600;
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .subscription-stats-container {
+    padding: 10px;
+  }
+
+  .stats-header h1 {
+    font-size: 24px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .plan-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .trends-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .payment-methods-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .activity-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .suppliers-table {
+    font-size: 12px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+  }
+
+  .plan-stat-value {
+    font-size: 24px;
+  }
+}
+
+/* Material Design Enhancements */
+mat-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+mat-card-content {
+  padding: 24px;
+}
+
+mat-chip {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Color Themes */
+.stat-card.active .stat-header mat-icon {
+  color: #2e7d32;
+}
+
+.stat-card.expired .stat-header mat-icon {
+  color: #c62828;
+}
+
+.stat-card.pending .stat-header mat-icon {
+  color: #ef6c00;
+}
+
+.stat-card.cancelled .stat-header mat-icon {
+  color: #d32f2f;
+}
+
+.stat-card.revenue .stat-header mat-icon {
+  color: #1976d2;
+}
+
+/* Loading Spinner */
+mat-spinner {
+  margin: 0 auto;
+}
+
+/* Error State */
+.error-container mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: #c62828;
+}
+
+.error-container p {
+  margin: 0;
+  font-size: 16px;
+} 

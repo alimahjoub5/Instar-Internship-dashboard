@@ -1,0 +1,39 @@
+<div class="categories-list-container">
+  <button (click)="goToAdd()">Ajouter Catégorie</button>
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Image</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cat of categories">
+        <td>
+          <span *ngIf="cat.title; else noTitle" class="category-title">{{ cat.title }}</span>
+          <ng-template #noTitle>
+            <span class="no-data">Sans nom</span>
+          </ng-template>
+        </td>
+        <td>
+          <span *ngIf="cat.description; else noDescription" class="category-description">{{ cat.description }}</span>
+          <ng-template #noDescription>
+            <span class="no-data">Aucune description</span>
+          </ng-template>
+        </td>
+        <td>
+          <img *ngIf="cat.image" [src]="cat.image" alt="img" width="40" />
+          <span *ngIf="!cat.image" class="no-data">Aucune image</span>
+        </td>
+        <td>
+          <button (click)="goToEdit(cat._id)">Edit</button>
+          <button (click)="deleteCategory(cat._id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="isLoading">Chargement...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+</div> 

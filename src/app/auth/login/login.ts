@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { inject } from '@angular/core';
 import { UserService } from '../../shared/services/user.service';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ export class LoginComponent {
 
   private router = inject(Router);
   private userService = inject(UserService);
+  private authService = inject(AuthService);
 
   login() {
     if (!this.email || !this.password) {
@@ -30,6 +32,8 @@ export class LoginComponent {
 
     this.isLoading = true;
     this.error = '';
+
+    console.log('🔐 Tentative de connexion avec:', { email: this.email, password: this.password });
 
     this.userService.login({ email: this.email, password: this.password }).subscribe({
       next: (response) => {
@@ -51,8 +55,9 @@ export class LoginComponent {
         });
       },
       error: (error) => {
-        console.error('Login error:', error);
-        this.error = error.error?.message || 'Login failed. Please try again.';
+        console.error('❌ Erreur de connexion:', error);
+        console.error('📋 Détails de l\'erreur:', error.error);
+        this.error = error.error?.message || 'Échec de la connexion. Veuillez réessayer.';
         this.isLoading = false;
       }
     });

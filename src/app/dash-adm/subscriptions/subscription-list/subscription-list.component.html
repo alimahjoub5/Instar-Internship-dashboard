@@ -1,0 +1,152 @@
+<div class="subscription-list-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>subscriptions</mat-icon>
+        Subscription Management
+      </mat-card-title>
+      <mat-card-subtitle>
+        Manage all supplier subscriptions
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="actions-bar">
+        <button mat-raised-button color="primary" routerLink="/dash-adm/subscriptions/create">
+          <mat-icon>add</mat-icon>
+          New Subscription
+        </button>
+        <button mat-raised-button color="accent" routerLink="/dash-adm/subscriptions/stats">
+          <mat-icon>analytics</mat-icon>
+          View Statistics
+        </button>
+        <button mat-raised-button color="warn" routerLink="/dash-adm/subscriptions/expiration">
+          <mat-icon>schedule</mat-icon>
+          Expiration Management
+        </button>
+      </div>
+
+      <div *ngIf="isLoading" class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading subscriptions...</p>
+      </div>
+
+      <div *ngIf="!isLoading && subscriptions.length === 0" class="empty-state">
+        <mat-icon>subscriptions</mat-icon>
+        <h3>No subscriptions found</h3>
+        <p>Start by creating a new subscription for a supplier.</p>
+        <button mat-raised-button color="primary" routerLink="/dash-adm/subscriptions/create">
+          Create First Subscription
+        </button>
+      </div>
+
+      <div *ngIf="!isLoading && subscriptions.length > 0" class="table-container">
+        <table mat-table [dataSource]="subscriptions" class="subscription-table">
+          <!-- Supplier Column -->
+          <ng-container matColumnDef="supplier">
+            <th mat-header-cell *matHeaderCellDef>Supplier</th>
+            <td mat-cell *matCellDef="let subscription">
+              <div class="supplier-info">
+                <strong>{{ subscription.supplier?.name || 'N/A' }}</strong>
+                <small>{{ subscription.supplier?.email || subscription.supplier?.phone }}</small>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Plan Type Column -->
+          <ng-container matColumnDef="planType">
+            <th mat-header-cell *matHeaderCellDef>Plan</th>
+            <td mat-cell *matCellDef="let subscription">
+              <mat-chip [color]="subscription.planType === 'enterprise' ? 'accent' : subscription.planType === 'premium' ? 'warn' : 'primary'" selected>
+                {{ subscription.planType | titlecase }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let subscription">
+              <span class="status-badge" [class]="getStatusClass(subscription.status)">
+                {{ subscription.status | titlecase }}
+              </span>
+              <div *ngIf="isSubscriptionActive(subscription)" class="days-remaining">
+                {{ getDaysRemaining(subscription) }} days left
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Payment Status Column -->
+          <ng-container matColumnDef="paymentStatus">
+            <th mat-header-cell *matHeaderCellDef>Payment</th>
+            <td mat-cell *matCellDef="let subscription">
+              <span class="payment-badge" [class]="getPaymentStatusClass(subscription.paymentStatus)">
+                {{ subscription.paymentStatus | titlecase }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Start Date Column -->
+          <ng-container matColumnDef="startDate">
+            <th mat-header-cell *matHeaderCellDef>Start Date</th>
+            <td mat-cell *matCellDef="let subscription">
+              {{ formatDate(subscription.startDate) }}
+            </td>
+          </ng-container>
+
+          <!-- End Date Column -->
+          <ng-container matColumnDef="endDate">
+            <th mat-header-cell *matHeaderCellDef>End Date</th>
+            <td mat-cell *matCellDef="let subscription">
+              <div class="end-date-info">
+                <span>{{ formatDate(subscription.endDate) }}</span>
+                <div *ngIf="isSubscriptionActive(subscription)" class="expiration-indicator" [class]="getExpirationStatusClass(subscription)">
+                  {{ getDaysRemaining(subscription) }} days left
+                </div>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Price Column -->
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef>Price</th>
+            <td mat-cell *matCellDef="let subscription">
+              <strong>{{ formatPrice(subscription?.price) }}</strong>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let subscription">
+              <div class="action-buttons">
+                <button mat-icon-button matTooltip="View Details" [routerLink]="['/dash-adm/subscriptions', subscription._id]">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                
+                <button mat-icon-button matTooltip="Edit Subscription" [routerLink]="['/dash-adm/subscriptions/edit', subscription._id]">
+                  <mat-icon>edit</mat-icon>
+                </button>
+
+                <button *ngIf="subscription.status === 'active'" mat-icon-button color="warn" matTooltip="Cancel Subscription" (click)="cancelSubscription(subscription._id!)">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+
+                <button *ngIf="subscription.status === 'expired'" mat-icon-button color="primary" matTooltip="Renew Subscription" (click)="renewSubscription(subscription._id!)">
+                  <mat-icon>refresh</mat-icon>
+                </button>
+
+                <button *ngIf="subscription.paymentStatus === 'pending'" mat-icon-button color="accent" matTooltip="Mark as Paid" (click)="updatePaymentStatus(subscription._id!, 'paid')">
+                  <mat-icon>payment</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div> 

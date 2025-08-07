@@ -1,0 +1,73 @@
+<div class="add-product-container">
+  <h2>Add New Product</h2>
+  <form [formGroup]="productForm" (ngSubmit)="submit()">
+    <div>
+      <label>Name:</label>
+      <input formControlName="name" type="text" />
+    </div>
+    <div>
+      <label>Reference:</label>
+      <input formControlName="reference" type="text" />
+    </div>
+    <div>
+      <label>Description:</label>
+      <textarea formControlName="description"></textarea>
+    </div>
+    <div>
+      <label>Price:</label>
+      <input formControlName="price" type="number" min="0" />
+    </div>
+    <div>
+      <label>Category:</label>
+      <select formControlName="category">
+        <option value="">Select Category</option>
+        <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.title }}</option>
+      </select>
+    </div>
+    <div>
+      <label>Subcategory:</label>
+      <input formControlName="subCategory" type="text" placeholder="Enter subcategory" />
+    </div>
+    <div>
+      <label>Supplier:</label>
+      <select formControlName="supplier">
+        <option value="">Select Supplier</option>
+        <option *ngFor="let sup of suppliers" [value]="sup._id">{{ sup.name }}</option>
+      </select>
+    </div>
+    <div>
+      <label>Materials:</label>
+      <input formControlName="materials" type="text" />
+    </div>
+    <div>
+      <label>Promotion:</label>
+      <input formControlName="promotion" type="checkbox" />
+    </div>
+    <fieldset formGroupName="dimensions">
+      <legend>Dimensions</legend>
+      <div>
+        <label>Height:</label>
+        <input formControlName="height" type="number" />
+      </div>
+      <div>
+        <label>Width:</label>
+        <input formControlName="width" type="number" />
+      </div>
+      <div>
+        <label>Length:</label>
+        <input formControlName="length" type="number" />
+      </div>
+      <div>
+        <label>Radius:</label>
+        <input formControlName="radius" type="number" />
+      </div>
+    </fieldset>
+    <div>
+      <label>Image:</label>
+      <input type="file" (change)="onFileChange($event)" />
+    </div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <button type="submit" [disabled]="isSubmitting || productForm.invalid">Add Product</button>
+    <div *ngIf="isSubmitting">Submitting...</div>
+  </form>
+</div>

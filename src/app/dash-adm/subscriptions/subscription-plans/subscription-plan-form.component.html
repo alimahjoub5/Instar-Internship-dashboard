@@ -1,0 +1,198 @@
+<div class="subscription-plan-form-container">
+  <!-- Header -->
+  <div class="header-section">
+    <h1>
+      <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+      {{ isEditMode ? 'Edit' : 'Create' }} Subscription Plan
+    </h1>
+    <p>{{ isEditMode ? 'Update subscription plan details' : 'Create a new subscription plan' }}</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading || !isFormReady" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>{{ isEditMode ? 'Loading plan details...' : 'Creating plan...' }}</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <mat-icon>error</mat-icon>
+    <h3>Error</h3>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Form -->
+  <form *ngIf="!isLoading && isFormReady && planForm" [formGroup]="planForm" (ngSubmit)="onSubmit()" class="plan-form">
+    <div class="form-grid">
+      <!-- Basic Information -->
+      <mat-card class="form-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>info</mat-icon>
+            Basic Information
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Plan Name</mat-label>
+              <input matInput formControlName="name" placeholder="Enter plan name">
+              <mat-error *ngIf="getFieldError('name')">{{ getFieldError('name') }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Plan Type</mat-label>
+              <mat-select formControlName="type">
+                <mat-option *ngFor="let type of planTypes" [value]="type.value">
+                  <mat-chip [color]="getPlanTypeColor(type.value)" selected>
+                    {{ type.label }}
+                  </mat-chip>
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="getFieldError('type')">{{ getFieldError('type') }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Price ($)</mat-label>
+              <input matInput type="number" formControlName="price" placeholder="0.00">
+              <mat-error *ngIf="getFieldError('price')">{{ getFieldError('price') }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Duration (Days)</mat-label>
+              <input matInput type="number" formControlName="duration" placeholder="1">
+              <mat-error *ngIf="getFieldError('duration')">{{ getFieldError('duration') }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" rows="3" placeholder="Enter plan description"></textarea>
+            <mat-error *ngIf="getFieldError('description')">{{ getFieldError('description') }}</mat-error>
+          </mat-form-field>
+
+          <div class="form-row">
+            <mat-checkbox formControlName="isActive" color="primary">
+              Active Plan
+            </mat-checkbox>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Plan Limits -->
+      <mat-card class="form-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>settings</mat-icon>
+            Plan Limits
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Max Products</mat-label>
+              <input matInput type="number" formControlName="features.maxProducts" placeholder="10">
+              <mat-error *ngIf="getFieldError('features.maxProducts')">{{ getFieldError('features.maxProducts') }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Max Images</mat-label>
+              <input matInput type="number" formControlName="features.maxImages" placeholder="5">
+              <mat-error *ngIf="getFieldError('features.maxImages')">{{ getFieldError('features.maxImages') }}</mat-error>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Features -->
+      <mat-card class="form-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>star</mat-icon>
+            Plan Features
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="features-grid">
+            <div class="feature-item">
+              <mat-checkbox formControlName="features.analytics" color="primary">
+                <div class="feature-content">
+                  <mat-icon>analytics</mat-icon>
+                  <span>Analytics</span>
+                </div>
+              </mat-checkbox>
+            </div>
+
+            <div class="feature-item">
+              <mat-checkbox formControlName="features.prioritySupport" color="primary">
+                <div class="feature-content">
+                  <mat-icon>support_agent</mat-icon>
+                  <span>Priority Support</span>
+                </div>
+              </mat-checkbox>
+            </div>
+
+            <div class="feature-item">
+              <mat-checkbox formControlName="features.customBranding" color="primary">
+                <div class="feature-content">
+                  <mat-icon>palette</mat-icon>
+                  <span>Custom Branding</span>
+                </div>
+              </mat-checkbox>
+            </div>
+
+            <div class="feature-item">
+              <mat-checkbox formControlName="features.apiAccess" color="primary">
+                <div class="feature-content">
+                  <mat-icon>api</mat-icon>
+                  <span>API Access</span>
+                </div>
+              </mat-checkbox>
+            </div>
+
+            <div class="feature-item">
+              <mat-checkbox formControlName="features.advancedReporting" color="primary">
+                <div class="feature-content">
+                  <mat-icon>assessment</mat-icon>
+                  <span>Advanced Reporting</span>
+                </div>
+              </mat-checkbox>
+            </div>
+
+            <div class="feature-item">
+              <mat-checkbox formControlName="features.bulkOperations" color="primary">
+                <div class="feature-content">
+                  <mat-icon>batch_prediction</mat-icon>
+                  <span>Bulk Operations</span>
+                </div>
+              </mat-checkbox>
+            </div>
+
+            <div class="feature-item">
+              <mat-checkbox formControlName="features.whiteLabel" color="primary">
+                <div class="feature-content">
+                  <mat-icon>branding_watermark</mat-icon>
+                  <span>White Label</span>
+                </div>
+              </mat-checkbox>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="button" mat-button (click)="onCancel()">
+        <mat-icon>cancel</mat-icon>
+        Cancel
+      </button>
+      <button type="submit" mat-raised-button color="primary" [disabled]="planForm.invalid || isLoading">
+        <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+        {{ isEditMode ? 'Update' : 'Create' }} Plan
+      </button>
+    </div>
+  </form>
+</div> 
