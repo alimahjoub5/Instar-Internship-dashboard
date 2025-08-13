@@ -46,7 +46,7 @@ export const routes: Routes = [
 
   { path: 'dash-fn', 
     component: Dashboard,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardContent },

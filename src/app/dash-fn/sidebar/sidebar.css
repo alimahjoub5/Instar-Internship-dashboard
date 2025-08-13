@@ -44,7 +44,7 @@
 .logo-icon {
   width: 28px;
   height: 28px;
-  color: white;
+  object-fit: contain;
   flex-shrink: 0;
 }
 
@@ -164,7 +164,7 @@
 .footer-logo-icon {
   width: 20px;
   height: 20px;
-  color: #667eea;
+  object-fit: contain;
   flex-shrink: 0;
 }
 
@@ -253,6 +253,13 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
   transition: transform 0.2s ease;
   cursor: pointer;
+  overflow: hidden;
+}
+
+.navbar-logo img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .navbar-logo svg {

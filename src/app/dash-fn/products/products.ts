@@ -6,7 +6,7 @@ import { Sidebar } from '../sidebar/sidebar';
 import { SidebarProducts } from './sidebar/sidebar';
 import { ProductModal } from './product-modal/product-modal';
 import { FnFooter } from '../fn-footer/fn-footer';
-import { ProductsCarousel } from './products-carousel/products-carousel';
+
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../shared/services/product.service';
 
@@ -18,7 +18,6 @@ import { ProductService } from '../../shared/services/product.service';
     CommonModule,
     ProductCard,
     ProductModal,
-    ProductsCarousel,
     FormsModule
   ],
   templateUrl: './products.html',

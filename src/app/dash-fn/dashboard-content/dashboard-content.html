@@ -4,45 +4,220 @@
 
 <div class="dashboard-content">
   <h2>Dashboard Overview</h2>
+  
+  <!-- Enhanced Statistics Cards -->
   <div class="stats-cards">
-    <div class="stat-card">
-      <h3>Total Products</h3>
-      <p>{{ totalProducts }}</p>
+    <div class="stat-card primary">
+      <div class="stat-icon">
+        <mat-icon>inventory</mat-icon>
+      </div>
+      <div class="stat-info">
+        <h3>Total Products</h3>
+        <p class="stat-value">{{ totalProducts }}</p>
+        <span class="stat-change positive">+{{ newProductsThisMonth }} this month</span>
+      </div>
     </div>
-    <div class="stat-card">
-      <h3>Total Sales</h3>
-      <p>{{ totalSales }}</p>
+    <div class="stat-card success">
+      <div class="stat-icon">
+        <mat-icon>trending_up</mat-icon>
+      </div>
+      <div class="stat-info">
+        <h3>Total Sales</h3>
+        <p class="stat-value">{{ totalSales }}</p>
+        <span class="stat-change positive">+{{ salesGrowth }}% vs last month</span>
+      </div>
     </div>
-    <div class="stat-card">
-      <h3>Average Rating</h3>
-      <p>{{ avgRating }}</p>
+    <div class="stat-card warning">
+      <div class="stat-icon">
+        <mat-icon>star</mat-icon>
+      </div>
+      <div class="stat-info">
+        <h3>Average Rating</h3>
+        <p class="stat-value">{{ avgRating }}/5</p>
+        <span class="stat-change neutral">{{ totalReviews }} reviews</span>
+      </div>
+    </div>
+    <div class="stat-card info">
+      <div class="stat-icon">
+        <mat-icon>attach_money</mat-icon>
+      </div>
+      <div class="stat-info">
+        <h3>Average Price</h3>
+        <p class="stat-value">${{ avgPrice }}</p>
+        <span class="stat-change neutral">Range: ${{ minPrice }} - ${{ maxPrice }}</span>
+      </div>
+    </div>
+    <div class="stat-card promotion">
+      <div class="stat-icon">
+        <mat-icon>local_offer</mat-icon>
+      </div>
+      <div class="stat-info">
+        <h3>Promotions</h3>
+        <p class="stat-value">{{ promotionPercentage }}%</p>
+        <span class="stat-change neutral">{{ promotedProducts }} products on sale</span>
+      </div>
+    </div>
+    <div class="stat-card supplier">
+      <div class="stat-icon">
+        <mat-icon>business</mat-icon>
+      </div>
+      <div class="stat-info">
+        <h3>Active Suppliers</h3>
+        <p class="stat-value">{{ totalSuppliers }}</p>
+        <span class="stat-change neutral">{{ topSupplier }} is top performer</span>
+      </div>
     </div>
   </div>
+
+  <!-- Enhanced Charts Section -->
   <div class="charts-section">
-    <div class="chart-card">
-      <h4>Sales by Product</h4>
-      <ngx-charts-bar-vertical
-        [results]="salesData"
-        [view]="view"
-        [scheme]="colorScheme"
-        [xAxis]="true"
-        [yAxis]="true"
-        [legend]="false"
-        [showXAxisLabel]="true"
-        [showYAxisLabel]="true"
-        xAxisLabel="Product"
-        yAxisLabel="Sales">
-      </ngx-charts-bar-vertical>
+    <!-- Row 1: Sales and Category Charts -->
+    <div class="chart-row">
+      <div class="chart-card large">
+        <div class="chart-header">
+          <h4>Sales Performance by Product</h4>
+          <mat-icon class="chart-icon">bar_chart</mat-icon>
+        </div>
+        <ngx-charts-bar-vertical
+          [results]="salesData"
+          [view]="[600, 300]"
+          [scheme]="colorScheme"
+          [xAxis]="true"
+          [yAxis]="true"
+          [legend]="false"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          [gradient]="true"
+          xAxisLabel="Product"
+          yAxisLabel="Sales">
+        </ngx-charts-bar-vertical>
+      </div>
+      <div class="chart-card medium">
+        <div class="chart-header">
+          <h4>Products by Category</h4>
+          <mat-icon class="chart-icon">pie_chart</mat-icon>
+        </div>
+        <ngx-charts-pie-chart
+          [results]="categoryData"
+          [view]="[400, 300]"
+          [scheme]="colorScheme"
+          [legend]="true"
+          [labels]="true"
+          [doughnut]="true">
+        </ngx-charts-pie-chart>
+      </div>
     </div>
-    <div class="chart-card">
-      <h4>Products by Category</h4>
-      <ngx-charts-pie-chart
-        [results]="categoryData"
-        [view]="view"
-        [scheme]="colorScheme"
-        [legend]="true"
-        [labels]="true">
-      </ngx-charts-pie-chart>
+
+    <!-- Row 2: Rating and Price Distribution -->
+    <div class="chart-row">
+      <div class="chart-card medium">
+        <div class="chart-header">
+          <h4>Rating Distribution</h4>
+          <mat-icon class="chart-icon">star_rate</mat-icon>
+        </div>
+        <ngx-charts-bar-horizontal
+          [results]="ratingData"
+          [view]="[400, 250]"
+          [scheme]="ratingColorScheme"
+          [xAxis]="true"
+          [yAxis]="true"
+          [legend]="false"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          xAxisLabel="Number of Products"
+          yAxisLabel="Rating">
+        </ngx-charts-bar-horizontal>
+      </div>
+      <div class="chart-card medium">
+        <div class="chart-header">
+          <h4>Price Range Distribution</h4>
+          <mat-icon class="chart-icon">monetization_on</mat-icon>
+        </div>
+        <ngx-charts-area-chart
+          [results]="priceRangeData"
+          [view]="[400, 250]"
+          [scheme]="priceColorScheme"
+          [xAxis]="true"
+          [yAxis]="true"
+          [legend]="false"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          [gradient]="true"
+          xAxisLabel="Price Range"
+          yAxisLabel="Number of Products">
+        </ngx-charts-area-chart>
+      </div>
+    </div>
+
+    <!-- Row 3: Supplier Performance and Sales Trends -->
+    <div class="chart-row">
+      <div class="chart-card large">
+        <div class="chart-header">
+          <h4>Top Suppliers Performance</h4>
+          <mat-icon class="chart-icon">business_center</mat-icon>
+        </div>
+        <ngx-charts-bar-vertical-2d
+          [results]="supplierData"
+          [view]="[600, 300]"
+          [scheme]="supplierColorScheme"
+          [xAxis]="true"
+          [yAxis]="true"
+          [legend]="true"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          xAxisLabel="Supplier"
+          yAxisLabel="Performance Metrics">
+        </ngx-charts-bar-vertical-2d>
+      </div>
+      <div class="chart-card medium">
+        <div class="chart-header">
+          <h4>Monthly Sales Trend</h4>
+          <mat-icon class="chart-icon">timeline</mat-icon>
+        </div>
+        <ngx-charts-line-chart
+          [results]="salesTrendData"
+          [view]="[400, 300]"
+          [scheme]="trendColorScheme"
+          [xAxis]="true"
+          [yAxis]="true"
+          [legend]="true"
+          [showXAxisLabel]="true"
+          [showYAxisLabel]="true"
+          [gradient]="true"
+          [curve]="curve"
+          xAxisLabel="Month"
+          yAxisLabel="Sales">
+        </ngx-charts-line-chart>
+      </div>
+    </div>
+
+    <!-- Row 4: Promotion Impact and Inventory Status -->
+    <div class="chart-row">
+      <div class="chart-card medium">
+        <div class="chart-header">
+          <h4>Promotion Impact</h4>
+          <mat-icon class="chart-icon">local_offer</mat-icon>
+        </div>
+        <ngx-charts-advanced-pie-chart
+          [results]="promotionImpactData"
+          [view]="[400, 250]"
+          [scheme]="promotionColorScheme"
+          [gradient]="true">
+        </ngx-charts-advanced-pie-chart>
+      </div>
+      <div class="chart-card medium">
+        <div class="chart-header">
+          <h4>Inventory Status by Category</h4>
+          <mat-icon class="chart-icon">inventory_2</mat-icon>
+        </div>
+        <ngx-charts-polar-chart
+          [results]="inventoryData"
+          [view]="[400, 250]"
+          [scheme]="inventoryColorScheme"
+          [legend]="true"
+          [legendTitle]="'Categories'">
+        </ngx-charts-polar-chart>
+      </div>
     </div>
   </div>
 </div>
