@@ -37,6 +37,9 @@ export interface Subscription {
   paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
   paymentMethod: 'card' | 'bank_transfer' | 'paypal';
   autoRenew: boolean;
+  // Grace period fields
+  expired?: boolean;
+  gracePeriodEndDate?: Date;
   features: {
     maxProducts: number;
     maxImages: number;
@@ -224,6 +227,23 @@ export class SubscriptionService {
     return this.apiService.get('/subscriptions/upcoming-expirations');
   }
 
+  // Grace Period Methods
+  checkExpiredSubscriptions(): Observable<any> {
+    return this.apiService.post('/subscriptions/check-expired', {});
+  }
+
+  getGracePeriodSubscriptions(): Observable<any> {
+    return this.apiService.get('/subscriptions/grace-period');
+  }
+
+  getEnhancedExpirationStats(): Observable<any> {
+    return this.apiService.get('/subscriptions/enhanced-expiration-stats');
+  }
+
+  checkSupplierProductStatus(supplierId: string): Observable<any> {
+    return this.apiService.get(`/subscriptions/supplier/${supplierId}/product-status`);
+  }
+
   // Helper Methods
   isSubscriptionActive(subscription: Subscription): boolean {
     if (subscription.status !== 'active') return false;
@@ -244,6 +264,36 @@ export class SubscriptionService {
     const endDate = new Date(subscription.endDate);
     const diffTime = endDate.getTime() - now.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  // Grace Period Helper Methods
+  isInGracePeriod(subscription: Subscription): boolean {
+    return subscription.status === 'expired' && 
+           subscription.expired === true && 
+           subscription.gracePeriodEndDate !== undefined;
+  }
+
+  getGracePeriodDaysRemaining(subscription: Subscription): number {
+    if (!this.isInGracePeriod(subscription) || !subscription.gracePeriodEndDate) {
+      return 0;
+    }
+    const now = new Date();
+    const gracePeriodEnd = new Date(subscription.gracePeriodEndDate);
+    const diffTime = gracePeriodEnd.getTime() - now.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  shouldDisableProducts(subscription: Subscription): boolean {
+    return subscription.status === 'expired' && 
+           subscription.expired === false && 
+           !subscription.gracePeriodEndDate;
+  }
+
+  getGracePeriodStatus(subscription: Subscription): 'active' | 'grace-period' | 'expired' | 'disabled' {
+    if (subscription.status === 'active') return 'active';
+    if (this.isInGracePeriod(subscription)) return 'grace-period';
+    if (this.shouldDisableProducts(subscription)) return 'disabled';
+    return 'expired';
   }
 
   getSubscriptionStatusClass(status: string): string {

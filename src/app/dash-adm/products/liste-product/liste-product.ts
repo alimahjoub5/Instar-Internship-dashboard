@@ -189,4 +189,15 @@ export class ListeProductComponent implements OnInit {
     const category = this.categories.find(c => c._id === categoryId || c.title === categoryId);
     return category ? category.title : categoryId;
   }
+
+  // Helper method to get product ID safely
+  getProductId(id: string | undefined): string {
+    if (!id) return 'N/A';
+    return id.slice(-8);
+  }
+
+  // Helper method to get quantity safely
+  getQuantity(quantity: number | undefined): number {
+    return quantity ?? 0;
+  }
 }

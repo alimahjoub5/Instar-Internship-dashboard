@@ -36,6 +36,7 @@ import { SubscriptionDetailsComponent } from './dash-adm/subscriptions/subscript
 import { SubscriptionPlansListComponent } from './dash-adm/subscriptions/subscription-plans/subscription-plans-list.component';
 import { SubscriptionPlanFormComponent } from './dash-adm/subscriptions/subscription-plans/subscription-plan-form.component';
 import { SubscriptionExpirationComponent } from './dash-adm/subscriptions/subscription-expiration/subscription-expiration.component';
+import { GracePeriodComponent } from './dash-adm/subscriptions/grace-period/grace-period.component';
 
 export const routes: Routes = [
   // Auth routes
@@ -80,7 +81,7 @@ export const routes: Routes = [
       { path: 'subscriptions/plans', component: SubscriptionPlansListComponent },
       { path: 'subscriptions/plans/add', component: SubscriptionPlanFormComponent },
       { path: 'subscriptions/plans/edit/:id', component: SubscriptionPlanFormComponent },
-      { path: 'subscriptions/expiration', component: SubscriptionExpirationComponent },
+      { path: 'subscriptions/grace-period', component: GracePeriodComponent },
       { path: 'subscriptions/:id', component: SubscriptionDetailsComponent },
     ]
   },

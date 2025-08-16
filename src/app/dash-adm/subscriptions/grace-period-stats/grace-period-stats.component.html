@@ -1,0 +1,50 @@
+<div class="grace-period-stats">
+  <div class="stats-header">
+    <h3>Grace Period Statistics</h3>
+    <button class="refresh-btn" (click)="loadStats()" [disabled]="isLoading">
+      {{ isLoading ? 'Loading...' : 'Refresh' }}
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading">
+    Loading grace period statistics...
+  </div>
+
+  <div *ngIf="!isLoading && stats" class="stats-grid">
+    <div class="stat-card" [ngClass]="getStatusClass(stats.active)">
+      <div class="stat-icon">✅</div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.active }}</div>
+        <div class="stat-label">Active Subscriptions</div>
+      </div>
+    </div>
+
+    <div class="stat-card" [ngClass]="getStatusClass(stats.expired)">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.expired }}</div>
+        <div class="stat-label">In Grace Period</div>
+      </div>
+    </div>
+
+    <div class="stat-card" [ngClass]="getStatusClass(stats.gracePeriodExpired)">
+      <div class="stat-icon">🚫</div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.gracePeriodExpired }}</div>
+        <div class="stat-label">Grace Period Ended</div>
+      </div>
+    </div>
+
+    <div class="stat-card" [ngClass]="getStatusClass(stats.expiringToday)">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-content">
+        <div class="stat-value">{{ stats.expiringToday }}</div>
+        <div class="stat-label">Expiring Today</div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !stats" class="no-data">
+    No grace period statistics available.
+  </div>
+</div>

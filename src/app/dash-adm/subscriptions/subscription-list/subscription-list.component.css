@@ -293,4 +293,35 @@ mat-spinner {
 /* Empty State */
 .empty-state button[mat-raised-button] {
   margin-top: 16px;
+}
+
+/* Grace Period Styles */
+.grace-period-info {
+  margin-top: 4px;
+}
+
+.grace-period-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  background-color: #fff3e0;
+  color: #ef6c00;
+  border: 1px solid #ffcc02;
+}
+
+.grace-period-expired {
+  margin-top: 4px;
+}
+
+.expired-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #f44336;
 } 
