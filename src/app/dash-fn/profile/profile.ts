@@ -95,14 +95,14 @@ export class Profile implements OnInit {
     this.error = null;
 
     // Get supplier ID from localStorage or authentication service
-    const supplierId = localStorage.getItem('supplierId') || localStorage.getItem('userId');
+    const supplierId = localStorage.getItem('uid') 
     if (!supplierId) {
       this.error = 'Supplier not authenticated';
       this.loading = false;
       return;
     }
 
-    this.supplierService.getSupplierById(supplierId).subscribe({
+    this.supplierService.getSupplierByUserId(supplierId).subscribe({
       next: (supplier: Supplier) => {
         this.supplier = { ...this.supplier, ...supplier };
         this.loading = false;

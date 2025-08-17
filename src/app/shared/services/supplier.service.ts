@@ -42,6 +42,10 @@ export class SupplierService {
   getSupplierById(id: string): Observable<Supplier> {
     return this.apiService.get(`/suppliers/${id}`);
   }
+  getSupplierByUserId(userId: string): Observable<Supplier> {
+  return this.apiService.get(`/suppliers/user/${userId}`);
+}
+
 
   updateSupplier(id: string, supplierData: Partial<Supplier>): Observable<Supplier> {
     return this.apiService.put(`/suppliers/${id}`, supplierData);
