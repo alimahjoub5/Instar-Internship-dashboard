@@ -9,8 +9,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 import { FnFooter } from '../../dash-fn/fn-footer/fn-footer';
+import { SupplierService } from '../../shared/services/supplier.service';
+import { UploadService } from '../../shared/services/upload.service';
+import { catchError, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-sign-up',
@@ -26,6 +31,7 @@ import { FnFooter } from '../../dash-fn/fn-footer/fn-footer';
     MatDatepickerModule,
     MatNativeDateModule,
     MatCheckboxModule,
+    MatProgressSpinnerModule,
     FnFooter
   ],
   templateUrl: './sign-up.component.html',
@@ -38,10 +44,14 @@ export class SignUpComponent implements OnInit {
   selectedFileName = '';
   imagePreview: string | null = null;
   selectedFile: File | null = null;
+  isLoading = false;
+  imageError = '';
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private supplierService: SupplierService,
+    private uploadService: UploadService
   ) {}
 
   ngOnInit(): void {
@@ -50,43 +60,125 @@ export class SignUpComponent implements OnInit {
 
   private initializeForm(): void {
     this.signupForm = this.formBuilder.group({
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: [''],
-      address: [''],
+      name: ['', [Validators.required]],
+      address: ['', [Validators.required]],
+      phone: ['', [Validators.required]],
+      marque: ['', [Validators.required]],
+      rib: ['', [Validators.required]],
+      email: ['', [Validators.email]],
+      webSite: [''],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      gender: [''],
-      birthDate: [''],
       acceptTerms: [false, [Validators.requiredTrue]]
     });
   }
 
   onSubmit(): void {
+    // Validate image selection
+    if (!this.selectedFile) {
+      this.imageError = 'Company logo is required';
+      return;
+    }
+    
+    this.imageError = '';
+    
     if (this.signupForm.valid) {
-      const formData = {
-        ...this.signupForm.value,
-        role: 'supplier', // Set role to supplier as specified
-        birthDate: this.signupForm.value.birthDate ? 
-          this.signupForm.value.birthDate.toISOString().split('T')[0] : ''
-      };
-      
-      // Remove acceptTerms from the data to be sent
-      delete formData.acceptTerms;
-      
-      console.log('Supplier signup data:', formData);
-      
-      // Here you would typically call your authentication service
-      // this.authService.registerSupplier(formData).subscribe(...);
-      
-      // For now, just log the data and potentially navigate
-      alert('Supplier account created successfully!');
+      this.isLoading = true;
+      this.uploadLogoAndCreateSupplier();
     } else {
       // Mark all fields as touched to show validation errors
       Object.keys(this.signupForm.controls).forEach(key => {
         this.signupForm.get(key)?.markAsTouched();
       });
     }
+  }
+
+  private uploadLogoAndCreateSupplier(): void {
+    if (!this.selectedFile) {
+      this.isLoading = false;
+      return;
+    }
+
+    console.log('Uploading logo...');
+    this.uploadService.uploadFile(this.selectedFile, 'images')
+      .pipe(
+        switchMap(uploadResponse => {
+          console.log('Logo uploaded successfully:', uploadResponse);
+          return this.createSupplierWithImageUrl(uploadResponse.fileUrl);
+        }),
+        catchError(error => {
+          console.error('Error uploading logo:', error);
+          alert('Error uploading logo. Please try again.');
+          this.isLoading = false;
+          return of(null);
+        })
+      )
+      .subscribe(response => {
+        this.isLoading = false;
+        if (response) {
+          console.log('Supplier created successfully:', response);
+          alert('Supplier account created successfully!');
+          this.router.navigate(['/auth/login']);
+        }
+      });
+  }
+
+  private createSupplier(imageUrl: string | null): void {
+    const supplierData = {
+      name: this.signupForm.value.name,
+      address: this.signupForm.value.address,
+      phone: this.signupForm.value.phone,
+      marque: this.signupForm.value.marque,
+      rib: this.signupForm.value.rib,
+      email: this.signupForm.value.email || null,
+      webSite: this.signupForm.value.webSite || null,
+      password: this.signupForm.value.password,
+      image: imageUrl,
+      userId: null // Will be set by backend after user creation
+    };
+    
+    console.log('Supplier signup data:', supplierData);
+    
+    this.supplierService.createSupplier(supplierData)
+      .pipe(
+        catchError(error => {
+          console.error('Error creating supplier:', error);
+          alert('Error creating supplier account. Please try again.');
+          return of(null);
+        })
+      )
+      .subscribe(response => {
+        if (response) {
+          console.log('Supplier created successfully:', response);
+          alert('Supplier account created successfully!');
+          this.router.navigate(['/auth/login']);
+        }
+      });
+  }
+
+  private createSupplierWithImageUrl(imageUrl: string): any {
+    const supplierData = {
+      name: this.signupForm.value.name,
+      address: this.signupForm.value.address,
+      phone: this.signupForm.value.phone,
+      marque: this.signupForm.value.marque,
+      rib: this.signupForm.value.rib,
+      email: this.signupForm.value.email || null,
+      webSite: this.signupForm.value.webSite || null,
+      password: this.signupForm.value.password,
+      image: imageUrl,
+      userId: null // Will be set by backend after user creation
+    };
+    
+    console.log('Supplier signup data with uploaded image:', supplierData);
+    
+    return this.supplierService.createSupplier(supplierData)
+      .pipe(
+        catchError(error => {
+          console.error('Error creating supplier:', error);
+          alert('Error creating supplier account. Please try again.');
+          return of(null);
+        })
+      );
   }
 
   navigateToSignIn(): void {
@@ -99,6 +191,7 @@ export class SignUpComponent implements OnInit {
     if (file) {
       this.selectedFile = file;
       this.selectedFileName = file.name;
+      this.imageError = ''; // Clear any previous error
       
       // Create image preview
       const reader = new FileReader();
@@ -113,5 +206,6 @@ export class SignUpComponent implements OnInit {
     this.selectedFile = null;
     this.selectedFileName = '';
     this.imagePreview = null;
+    this.imageError = 'Company logo is required';
   }
 }
