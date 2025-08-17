@@ -1,0 +1,118 @@
+<!-- Modal Overlay -->
+<div class="modal-overlay" *ngIf="isVisible" (click)="onClose()">
+  <!-- Modal Content -->
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h3 class="modal-title">Complete Your Subscription</h3>
+      <button class="close-btn" (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <!-- Selected Plan Summary -->
+      <div class="plan-summary" *ngIf="selectedPlan">
+        <h4>Selected Plan</h4>
+        <div class="plan-info">
+          <div class="plan-details">
+            <h5>{{ selectedPlan.name }}</h5>
+            <p class="plan-description">{{ selectedPlan.description }}</p>
+            <div class="plan-price">
+              <span class="price">{{ selectedPlan.price | currency }}</span>
+              <span class="duration">/ {{ selectedPlan.duration }} days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Method Selection -->
+      <div class="payment-section">
+        <h4>Payment Method</h4>
+        <div class="payment-methods">
+          <div 
+            *ngFor="let method of paymentMethods" 
+            class="payment-method" 
+            [class.selected]="selectedPaymentMethod === method.id"
+            (click)="selectPaymentMethod(method.id)">
+            <div class="method-icon">
+              <mat-icon>{{ method.icon }}</mat-icon>
+            </div>
+            <div class="method-info">
+              <h5>{{ method.name }}</h5>
+              <p>{{ method.description }}</p>
+            </div>
+            <div class="method-radio">
+              <input 
+                type="radio" 
+                [id]="method.id" 
+                name="paymentMethod" 
+                [value]="method.id" 
+                [(ngModel)]="selectedPaymentMethod">
+              <label [for]="method.id"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Auto Renew Option -->
+      <div class="auto-renew-section">
+        <div class="checkbox-container">
+          <input 
+            type="checkbox" 
+            id="autoRenew" 
+            [(ngModel)]="autoRenew">
+          <label for="autoRenew" class="checkbox-label">
+            <mat-icon class="checkbox-icon">{{ autoRenew ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+            <span>Enable Auto-Renewal</span>
+          </label>
+        </div>
+        <p class="auto-renew-description">
+          Your subscription will automatically renew at the end of each billing period. 
+          You can cancel anytime from your account settings.
+        </p>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary" *ngIf="selectedPlan">
+        <h4>Order Summary</h4>
+        <div class="summary-row">
+          <span>{{ selectedPlan.name }} Plan</span>
+          <span>{{ selectedPlan.price | currency }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Duration</span>
+          <span>{{ selectedPlan.duration }} days</span>
+        </div>
+        <div class="summary-row">
+          <span>Payment Method</span>
+          <span>{{ getSelectedPaymentMethodName() }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Auto-Renewal</span>
+          <span>{{ autoRenew ? 'Enabled' : 'Disabled' }}</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-row total">
+          <span>Total</span>
+          <span>{{ selectedPlan.price | currency }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="onClose()" [disabled]="isProcessing">
+        Cancel
+      </button>
+      <button 
+        class="btn-primary" 
+        (click)="onConfirm()" 
+        [disabled]="isProcessing || !selectedPlan">
+        <mat-icon *ngIf="isProcessing" class="processing-icon">refresh</mat-icon>
+        {{ isProcessing ? 'Processing...' : 'Confirm Subscription' }}
+      </button>
+    </div>
+  </div>
+</div>

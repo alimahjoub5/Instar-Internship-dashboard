@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { UserService, User } from '../../shared/services/user.service';
+import { SupplierService, Supplier } from '../../shared/services/supplier.service';
+import { SubscriptionService, Subscription, SubscriptionPlan } from '../../shared/services/subscription.service';
 import { OnInit } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
@@ -11,6 +12,9 @@ import { Sidebar } from '../sidebar/sidebar';
 import { FnFooter } from '../fn-footer/fn-footer';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { PaymentModalComponent } from './payment-modal/payment-modal.component';
 
 interface PasswordData {
   currentPassword: string;
@@ -28,26 +32,34 @@ interface PasswordData {
     MatIconModule, 
     CommonModule, 
     SharedModule, 
-
     RouterModule,
-    FormsModule
+    FormsModule,
+    PaymentModalComponent
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })
 export class Profile implements OnInit {
-  user: User = {
-    firstName: '',
-    lastName: '',
-    email: '',
+  supplier: Supplier = {
+    name: '',
     address: '',
     phone: '',
-    imageUrl: '',
-    gender: '',
-    recoveryEmail: ''
+    marque: '',
+    rib: '',
+    image: '',
+    email: '',
+    password: '',
+    webSite: ''
   };
   is2FAEnabled: boolean = false;
   activeTab: string = 'profile';
+  
+  // Subscription properties
+  userSubscriptions: Subscription[] = [];
+  availablePlans: SubscriptionPlan[] = [];
+  hasActiveSubscription: boolean = false;
+  subscriptionLoading: boolean = false;
+  subscriptionError: string | null = null;
   loading: boolean = false;
   error: string | null = null;
   
@@ -63,33 +75,43 @@ export class Profile implements OnInit {
   showCurrentPassword: boolean = false;
   showNewPassword: boolean = false;
   showConfirmPassword: boolean = false;
+  
+  // Payment modal properties
+  showPaymentModal: boolean = false;
+  selectedPlanForPayment: SubscriptionPlan | null = null;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private supplierService: SupplierService,
+    private subscriptionService: SubscriptionService
+  ) {}
 
   ngOnInit() {
-    this.loadUserProfile();
+    this.loadSupplierProfile();
+    this.loadSubscriptionData();
   }
 
-  private loadUserProfile(): void {
+  private loadSupplierProfile(): void {
     this.loading = true;
     this.error = null;
 
-    if (!this.userService.isAuthenticated()) {
-      this.error = 'User not authenticated';
+    // Get supplier ID from localStorage or authentication service
+    const supplierId = localStorage.getItem('supplierId') || localStorage.getItem('userId');
+    if (!supplierId) {
+      this.error = 'Supplier not authenticated';
       this.loading = false;
       return;
     }
 
-    this.userService.getUserProfile().subscribe({
-      next: (user: User) => {
-        this.user = { ...this.user, ...user };
+    this.supplierService.getSupplierById(supplierId).subscribe({
+      next: (supplier: Supplier) => {
+        this.supplier = { ...this.supplier, ...supplier };
         this.loading = false;
-        console.log('User profile loaded successfully:', this.user);
+        console.log('Supplier profile loaded successfully:', this.supplier);
       },
       error: (error) => {
-        this.error = 'Failed to load user profile. Please try again.';
+        this.error = 'Failed to load supplier profile. Please try again.';
         this.loading = false;
-        console.error('Error loading user profile:', error);
+        console.error('Error loading supplier profile:', error);
       }
     });
   }
@@ -104,39 +126,155 @@ export class Profile implements OnInit {
   
   setActiveTab(tab: string) {
     this.activeTab = tab;
+    if (tab === 'verification') {
+      // Load verification data when tab is activated
+      console.log('Loading verification data...');
+      this.loadSubscriptionData();
+    }
     // Reset password form when switching away from password tab
     if (tab !== 'password') {
       this.resetPasswordForm();
     }
   }
-  
-  saveProfileChanges() {
-    if (!this.userService.isAuthenticated()) {
-      this.error = 'User not authenticated';
+
+  loadSubscriptionData(): void {
+    const supplierId = localStorage.getItem('supplierId') || localStorage.getItem('userId');
+    if (!supplierId) {
       return;
     }
 
-    const userId = this.userService.getUserId();
-    if (!userId) {
-      this.error = 'User ID not found';
+    this.subscriptionLoading = true;
+    this.subscriptionError = null;
+    
+    // Check if supplier has subscriptions
+    this.subscriptionService.getSubscriptionsBySupplier(supplierId)
+      .pipe(
+        catchError(error => {
+          console.error('Error loading supplier subscriptions:', error);
+          this.subscriptionError = 'Failed to load subscription data';
+          return of([]);
+        })
+      )
+      .subscribe(subscriptions => {
+        this.userSubscriptions = subscriptions;
+        this.hasActiveSubscription = subscriptions.some(sub => 
+          this.subscriptionService.isSubscriptionActive(sub)
+        );
+        
+        // If no active subscription, load available plans
+        if (!this.hasActiveSubscription) {
+          this.loadAvailablePlans();
+        }
+        
+        this.subscriptionLoading = false;
+      });
+  }
+
+  private loadAvailablePlans(): void {
+    this.subscriptionService.getAllSubscriptionPlans()
+      .pipe(
+        catchError(error => {
+          console.error('Error loading subscription plans:', error);
+          this.subscriptionError = 'Failed to load subscription plans';
+          return of([]);
+        })
+      )
+      .subscribe(plans => {
+        this.availablePlans = plans.filter(plan => plan.isActive);
+      });
+  }
+
+  getSubscriptionStatusClass(subscription: Subscription): string {
+    return this.subscriptionService.getSubscriptionStatusClass(subscription.status);
+  }
+
+  getSubscriptionStatus(subscription: Subscription): string {
+    return this.subscriptionService.getGracePeriodStatus(subscription);
+  }
+
+  getDaysRemaining(subscription: Subscription): number {
+    return this.subscriptionService.getDaysRemaining(subscription);
+  }
+
+  selectPlan(plan: SubscriptionPlan): void {
+    this.selectedPlanForPayment = plan;
+    this.showPaymentModal = true;
+    console.log('Selected plan:', plan);
+  }
+  
+  closePaymentModal(): void {
+    this.showPaymentModal = false;
+    this.selectedPlanForPayment = null;
+  }
+  
+  getSupplierId(): string {
+    return localStorage.getItem('supplierId') || localStorage.getItem('userId') || '';
+  }
+  
+  onPaymentConfirm(paymentData: any): void {
+    this.subscriptionLoading = true;
+    this.subscriptionError = null;
+    
+    // Get supplierId from localStorage as fallback
+    const supplierId = paymentData.supplierId || localStorage.getItem('supplierId') || localStorage.getItem('userId');
+    
+    if (!supplierId) {
+      this.subscriptionError = 'Supplier ID not found. Please try logging in again.';
+      this.subscriptionLoading = false;
+      return;
+    }
+    
+    const subscriptionData = {
+      supplierId: supplierId,
+      planType: paymentData.planType,
+      paymentMethod: paymentData.paymentMethod,
+      autoRenew: paymentData.autoRenew
+    };
+    
+    this.subscriptionService.createSubscription(subscriptionData)
+      .pipe(
+        catchError(error => {
+          console.error('Error creating subscription:', error);
+          this.subscriptionError = 'Failed to create subscription. Please try again.';
+          this.subscriptionLoading = false;
+          // Reset modal processing state
+          if (this.selectedPlanForPayment) {
+            // Access the modal component and reset processing state if needed
+          }
+          return of(null);
+        })
+      )
+      .subscribe(response => {
+        if (response) {
+          console.log('Subscription created successfully:', response);
+          this.subscriptionLoading = false;
+          this.closePaymentModal();
+          // Refresh subscription data
+          this.loadSubscriptionData();
+        }
+      });
+  }
+  
+  saveProfileChanges() {
+    const supplierId = localStorage.getItem('supplierId') || localStorage.getItem('userId');
+    if (!supplierId) {
+      this.error = 'Supplier not authenticated';
       return;
     }
 
     this.loading = true;
     this.error = null;
-
-    const updateData = { ...this.user, id: userId };
     
-    this.userService.updateProfile(updateData).subscribe({
+    this.supplierService.updateSupplier(supplierId, this.supplier).subscribe({
       next: (response) => {
         this.loading = false;
-        console.log('Profile updated successfully:', response);
+        console.log('Supplier profile updated successfully:', response);
         // You can add a success message here
       },
       error: (error) => {
         this.loading = false;
-        this.error = 'Failed to update profile. Please try again.';
-        console.error('Error updating profile:', error);
+        this.error = 'Failed to update supplier profile. Please try again.';
+        console.error('Error updating supplier profile:', error);
       }
     });
   }
@@ -147,29 +285,23 @@ export class Profile implements OnInit {
       return;
     }
 
-    if (!this.userService.isAuthenticated()) {
-      this.error = 'User not authenticated';
-      return;
-    }
-
-    const userId = this.userService.getUserId();
-    if (!userId) {
-      this.error = 'User ID not found';
+    const supplierId = localStorage.getItem('supplierId') || localStorage.getItem('userId');
+    if (!supplierId) {
+      this.error = 'Supplier not authenticated';
       return;
     }
 
     this.loading = true;
     this.error = null;
     
-    this.userService.updatePassword(
-      userId,
-      this.passwordData.currentPassword,
-      this.passwordData.newPassword,
-      this.passwordData.recoveryEmail
-    ).subscribe({
+    // Update supplier password by updating the supplier object
+    const updatedSupplier = { ...this.supplier, password: this.passwordData.newPassword };
+    
+    this.supplierService.updateSupplier(supplierId, updatedSupplier).subscribe({
       next: (response) => {
         this.loading = false;
         console.log('Password changed successfully:', response);
+        this.supplier = updatedSupplier;
         this.resetPasswordForm();
         // You can add a success message here
       },
@@ -182,7 +314,7 @@ export class Profile implements OnInit {
   }
 
   refreshProfile(): void {
-    this.loadUserProfile();
+    this.loadSupplierProfile();
   }
   
   resetPasswordForm() {

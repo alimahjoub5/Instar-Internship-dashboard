@@ -54,7 +54,7 @@
           <!-- Profile photo section -->
           <div class="profile-photo-section">
             <div class="profile-photo-container">
-              <img [src]="user.imageUrl" alt="User Avatar" class="profile-photo" *ngIf="user.imageUrl">
+              <img [src]="supplier.image" alt="Supplier Avatar" class="profile-photo" *ngIf="supplier.image">
               <div class="photo-edit-icon">
                 <mat-icon>photo_camera</mat-icon>
               </div>
@@ -69,23 +69,23 @@
           <div class="profile-form">
             <div class="form-row">
               <div class="form-group">
-                <label for="firstName">First Name <span class="required">*</span></label>
-                <input type="text" id="firstName" class="form-control" [(ngModel)]="user.firstName" required>
+                <label for="firstName">Supplier Name <span class="required">*</span></label>
+                <input type="text" id="firstName" class="form-control" [(ngModel)]="supplier.name" required>
               </div>
               <div class="form-group">
-                <label for="lastName">Last Name <span class="required">*</span></label>
-                <input type="text" id="lastName" class="form-control" [(ngModel)]="user.lastName" required>
+                <label for="lastName">Website</label>
+                <input type="text" id="lastName" class="form-control" [(ngModel)]="supplier.webSite">
               </div>
             </div>
             
             <div class="form-row">
               <div class="form-group">
                 <label for="email">Email <span class="required">*</span></label>
-                <input type="email" id="email" class="form-control" [(ngModel)]="user.email" required>
+                <input type="email" id="email" class="form-control" [(ngModel)]="supplier.email" required>
               </div>
               <div class="form-group">
-                <label for="recoveryEmail">Recovery Email</label>
-                <input type="email" id="recoveryEmail" class="form-control" [(ngModel)]="user.recoveryEmail" placeholder="Enter recovery email (optional)">
+                <label for="recoveryEmail">Brand/Marque</label>
+                <input type="text" id="recoveryEmail" class="form-control" [(ngModel)]="supplier.marque" placeholder="Enter brand/marque (optional)">
               </div>
             </div>
             
@@ -97,30 +97,26 @@
                     <span class="flag-icon">🇳🇬</span>
                     <span class="dropdown-arrow">▼</span>
                   </div>
-                  <input type="tel" id="phone" class="form-control phone-number" [(ngModel)]="user.phone">
+                  <input type="tel" id="phone" class="form-control phone-number" [(ngModel)]="supplier.phone">
                 </div>
               </div>
               <div class="form-group">
-                <label for="birthDate">Birth Date</label>
-                <input type="date" id="birthDate" class="form-control" [(ngModel)]="user.birthDate">
+                <label for="birthDate">RIB</label>
+                <input type="text" id="birthDate" class="form-control" [(ngModel)]="supplier.rib">
               </div>
             </div>
             
             <div class="form-row">
               <div class="form-group">
-                <label>Gender</label>
+                <label>Subscription Status</label>
                 <div class="radio-group">
                   <div class="radio-option">
-                    <input type="radio" id="male" name="gender" value="male" [(ngModel)]="user.gender">
-                    <label for="male">Male</label>
+                    <input type="radio" id="active" name="subscription" value="true" [(ngModel)]="supplier.hasActiveSubscription">
+                    <label for="active">Active Subscription</label>
                   </div>
                   <div class="radio-option">
-                    <input type="radio" id="female" name="gender" value="female" [(ngModel)]="user.gender">
-                    <label for="female">Female</label>
-                  </div>
-                  <div class="radio-option">
-                    <input type="radio" id="prefer-not-to-say" name="gender" value="" [(ngModel)]="user.gender">
-                    <label for="prefer-not-to-say">Prefer not to say</label>
+                    <input type="radio" id="inactive" name="subscription" value="false" [(ngModel)]="supplier.hasActiveSubscription">
+                    <label for="inactive">No Active Subscription</label>
                   </div>
                 </div>
               </div>
@@ -129,7 +125,7 @@
             <div class="form-row">
               <div class="form-group full-width">
                 <label for="address">Address</label>
-                <textarea id="address" class="form-control" rows="3" [(ngModel)]="user.address" placeholder="Enter your address (optional)"></textarea>
+                <textarea id="address" class="form-control" rows="3" [(ngModel)]="supplier.address" placeholder="Enter your address (optional)"></textarea>
               </div>
             </div>
             
@@ -244,11 +240,105 @@
         
         <!-- Verification Tab -->
         <div *ngIf="activeTab === 'verification'" class="tab-content">
-          <h2 class="tab-title">Account Verification</h2>
-          <p class="tab-description">Verify your account for enhanced security.</p>
-          <!-- Add verification settings here -->
+          <h2 class="tab-title">Account Verification & Subscription</h2>
+          <p class="tab-description">Manage your subscription and verify your account for enhanced security.</p>
+          
+          <!-- Subscription Section -->
+          <div class="subscription-section">
+            <h3 class="section-title">Subscription Status</h3>
+            
+            <!-- Loading State -->
+            <div *ngIf="subscriptionLoading" class="loading-container">
+              <div class="loading-spinner"></div>
+              <p>Loading subscription data...</p>
+            </div>
+            
+            <!-- Error State -->
+            <div *ngIf="subscriptionError" class="error-container">
+              <mat-icon class="error-icon">error</mat-icon>
+              <p>{{ subscriptionError }}</p>
+              <button class="retry-btn" (click)="loadSubscriptionData()">Retry</button>
+            </div>
+            
+            <!-- User has active subscription -->
+            <div *ngIf="!subscriptionLoading && !subscriptionError && hasActiveSubscription" class="current-subscription">
+              <h4>Your Current Subscription</h4>
+              <div *ngFor="let subscription of userSubscriptions" class="subscription-card">
+                <div *ngIf="getSubscriptionStatus(subscription) === 'active' || getSubscriptionStatus(subscription) === 'grace-period'" class="subscription-info">
+                  <div class="subscription-header">
+                    <h5 class="plan-name">{{ subscription.planType | titlecase }} Plan</h5>
+                    <span class="status-badge" [ngClass]="getSubscriptionStatusClass(subscription)">{{ subscription.status | titlecase }}</span>
+                  </div>
+                  <div class="subscription-details">
+                    <p><strong>Start Date:</strong> {{ subscription.startDate | date:'mediumDate' }}</p>
+                    <p><strong>End Date:</strong> {{ subscription.endDate | date:'mediumDate' }}</p>
+                    <p><strong>Days Remaining:</strong> {{ getDaysRemaining(subscription) }}</p>
+                    <p><strong>Price:</strong> {{ subscription.price | currency }}</p>
+                    <p><strong>Payment Status:</strong> 
+                      <span class="payment-status" [ngClass]="subscription.paymentStatus">{{ subscription.paymentStatus | titlecase }}</span>
+                    </p>
+                    <p><strong>Auto Renew:</strong> {{ subscription.autoRenew ? 'Yes' : 'No' }}</p>
+                  </div>
+                  <div class="subscription-features">
+                    <h6>Plan Features:</h6>
+                    <ul>
+                      <li>Max Products: {{ subscription.features.maxProducts }}</li>
+                      <li>Max Images: {{ subscription.features.maxImages }}</li>
+                      <li>Analytics: {{ subscription.features.analytics ? 'Yes' : 'No' }}</li>
+                      <li>Priority Support: {{ subscription.features.prioritySupport ? 'Yes' : 'No' }}</li>
+                      <li>Custom Branding: {{ subscription.features.customBranding ? 'Yes' : 'No' }}</li>
+                      <li>API Access: {{ subscription.features.apiAccess ? 'Yes' : 'No' }}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- User has no active subscription - show available plans -->
+            <div *ngIf="!subscriptionLoading && !subscriptionError && !hasActiveSubscription" class="available-plans">
+              <h4>Choose a Subscription Plan</h4>
+              <p class="plans-description">Select a plan that best fits your business needs.</p>
+              
+              <div class="plans-grid">
+                <div *ngFor="let plan of availablePlans" class="plan-card" [ngClass]="plan.type">
+                  <div class="plan-header">
+                    <h5 class="plan-name">{{ plan.name }}</h5>
+                    <div class="plan-price">
+                      <span class="price">{{ plan.price | currency }}</span>
+                      <span class="duration">/ {{ plan.duration }} days</span>
+                    </div>
+                  </div>
+                  <p class="plan-description">{{ plan.description }}</p>
+                  <div class="plan-features">
+                    <h6>Features:</h6>
+                    <ul>
+                      <li><mat-icon class="feature-icon">check</mat-icon>{{ plan.features.maxProducts }} Products</li>
+                      <li><mat-icon class="feature-icon">check</mat-icon>{{ plan.features.maxImages }} Images per Product</li>
+                      <li *ngIf="plan.features.analytics"><mat-icon class="feature-icon">check</mat-icon>Analytics Dashboard</li>
+                      <li *ngIf="plan.features.prioritySupport"><mat-icon class="feature-icon">check</mat-icon>Priority Support</li>
+                      <li *ngIf="plan.features.customBranding"><mat-icon class="feature-icon">check</mat-icon>Custom Branding</li>
+                      <li *ngIf="plan.features.apiAccess"><mat-icon class="feature-icon">check</mat-icon>API Access</li>
+                      <li *ngIf="plan.features.advancedReporting"><mat-icon class="feature-icon">check</mat-icon>Advanced Reporting</li>
+                      <li *ngIf="plan.features.bulkOperations"><mat-icon class="feature-icon">check</mat-icon>Bulk Operations</li>
+                      <li *ngIf="plan.features.whiteLabel"><mat-icon class="feature-icon">check</mat-icon>White Label</li>
+                    </ul>
+                  </div>
+                  <button class="select-plan-btn" (click)="selectPlan(plan)">Select {{ plan.name }}</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- Payment Modal -->
+  <app-payment-modal
+    [isVisible]="showPaymentModal"
+    [selectedPlan]="selectedPlanForPayment"
+    [supplierId]="getSupplierId()"
+    (closeModal)="closePaymentModal()"
+    (confirmPayment)="onPaymentConfirm($event)">
+  </app-payment-modal>
 
