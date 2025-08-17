@@ -56,6 +56,11 @@ export class SupplierService {
     return this.apiService.get('/suppliers', { status: 'active' });
   }
 
+  //Supplier Signup
+  registerSupplier(supplier: Supplier): Observable<Supplier> {
+    return this.apiService.post('/suppliers/register', supplier);
+  }   
+
   // Update supplier image
   updateSupplierImage(id: string, imageFile: File): Observable<any> {
     const formData = new FormData();

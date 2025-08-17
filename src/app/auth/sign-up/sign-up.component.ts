@@ -122,39 +122,6 @@ export class SignUpComponent implements OnInit {
       });
   }
 
-  private createSupplier(imageUrl: string | null): void {
-    const supplierData = {
-      name: this.signupForm.value.name,
-      address: this.signupForm.value.address,
-      phone: this.signupForm.value.phone,
-      marque: this.signupForm.value.marque,
-      rib: this.signupForm.value.rib,
-      email: this.signupForm.value.email || null,
-      webSite: this.signupForm.value.webSite || null,
-      password: this.signupForm.value.password,
-      image: imageUrl,
-      userId: null // Will be set by backend after user creation
-    };
-    
-    console.log('Supplier signup data:', supplierData);
-    
-    this.supplierService.createSupplier(supplierData)
-      .pipe(
-        catchError(error => {
-          console.error('Error creating supplier:', error);
-          alert('Error creating supplier account. Please try again.');
-          return of(null);
-        })
-      )
-      .subscribe(response => {
-        if (response) {
-          console.log('Supplier created successfully:', response);
-          alert('Supplier account created successfully!');
-          this.router.navigate(['/auth/login']);
-        }
-      });
-  }
-
   private createSupplierWithImageUrl(imageUrl: string): any {
     const supplierData = {
       name: this.signupForm.value.name,
@@ -166,12 +133,12 @@ export class SignUpComponent implements OnInit {
       webSite: this.signupForm.value.webSite || null,
       password: this.signupForm.value.password,
       image: imageUrl,
-      userId: null // Will be set by backend after user creation
+      userId: null 
     };
     
     console.log('Supplier signup data with uploaded image:', supplierData);
     
-    return this.supplierService.createSupplier(supplierData)
+    return this.supplierService.registerSupplier(supplierData)
       .pipe(
         catchError(error => {
           console.error('Error creating supplier:', error);

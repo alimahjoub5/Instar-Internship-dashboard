@@ -38,19 +38,28 @@ export class LoginComponent {
     this.userService.login({ email: this.email, password: this.password }).subscribe({
       next: (response) => {
         this.userService.storeAuthData(response);
-        this.userService.getProfileById(response.Uid).subscribe({
-          next: (profile) => {
-           if(profile.role === 'admin') {
+        console.log('✅ Login successful, fetching profile...');
+        this.userService.getUserById(response.Uid).subscribe({
+          next: (profileResponse) => {
+            // Handle the nested response structure: { message: "...", user: {...} }
+            const profile = profileResponse.user || profileResponse;
+            console.log('👤 Profile fetched:', profile);
+            
+            if(profile.role === 'admin') {
               this.router.navigate(['/dash-adm']);
               this.isLoading = false;
-            }else if(profile.role === 'user') {
+            } else if(profile.role === 'vendor') {
               this.router.navigate(['/dash-fn']);
               this.isLoading = false;
-              }
+            } else {
+              this.error = 'Invalid user role. Please contact support.';
+              this.isLoading = false;
+            }
           },
           error: (err) => {
             console.error('Error fetching user profile:', err);
             this.error = 'Failed to fetch user profile. Please try again.';
+            this.isLoading = false;
           }
         });
       },

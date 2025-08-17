@@ -30,6 +30,9 @@ export class ApiService {
     return this.http.get<T>(`${this.baseUrl}${endpoint}`, options);
   }
 
+  // Special method for GET requests that need to send body data
+
+
   post<T>(endpoint: string, data: any): Observable<T> {
     return this.http.post<T>(`${this.baseUrl}${endpoint}`, data, {
       headers: this.getHeaders()
@@ -74,4 +77,4 @@ export class ApiService {
   getToken(): string | null {
     return localStorage.getItem('token');
   }
-} 
+}

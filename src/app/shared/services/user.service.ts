@@ -105,8 +105,8 @@ export class UserService {
   }
 
   // Profile Management
-  getProfileById(id: string): Observable<any> {
-    return this.apiService.post('/profilgetById', { id });
+  getUserById(id: string): Observable<any> {
+    return this.apiService.get<any>(`/users/${id}`);
   }
 
   updateProfile(userData: Partial<User> & { id: string }): Observable<any> {
@@ -144,9 +144,6 @@ export class UserService {
     return this.apiService.post('/getAllUserEmails', { email });
   }
 
-  getUserById(id: string): Observable<User> {
-    return this.apiService.get(`/users/byId?id=${id}`);
-  }
 
   // Token Management
   setToken(token: string): void {
@@ -191,7 +188,7 @@ export class UserService {
     if (!uid) {
       throw new Error('User not authenticated');
     }
-    return this.getProfileById(uid);
+    return this.getUserById(uid);
   }
 
   // Store authentication data from login response
