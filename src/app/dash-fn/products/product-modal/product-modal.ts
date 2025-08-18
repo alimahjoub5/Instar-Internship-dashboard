@@ -3,6 +3,8 @@ import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Product, ProductService } from '../../../shared/services/product.service';
 import { Promotion, PromotionService } from '../../../shared/services/promotion.service';
+import { Category, CategoryService } from '../../../shared/services/category.service';
+import { SubCategoryService } from '../../../shared/services/subcategory.service';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ConfirmationComponent } from "../../confirmation/confirmation.component";
@@ -25,6 +27,8 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
   promotionPercentage = 20; // Default value, you can replace this with actual data
   isSaving = false;
   currentPromotion: Promotion | null = null;
+  categoryName: string = '';
+  subCategoryName: string = '';
   
   promotionData: Partial<Omit<Promotion, 'startDate' | 'endDate'>> & {
     startDate: string;
@@ -40,7 +44,9 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
   constructor(
     private promotionService: PromotionService,
     private productService: ProductService,
-     private confirmationService: ConfirmationService
+    private categoryService: CategoryService,
+    private subCategoryService: SubCategoryService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit() {
@@ -52,6 +58,7 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
       setTimeout(() => this.showModal = true, 10);
       // Reset form when product changes
       this.fetchPromotionData();
+      this.fetchCategoryNames();
     }
   }
 
@@ -105,6 +112,48 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
     } else {
       // No promotion, just reset the form
       this.resetPromotionForm();
+    }
+  }
+
+  fetchCategoryNames() {
+    if (!this.product) {
+      return;
+    }
+
+    // Reset category names
+    this.categoryName = '';
+    this.subCategoryName = '';
+
+    // Fetch main category name
+    if (this.product.category) {
+      console.log(`Fetching category for ID: ${this.product.category}`);
+      this.categoryService.getCategoryById(this.product.category)
+        .pipe(
+          catchError(error => {
+            console.warn('Category not found, using fallback:', this.product?.category);
+            this.categoryName = this.product?.category || '';
+            return of(null);
+          })
+        )
+        .subscribe(category => {
+          this.categoryName = category?.title || this.product?.category || '';
+        });
+    }
+
+    // Fetch subcategory name if exists
+    if (this.product.subCategory) {
+      this.subCategoryService.getSubCategoryById(this.product.subCategory)
+        .pipe(
+          catchError(error => {
+            console.warn('Subcategory not found, using fallback:', this.product?.subCategory);
+            this.subCategoryName = this.product?.subCategory || '';
+            return of(null);
+          })
+        )
+        .subscribe(subCategory => {
+          console.log('Subcategory fetched:', subCategory?.title);
+          this.subCategoryName = subCategory?.title || this.product?.subCategory || '';
+        });
     }
   }
 

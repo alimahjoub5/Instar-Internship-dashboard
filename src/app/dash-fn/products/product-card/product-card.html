@@ -1,7 +1,7 @@
 <mat-card class="product-card" (click)="cardClick.emit()">
   <mat-card-header>
     <mat-card-title>{{ product.name }}</mat-card-title>
-    <mat-card-subtitle>{{ product.category }}<span *ngIf="product.subCategory"> / {{ product.subCategory }}</span></mat-card-subtitle>
+    <mat-card-subtitle>{{ categoryName }}<span *ngIf="subCategoryName"> / {{ subCategoryName }}</span></mat-card-subtitle>
   </mat-card-header>
   <img *ngIf="product.image" mat-card-image class="card-product-image" [src]="product.image" alt="{{ product.name }} image">
   <mat-card-content>

@@ -8,3 +8,34 @@
   border-top: 1px solid #e0e0e0;
   margin-top: 2rem;
 }
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-logo-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.footer-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.footer-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #666;
+}

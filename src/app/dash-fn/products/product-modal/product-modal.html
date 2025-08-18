@@ -7,9 +7,10 @@
       <span *ngIf="product?.reference" class="modal-ref">- {{ product.reference }}</span>
     </h2>
     <div class="modal-category-subcat">
-      <span>{{ product.category }}</span>
-      <span *ngIf="product.subCategory"> / {{ product.subCategory }}</span>
+      <span>{{ categoryName }}</span>
+      <span *ngIf="subCategoryName "> / {{ subCategoryName  }}</span>
     </div>
+  
     <hr class="modal-divider" />
     <img [src]="product.image" alt="{{ product.name }}" class="product-image" />
     
