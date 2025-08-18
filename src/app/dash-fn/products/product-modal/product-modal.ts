@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges, AfterViewInit, OnInit } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Product, ProductService } from '../../../shared/services/product.service';
+import { Product, ProductService, Product3D } from '../../../shared/services/product.service';
+import { ThreeViewerComponent } from '../../../dash-adm/products/consult-product/three-viewer.component';
 import { Promotion, PromotionService } from '../../../shared/services/promotion.service';
 import { Category, CategoryService } from '../../../shared/services/category.service';
 import { SubCategoryService } from '../../../shared/services/subcategory.service';
@@ -14,7 +15,7 @@ import { ConfirmationService } from '../../../shared/services/confirmation.servi
   selector: 'app-product-modal',
   templateUrl: './product-modal.html',
   styleUrls: ['./product-modal.css'],
-  imports: [CommonModule, CurrencyPipe, FormsModule, ConfirmationComponent],
+  imports: [CommonModule, CurrencyPipe, FormsModule, ConfirmationComponent, ThreeViewerComponent],
   standalone: true
 })
 export class ProductModal implements OnChanges, AfterViewInit, OnInit {
@@ -29,6 +30,10 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
   currentPromotion: Promotion | null = null;
   categoryName: string = '';
   subCategoryName: string = '';
+  product3DImages: string[] = [];
+  product3DData: Product3D[] = [];
+  show3DViewer: boolean = false;
+  current3DModelUrl: string = '';
   
   promotionData: Partial<Omit<Promotion, 'startDate' | 'endDate'>> & {
     startDate: string;
@@ -59,8 +64,8 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
       // Reset form when product changes
       this.fetchPromotionData();
       this.fetchCategoryNames();
-      
-     
+      this.fetch3DProductImages();
+      // Store supplier name in session storage
     }
   }
 
@@ -388,16 +393,56 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
       return [];
     }
     
-    // If product has images array, use it; otherwise use the main image
+    let images: string[] = [];
+    
+    // Add main product image
+   
+    
+    // Add additional product images if available
     if (this.product.images && this.product.images.length > 0) {
-      return this.product.images;
+      images = images.concat(this.product.images);
     }
     
-    // Fallback to main product image
-    return [this.product.image];
+    // Add 3D product images
+    if (this.product3DImages && this.product3DImages.length > 0) {
+      images = images.concat(this.product3DImages);
+    }
+    
+    return images;
   }
+
+  fetch3DProductImages() {
+      if (this.product && this.product._id) {
+        this.productService.getAll3DProducts(this.product._id).pipe(
+          tap((products3D: Product3D[]) => {
+            this.product3DData = products3D;
+            this.product3DImages = products3D.map(product3D => product3D.imageCouleurs);
+          }),
+          catchError((error) => {
+            console.error('Error fetching 3D product images:', error);
+            this.product3DData = [];
+            this.product3DImages = [];
+            return of([]);
+          })
+        ).subscribe();
+      }
+    }
 
   getSupplierName(): string {
     return sessionStorage.getItem('supplierName') || '';
+  }
+
+  onImageClick(imageUrl: string) {
+    // Check if this image corresponds to a 3D model
+    const product3D = this.product3DData.find(p3d => p3d.imageCouleurs === imageUrl);
+    if (product3D && product3D.image3D) {
+      this.current3DModelUrl = product3D.image3D.trim();
+      this.show3DViewer = true;
+    }
+  }
+
+  close3DViewer() {
+    this.show3DViewer = false;
+    this.current3DModelUrl = '';
   }
 }

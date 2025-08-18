@@ -20,7 +20,7 @@
         <div class="image-list">
           <!-- Display product images or fallback to main image -->
           <div class="gallery-image" *ngFor="let image of getProductImages()">
-            <img [src]="image" alt="Product image" class="gallery-thumb" />
+            <img [src]="image" alt="Product image" class="gallery-thumb" (click)="onImageClick(image)" style="cursor: pointer;" />
           </div>
         </div>
         <button class="add-image-btn" type="button" title="Add Image">
@@ -120,4 +120,21 @@
     </div>
   </div>
   <app-confirmation></app-confirmation>
+</div>
+
+<!-- 3D Viewer Modal -->
+<div class="modal-overlay" *ngIf="show3DViewer" (click)="close3DViewer()">
+  <div class="modal-3d-viewer" (click)="$event.stopPropagation()">
+    <div class="modal-3d-header">
+      <h3>3D Model Viewer</h3>
+      <button class="close-btn" (click)="close3DViewer()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-3d-content">
+      <app-three-viewer [modelUrl]="current3DModelUrl" *ngIf="current3DModelUrl"></app-three-viewer>
+    </div>
+  </div>
 </div>
