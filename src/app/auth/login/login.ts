@@ -45,6 +45,9 @@ export class LoginComponent {
             const profile = profileResponse.user || profileResponse;
             console.log('👤 Profile fetched:', profile);
             
+            // Save user profile in auth service for app-wide access
+            this.authService.setCurrentUser(profile);
+            
             if(profile.role === 'admin') {
               this.router.navigate(['/dash-adm']);
               this.isLoading = false;

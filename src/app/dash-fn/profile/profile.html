@@ -53,16 +53,22 @@
           </div>
           <!-- Profile photo section -->
           <div class="profile-photo-section">
-            <div class="profile-photo-container">
+            <div class="profile-photo-container" (click)="triggerFileUpload()">
+              <!-- Show image if available -->
               <img [src]="supplier.image" alt="Supplier Avatar" class="profile-photo" *ngIf="supplier.image">
-              <div class="photo-edit-icon">
+              
+              <!-- Show placeholder if no image -->
+              <div class="profile-photo-placeholder" *ngIf="!supplier.image">
+                {{ getInitials(supplier.name) }}
+              </div>
+              
+              <div class="photo-edit-icon" (click)="$event.stopPropagation(); triggerFileUpload()">
                 <mat-icon>photo_camera</mat-icon>
               </div>
             </div>
-            <div class="photo-actions">
-              <button class="btn-primary">Upload New</button>
-              <button class="btn-secondary">Delete avatar</button>
-            </div>
+            
+            <!-- Hidden file input -->
+            <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none;">
           </div>
           
           <!-- Profile form -->
@@ -294,8 +300,32 @@
               </div>
             </div>
             
+            <!-- User has pending subscription -->
+            <div *ngIf="!subscriptionLoading && !subscriptionError && hasPendingSubscription && !hasActiveSubscription" class="pending-subscription">
+              <h4>Subscription Under Review</h4>
+              <div class="pending-message">
+                <mat-icon class="pending-icon">hourglass_empty</mat-icon>
+                <p>Your subscription is currently under review. We'll notify you once it's approved.</p>
+                <div *ngFor="let subscription of userSubscriptions" class="subscription-card">
+                  <div *ngIf="subscription.status === 'pending'" class="subscription-info">
+                    <div class="subscription-header">
+                      <h5 class="plan-name">{{ subscription.planType | titlecase }} Plan</h5>
+                      <span class="status-badge pending">{{ subscription.status | titlecase }}</span>
+                    </div>
+                    <div class="subscription-details">
+                      <p><strong>Plan:</strong> {{ subscription.planType | titlecase }}</p>
+                      <p><strong>Price:</strong> {{ subscription.price | currency }}</p>
+                      <p><strong>Payment Method:</strong> {{ subscription.paymentMethod | titlecase }}</p>
+                      <p><strong>Auto Renew:</strong> {{ subscription.autoRenew ? 'Yes' : 'No' }}</p>
+                      <p><strong>Submitted:</strong> {{ subscription.createdAt | date:'mediumDate' }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
             <!-- User has no active subscription - show available plans -->
-            <div *ngIf="!subscriptionLoading && !subscriptionError && !hasActiveSubscription" class="available-plans">
+            <div *ngIf="!subscriptionLoading && !subscriptionError && !hasActiveSubscription && !hasPendingSubscription" class="available-plans">
               <h4>Choose a Subscription Plan</h4>
               <p class="plans-description">Select a plan that best fits your business needs.</p>
               

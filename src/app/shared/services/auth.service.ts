@@ -8,7 +8,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class AuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
-
+  
+  private currentUserSubject = new BehaviorSubject<any>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
+  
   constructor(private router: Router) {
     // Check authentication status on service initialization
     this.checkAuthStatus();
@@ -47,7 +50,8 @@ export class AuthService {
     localStorage.removeItem('userId');
     localStorage.removeItem('refreshToken');
     this.isAuthenticatedSubject.next(false);
-    this.router.navigate(['/login']);
+    this.currentUserSubject.next(null);
+    this.router.navigate(['auth/login']);
   }
 
   isAuthenticated(): boolean {
@@ -62,6 +66,19 @@ export class AuthService {
     return localStorage.getItem('userId');
   }
 
+  setCurrentUser(userProfile: any): void {
+    this.currentUserSubject.next(userProfile);
+  }
+
+  getCurrentUser(): any {
+    return this.currentUserSubject.value;
+  }
+
+  getUserRole(): string | null {
+    const user = this.getCurrentUser();
+    return user ? user.role : null;
+  }
+
   // Check if user is on login page
   isOnLoginPage(): boolean {
     return window.location.pathname === '/login';
@@ -73,4 +90,4 @@ export class AuthService {
       this.router.navigate(['/login']);
     }
   }
-} 
+}

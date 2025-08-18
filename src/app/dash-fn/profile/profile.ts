@@ -58,6 +58,7 @@ export class Profile implements OnInit {
   userSubscriptions: Subscription[] = [];
   availablePlans: SubscriptionPlan[] = [];
   hasActiveSubscription: boolean = false;
+  hasPendingSubscription: boolean = false;
   subscriptionLoading: boolean = false;
   subscriptionError: string | null = null;
   loading: boolean = false;
@@ -87,7 +88,6 @@ export class Profile implements OnInit {
 
   ngOnInit() {
     this.loadSupplierProfile();
-    this.loadSubscriptionData();
   }
 
   private loadSupplierProfile(): void {
@@ -107,6 +107,8 @@ export class Profile implements OnInit {
         this.supplier = { ...this.supplier, ...supplier };
         this.loading = false;
         console.log('Supplier profile loaded successfully:', this.supplier);
+        // Load subscription data after supplier profile is loaded
+        this.loadSubscriptionData();
       },
       error: (error) => {
         this.error = 'Failed to load supplier profile. Please try again.';
@@ -138,7 +140,8 @@ export class Profile implements OnInit {
   }
 
   loadSubscriptionData(): void {
-    const supplierId = localStorage.getItem('supplierId') || localStorage.getItem('userId');
+    const supplierId = this.getSupplierId();
+    console.log('Loading subscription data for supplier:', supplierId);
     if (!supplierId) {
       return;
     }
@@ -156,14 +159,36 @@ export class Profile implements OnInit {
         })
       )
       .subscribe(subscriptions => {
+        console.log('Loaded subscriptions:', subscriptions);
+        console.log('Number of subscriptions found:', subscriptions.length);
+
         this.userSubscriptions = subscriptions;
         this.hasActiveSubscription = subscriptions.some(sub => 
           this.subscriptionService.isSubscriptionActive(sub)
         );
         
-        // If no active subscription, load available plans
-        if (!this.hasActiveSubscription) {
+        // Check if there's a pending subscription
+        this.hasPendingSubscription = subscriptions.some(sub => sub.status === 'pending');
+        
+        console.log('Has active subscription:', this.hasActiveSubscription);
+        console.log('Has pending subscription:', this.hasPendingSubscription);
+        
+        // Log each subscription status for debugging
+        subscriptions.forEach((sub, index) => {
+          console.log(`Subscription ${index + 1}:`, {
+            id: sub._id,
+            status: sub.status,
+            planType: sub.planType,
+            supplierId: sub.supplierId
+          });
+        });
+        
+        // If no active subscription and no pending subscription, load available plans
+        if (!this.hasActiveSubscription && !this.hasPendingSubscription) {
+          console.log('Loading available plans since no active or pending subscription found');
           this.loadAvailablePlans();
+        } else {
+          console.log('Not loading plans - has active or pending subscription');
         }
         
         this.subscriptionLoading = false;
@@ -180,6 +205,7 @@ export class Profile implements OnInit {
         })
       )
       .subscribe(plans => {
+        console.log('Available subscription plans loaded successfully:', plans);
         this.availablePlans = plans.filter(plan => plan.isActive);
       });
   }
@@ -208,34 +234,48 @@ export class Profile implements OnInit {
   }
   
   getSupplierId(): string {
-    return localStorage.getItem('supplierId') || localStorage.getItem('userId') || '';
+    // Use the supplier's _id from the loaded supplier profile
+    return this.supplier?._id || '';
   }
   
   onPaymentConfirm(paymentData: any): void {
+    console.log('🔄 Payment confirmation started with data:', paymentData);
     this.subscriptionLoading = true;
     this.subscriptionError = null;
     
-    // Get supplierId from localStorage as fallback
-    const supplierId = paymentData.supplierId || localStorage.getItem('supplierId') || localStorage.getItem('userId');
+    // Get supplierId from the loaded supplier profile first, then fallback to localStorage
+    const supplierId = paymentData.supplierId || this.getSupplierId() || localStorage.getItem('uid');
+    console.log('👤 Supplier ID retrieved:', supplierId);
     
     if (!supplierId) {
+      console.error('❌ No supplier ID found in localStorage or paymentData');
       this.subscriptionError = 'Supplier ID not found. Please try logging in again.';
       this.subscriptionLoading = false;
       return;
     }
     
+    // Map payment method from frontend to backend format
+    let mappedPaymentMethod = paymentData.paymentMethod;
+    if (paymentData.paymentMethod === 'credit-card') {
+      mappedPaymentMethod = 'card';
+    }
+    
     const subscriptionData = {
       supplierId: supplierId,
       planType: paymentData.planType,
-      paymentMethod: paymentData.paymentMethod,
+      paymentMethod: mappedPaymentMethod,
       autoRenew: paymentData.autoRenew
     };
+    
+    console.log('📦 Subscription data to be sent:', subscriptionData);
     
     this.subscriptionService.createSubscription(subscriptionData)
       .pipe(
         catchError(error => {
-          console.error('Error creating subscription:', error);
-          this.subscriptionError = 'Failed to create subscription. Please try again.';
+          console.error('❌ Error creating subscription:', error);
+          console.error('❌ Error details:', error.error);
+          console.error('❌ Error status:', error.status);
+          this.subscriptionError = error.error?.message || 'Failed to create subscription. Please try again.';
           this.subscriptionLoading = false;
           // Reset modal processing state
           if (this.selectedPlanForPayment) {
@@ -246,11 +286,14 @@ export class Profile implements OnInit {
       )
       .subscribe(response => {
         if (response) {
-          console.log('Subscription created successfully:', response);
+          console.log('✅ Subscription created successfully:', response);
           this.subscriptionLoading = false;
           this.closePaymentModal();
           // Refresh subscription data
           this.loadSubscriptionData();
+        } else {
+          console.warn('⚠️ Subscription creation returned null response');
+          this.subscriptionLoading = false;
         }
       });
   }
@@ -341,5 +384,54 @@ export class Profile implements OnInit {
         this.showConfirmPassword = !this.showConfirmPassword;
         break;
     }
+  }
+
+  // Photo upload methods
+  triggerFileUpload(): void {
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.click();
+    }
+  }
+
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB.');
+        return;
+      }
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.supplier.image = e.target.result;
+      };
+      reader.readAsDataURL(file);
+
+      // Here you would typically upload the file to your server
+      // For now, we're just showing the preview
+      console.log('File selected:', file.name);
+    }
+  }
+
+
+
+  getInitials(name: string): string {
+    if (!name) return 'U';
+    
+    const words = name.trim().split(' ');
+    if (words.length === 1) {
+      return words[0].charAt(0).toUpperCase();
+    }
+    
+    return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
   }
 }

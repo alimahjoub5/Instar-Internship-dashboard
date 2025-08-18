@@ -189,6 +189,8 @@ export class SubscriptionService {
   }
 
   getSubscriptionsBySupplier(supplierId: string): Observable<Subscription[]> {
+    console.log('🔍 Fetching subscriptions for supplier ID:', supplierId);
+
     return this.apiService.get(`/subscriptions/supplier/${supplierId}`).pipe(
       map((response: any) => response.subscriptions || response)
     );
