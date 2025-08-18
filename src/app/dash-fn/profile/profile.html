@@ -111,11 +111,22 @@
               <div class="form-group">
                 <label for="phone">Mobile Number</label>
                 <div class="phone-input-group">
-                  <div class="country-select">
-                    <span class="flag-icon">🇳🇬</span>
+                  <div class="country-select" (click)="toggleCountryDropdown()" [class.open]="showCountryDropdown">
+                    <span class="flag-icon">{{ selectedCountry.flag }}</span>
+                    <span class="country-code">{{ selectedCountry.code }}</span>
                     <span class="dropdown-arrow">▼</span>
+                    
+                    <div class="country-dropdown" *ngIf="showCountryDropdown">
+                      <div class="country-option" 
+                           *ngFor="let country of countries" 
+                           (click)="selectCountry(country); $event.stopPropagation()">
+                        <span class="flag-icon">{{ country.flag }}</span>
+                        <span class="country-name">{{ country.name }}</span>
+                        <span class="country-code">{{ country.code }}</span>
+                      </div>
+                    </div>
                   </div>
-                  <input type="tel" id="phone" class="form-control phone-number" [(ngModel)]="supplier.phone" [disabled]="loading || isImageUploading">
+                  <input type="tel" id="phone" class="form-control phone-number" [(ngModel)]="supplier.phone" [disabled]="loading || isImageUploading" [placeholder]="selectedCountry.placeholder">
                 </div>
               </div>
               <div class="form-group">
@@ -127,15 +138,13 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Subscription Status</label>
-                <div class="radio-group">
-                  <div class="radio-option">
-                    <input type="radio" id="active" name="subscription" value="true" [(ngModel)]="supplier.hasActiveSubscription" [disabled]="loading || isImageUploading">
-                    <label for="active">Active Subscription</label>
-                  </div>
-                  <div class="radio-option">
-                    <input type="radio" id="inactive" name="subscription" value="false" [(ngModel)]="supplier.hasActiveSubscription" [disabled]="loading || isImageUploading">
-                    <label for="inactive">No Active Subscription</label>
-                  </div>
+                <div class="subscription-status-display">
+                  <span class="status-text" 
+                        [class.active]="hasActiveSubscription" 
+                        [class.pending]="hasPendingSubscription && !hasActiveSubscription"
+                        [class.inactive]="!hasActiveSubscription && !hasPendingSubscription">
+                    {{ hasActiveSubscription ? 'Active Subscription' : (hasPendingSubscription ? 'Subscription Under Review' : 'No Active Subscription') }}
+                  </span>
                 </div>
               </div>
             </div>

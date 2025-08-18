@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -86,6 +86,16 @@ export class Profile implements OnInit {
   isImageUploading: boolean = false;
   selectedFile: File | null = null;
   imageError: string | null = null;
+
+  // Country dropdown properties
+  showCountryDropdown: boolean = false;
+  countries = [
+    { name: 'Tunisia', code: '+216', flag: '🇹🇳', placeholder: 'Enter phone number' },
+    { name: 'Nigeria', code: '+234', flag: '🇳🇬', placeholder: 'Enter phone number' },
+    { name: 'France', code: '+33', flag: '🇫🇷', placeholder: 'Enter phone number' },
+    { name: 'United States', code: '+1', flag: '🇺🇸', placeholder: 'Enter phone number' }
+  ];
+  selectedCountry = this.countries[0]; // Default to Tunisia
 
   constructor(
     private supplierService: SupplierService,
@@ -508,13 +518,29 @@ export class Profile implements OnInit {
 
 
   getInitials(name: string): string {
-    if (!name) return 'U';
-    
-    const words = name.trim().split(' ');
+    if (!name) return '';
+    const words = name.split(' ');
     if (words.length === 1) {
       return words[0].charAt(0).toUpperCase();
     }
-    
     return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+  }
+
+  // Country dropdown methods
+  toggleCountryDropdown(): void {
+    this.showCountryDropdown = !this.showCountryDropdown;
+  }
+
+  selectCountry(country: any): void {
+    this.selectedCountry = country;
+    this.showCountryDropdown = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.country-select')) {
+      this.showCountryDropdown = false;
+    }
   }
 }
