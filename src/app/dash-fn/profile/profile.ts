@@ -4,6 +4,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { SupplierService, Supplier } from '../../shared/services/supplier.service';
 import { SubscriptionService, Subscription, SubscriptionPlan } from '../../shared/services/subscription.service';
+import { UploadService } from '../../shared/services/upload.service';
 import { OnInit } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
@@ -81,9 +82,15 @@ export class Profile implements OnInit {
   showPaymentModal: boolean = false;
   selectedPlanForPayment: SubscriptionPlan | null = null;
 
+  // Image upload properties
+  isImageUploading: boolean = false;
+  selectedFile: File | null = null;
+  imageError: string | null = null;
+
   constructor(
     private supplierService: SupplierService,
-    private subscriptionService: SubscriptionService
+    private subscriptionService: SubscriptionService,
+    private uploadService: UploadService
   ) {}
 
   ngOnInit() {
@@ -399,15 +406,19 @@ export class Profile implements OnInit {
     if (file) {
       // Validate file type
       if (!file.type.startsWith('image/')) {
-        alert('Please select a valid image file.');
+        this.imageError = 'Please select a valid image file.';
         return;
       }
 
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('File size must be less than 5MB.');
+        this.imageError = 'File size must be less than 5MB.';
         return;
       }
+
+      // Clear any previous errors
+      this.imageError = null;
+      this.selectedFile = file;
 
       // Create preview
       const reader = new FileReader();
@@ -416,10 +427,82 @@ export class Profile implements OnInit {
       };
       reader.readAsDataURL(file);
 
-      // Here you would typically upload the file to your server
-      // For now, we're just showing the preview
-      console.log('File selected:', file.name);
+      // Start upload process
+      this.uploadImage();
     }
+  }
+
+  private uploadImage(): void {
+    if (!this.selectedFile) {
+      return;
+    }
+
+    // Disable the form during upload
+    this.isImageUploading = true;
+    this.loading = true;
+    this.error = null;
+
+    console.log('Starting image upload...');
+
+    // Upload the file using UploadService
+    this.uploadService.uploadFile(this.selectedFile, 'images')
+      .pipe(
+        catchError(error => {
+          console.error('Error uploading image:', error);
+          this.imageError = 'Failed to upload image. Please try again.';
+          this.isImageUploading = false;
+          this.loading = false;
+          return of(null);
+        })
+      )
+      .subscribe(uploadResponse => {
+        if (uploadResponse) {
+          console.log('Image uploaded successfully:', uploadResponse);
+          
+          // Update supplier entity with new image URL
+          const supplierId = this.getSupplierId();
+          if (supplierId) {
+            this.updateSupplierImage(supplierId, uploadResponse.fileUrl);
+          } else {
+            this.imageError = 'Supplier ID not found. Please try logging in again.';
+            this.isImageUploading = false;
+            this.loading = false;
+          }
+        }
+      });
+  }
+
+  private updateSupplierImage(supplierId: string, imageUrl: string): void {
+    const updateData = { image: imageUrl };
+    
+    console.log('Updating supplier with new image URL:', imageUrl);
+    
+    this.supplierService.updateSupplier(supplierId, updateData)
+      .pipe(
+        catchError(error => {
+          console.error('Error updating supplier:', error);
+          this.error = 'Failed to update profile image. Please try again.';
+          this.isImageUploading = false;
+          this.loading = false;
+          return of(null);
+        })
+      )
+      .subscribe(updatedSupplier => {
+        if (updatedSupplier) {
+          console.log('Supplier updated successfully:', updatedSupplier);
+          
+          // Update local supplier data
+          this.supplier.image = imageUrl;
+          
+          // Reset upload state
+          this.isImageUploading = false;
+          this.loading = false;
+          this.selectedFile = null;
+          this.imageError = null;
+          
+          console.log('Profile image updated successfully!');
+        }
+      });
   }
 
 

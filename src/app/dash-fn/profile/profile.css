@@ -857,8 +857,82 @@ label {
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Image upload styles */
+.profile-photo-container.uploading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.upload-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.upload-overlay .loading-spinner {
+  animation: rotate 1s linear infinite;
+  color: #007bff;
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.upload-overlay span {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.photo-edit-icon.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.image-error-message {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 4px;
+  color: #c33;
+  font-size: 14px;
+}
+
+.image-error-message .error-icon {
+  margin-right: 6px;
+  font-size: 16px;
+}
+
+/* Form disabled state */
+.form-control:disabled,
+input[type="radio"]:disabled,
+textarea:disabled {
+  background-color: #f8f9fa;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .pending-message p {

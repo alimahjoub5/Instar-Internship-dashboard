@@ -53,7 +53,7 @@
           </div>
           <!-- Profile photo section -->
           <div class="profile-photo-section">
-            <div class="profile-photo-container" (click)="triggerFileUpload()">
+            <div class="profile-photo-container" [class.uploading]="isImageUploading" (click)="!isImageUploading && triggerFileUpload()">
               <!-- Show image if available -->
               <img [src]="supplier.image" alt="Supplier Avatar" class="profile-photo" *ngIf="supplier.image">
               
@@ -62,13 +62,25 @@
                 {{ getInitials(supplier.name) }}
               </div>
               
-              <div class="photo-edit-icon" (click)="$event.stopPropagation(); triggerFileUpload()">
-                <mat-icon>photo_camera</mat-icon>
+              <!-- Upload loading overlay -->
+              <div class="upload-overlay" *ngIf="isImageUploading">
+                <mat-icon class="loading-spinner">refresh</mat-icon>
+                <span>Uploading...</span>
+              </div>
+              
+              <div class="photo-edit-icon" [class.disabled]="isImageUploading" (click)="$event.stopPropagation(); !isImageUploading && triggerFileUpload()">
+                <mat-icon>{{ isImageUploading ? 'hourglass_empty' : 'photo_camera' }}</mat-icon>
               </div>
             </div>
             
+            <!-- Image upload error message -->
+            <div *ngIf="imageError" class="image-error-message">
+              <mat-icon class="error-icon">error</mat-icon>
+              <span>{{ imageError }}</span>
+            </div>
+            
             <!-- Hidden file input -->
-            <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none;">
+            <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none;" [disabled]="isImageUploading">
           </div>
           
           <!-- Profile form -->
@@ -76,22 +88,22 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="firstName">Supplier Name <span class="required">*</span></label>
-                <input type="text" id="firstName" class="form-control" [(ngModel)]="supplier.name" required>
+                <input type="text" id="firstName" class="form-control" [(ngModel)]="supplier.name" [disabled]="loading || isImageUploading" required>
               </div>
               <div class="form-group">
                 <label for="lastName">Website</label>
-                <input type="text" id="lastName" class="form-control" [(ngModel)]="supplier.webSite">
+                <input type="text" id="lastName" class="form-control" [(ngModel)]="supplier.webSite" [disabled]="loading || isImageUploading">
               </div>
             </div>
             
             <div class="form-row">
               <div class="form-group">
                 <label for="email">Email <span class="required">*</span></label>
-                <input type="email" id="email" class="form-control" [(ngModel)]="supplier.email" required>
+                <input type="email" id="email" class="form-control" [(ngModel)]="supplier.email" [disabled]="loading || isImageUploading" required>
               </div>
               <div class="form-group">
                 <label for="recoveryEmail">Brand/Marque</label>
-                <input type="text" id="recoveryEmail" class="form-control" [(ngModel)]="supplier.marque" placeholder="Enter brand/marque (optional)">
+                <input type="text" id="recoveryEmail" class="form-control" [(ngModel)]="supplier.marque" [disabled]="loading || isImageUploading" placeholder="Enter brand/marque (optional)">
               </div>
             </div>
             
@@ -103,12 +115,12 @@
                     <span class="flag-icon">🇳🇬</span>
                     <span class="dropdown-arrow">▼</span>
                   </div>
-                  <input type="tel" id="phone" class="form-control phone-number" [(ngModel)]="supplier.phone">
+                  <input type="tel" id="phone" class="form-control phone-number" [(ngModel)]="supplier.phone" [disabled]="loading || isImageUploading">
                 </div>
               </div>
               <div class="form-group">
                 <label for="birthDate">RIB</label>
-                <input type="text" id="birthDate" class="form-control" [(ngModel)]="supplier.rib">
+                <input type="text" id="birthDate" class="form-control" [(ngModel)]="supplier.rib" [disabled]="loading || isImageUploading">
               </div>
             </div>
             
@@ -117,11 +129,11 @@
                 <label>Subscription Status</label>
                 <div class="radio-group">
                   <div class="radio-option">
-                    <input type="radio" id="active" name="subscription" value="true" [(ngModel)]="supplier.hasActiveSubscription">
+                    <input type="radio" id="active" name="subscription" value="true" [(ngModel)]="supplier.hasActiveSubscription" [disabled]="loading || isImageUploading">
                     <label for="active">Active Subscription</label>
                   </div>
                   <div class="radio-option">
-                    <input type="radio" id="inactive" name="subscription" value="false" [(ngModel)]="supplier.hasActiveSubscription">
+                    <input type="radio" id="inactive" name="subscription" value="false" [(ngModel)]="supplier.hasActiveSubscription" [disabled]="loading || isImageUploading">
                     <label for="inactive">No Active Subscription</label>
                   </div>
                 </div>
@@ -131,13 +143,13 @@
             <div class="form-row">
               <div class="form-group full-width">
                 <label for="address">Address</label>
-                <textarea id="address" class="form-control" rows="3" [(ngModel)]="supplier.address" placeholder="Enter your address (optional)"></textarea>
+                <textarea id="address" class="form-control" rows="3" [(ngModel)]="supplier.address" [disabled]="loading || isImageUploading" placeholder="Enter your address (optional)"></textarea>
               </div>
             </div>
             
             <div class="form-actions">
-              <button class="btn-save" (click)="saveProfileChanges()" [disabled]="loading">
-                <mat-icon *ngIf="loading" class="loading-spinner">refresh</mat-icon>
+              <button class="btn-save" (click)="saveProfileChanges()" [disabled]="loading || isImageUploading">
+                <mat-icon *ngIf="loading || isImageUploading" class="loading-spinner">refresh</mat-icon>
                 {{ loading ? 'Saving...' : 'Save Changes' }}
               </button>
             </div>
