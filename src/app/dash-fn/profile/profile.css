@@ -811,7 +811,7 @@ label {
   margin-bottom: 2rem;
   box-shadow: 0 4px 12px rgba(255, 183, 77, 0.15);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .pending-subscription::before {
@@ -843,10 +843,12 @@ label {
 .pending-message {
   background: rgba(255, 255, 255, 0.8);
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 2rem;
   margin-bottom: 1.5rem;
   text-align: center;
   border: 1px solid rgba(255, 183, 77, 0.3);
+  overflow: visible;
+  position: relative;
 }
 
 .pending-icon {
@@ -854,6 +856,11 @@ label {
   color: #ff9800;
   margin-bottom: 1rem;
   animation: rotate 3s linear infinite;
+  display: inline-block;
+  transform-origin: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  line-height: 1;
 }
 
 @keyframes rotate {
