@@ -59,6 +59,8 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
       // Reset form when product changes
       this.fetchPromotionData();
       this.fetchCategoryNames();
+      
+     
     }
   }
 
@@ -393,5 +395,9 @@ export class ProductModal implements OnChanges, AfterViewInit, OnInit {
     
     // Fallback to main product image
     return [this.product.image];
+  }
+
+  getSupplierName(): string {
+    return sessionStorage.getItem('supplierName') || '';
   }
 }

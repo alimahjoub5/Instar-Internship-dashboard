@@ -115,7 +115,8 @@
       <span class="modal-sales" [class.out-of-sales]="product.sales === 0">
         {{ product.sales === 0 ? 'not sold' : ('sales: ' + product.sales) }}
       </span>
-      <span class="modal-supplier" *ngIf="product?.supplier"><span class="modal-supplier-label">Supplier:</span> {{ product.supplier }}</span>
+      <span class="modal-supplier" *ngIf="product?.supplier"><span class="modal-supplier-label">Supplier:</span> {{ getSupplierName() }}</span>
+
     </div>
   </div>
   <app-confirmation></app-confirmation>
