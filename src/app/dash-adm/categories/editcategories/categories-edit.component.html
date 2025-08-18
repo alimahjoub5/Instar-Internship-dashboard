@@ -5,10 +5,7 @@
       <label>Nom :</label>
       <input [(ngModel)]="category.title" name="title" required />
     </div>
-    <div>
-      <label>Description :</label>
-      <input [(ngModel)]="category.description" name="description" />
-    </div>
+
     <div>
       <label>Image (URL) :</label>
       <input [(ngModel)]="category.image" name="image" />
@@ -16,4 +13,4 @@
     <div *ngIf="error" class="error">{{ error }}</div>
     <button type="submit" [disabled]="isSubmitting">Enregistrer</button>
   </form>
-</div> 
+</div>

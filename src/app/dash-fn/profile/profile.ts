@@ -316,7 +316,7 @@ export class Profile implements OnInit {
   }
   
   saveProfileChanges() {
-    const supplierId = localStorage.getItem('supplierId') || localStorage.getItem('userId');
+    const supplierId = this.getSupplierId();
     if (!supplierId) {
       this.error = 'Supplier not authenticated';
       return;

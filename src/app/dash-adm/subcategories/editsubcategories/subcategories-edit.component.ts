@@ -40,11 +40,11 @@ export class SubCategoriesEditComponent implements OnInit {
   }
 
   submit() {
-    if (!this.subcategory.name || !this.subcategory.category || !this.id) { this.error = 'Nom et catégorie requis'; return; }
+    if (!this.subcategory.title || !this.id) { this.error = 'Titre requis'; return; }
     this.isSubmitting = true;
     this.subCategoryService.updateSubCategory(this.id, this.subcategory).subscribe({
       next: () => this.router.navigate(['/dash-adm/subcategories']),
       error: () => { this.error = 'Erreur modification'; this.isSubmitting = false; }
     });
   }
-} 
+}

@@ -18,10 +18,7 @@
           </ng-template>
         </td>
         <td>
-          <span *ngIf="cat.description; else noDescription" class="category-description">{{ cat.description }}</span>
-          <ng-template #noDescription>
-            <span class="no-data">Aucune description</span>
-          </ng-template>
+          <span class="no-data">-</span>
         </td>
         <td>
           <img *ngIf="cat.image" [src]="cat.image" alt="img" width="40" />
@@ -36,4 +33,4 @@
   </table>
   <div *ngIf="isLoading">Chargement...</div>
   <div *ngIf="error" class="error">{{ error }}</div>
-</div> 
+</div>

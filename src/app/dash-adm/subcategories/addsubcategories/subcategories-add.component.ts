@@ -31,11 +31,11 @@ export class SubCategoriesAddComponent implements OnInit {
   }
 
   submit() {
-    if (!this.subcategory.name || !this.subcategory.category) { this.error = 'Nom et catégorie requis'; return; }
+    if (!this.subcategory.title) { this.error = 'Titre requis'; return; }
     this.isSubmitting = true;
     this.subCategoryService.createSubCategory(this.subcategory as SubCategory).subscribe({
       next: () => this.router.navigate(['/dash-adm/subcategories']),
       error: () => { this.error = 'Erreur création'; this.isSubmitting = false; }
     });
   }
-} 
+}
