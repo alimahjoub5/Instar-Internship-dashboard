@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { SupplierService, Supplier } from '../../shared/services/supplier.service';
 import { SubscriptionService, Subscription, SubscriptionPlan } from '../../shared/services/subscription.service';
 import { UploadService } from '../../shared/services/upload.service';
+import { AuthService } from '../../shared/services/auth.service';
 import { OnInit } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
 import { CommonModule } from '@angular/common';
@@ -100,7 +101,8 @@ export class Profile implements OnInit {
   constructor(
     private supplierService: SupplierService,
     private subscriptionService: SubscriptionService,
-    private uploadService: UploadService
+    private uploadService: UploadService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -503,6 +505,9 @@ export class Profile implements OnInit {
           
           // Update local supplier data
           this.supplier.image = imageUrl;
+          
+          // Update sessionStorage to reflect changes in sidebar
+          sessionStorage.setItem('supplierImage', imageUrl);
           
           // Reset upload state
           this.isImageUploading = false;

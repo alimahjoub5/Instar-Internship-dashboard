@@ -79,6 +79,14 @@ export class AuthService {
     return user ? user.role : null;
   }
 
+  updateCurrentUserImage(imageUrl: string): void {
+    const currentUser = this.getCurrentUser();
+    if (currentUser) {
+      const updatedUser = { ...currentUser, image: imageUrl };
+      this.currentUserSubject.next(updatedUser);
+    }
+  }
+
   // Check if user is on login page
   isOnLoginPage(): boolean {
     return window.location.pathname === '/login';

@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { inject } from '@angular/core';
 import { UserService } from '../../shared/services/user.service';
 import { AuthService } from '../../shared/services/auth.service';
+import { SupplierService } from '../../shared/services/supplier.service';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +24,7 @@ export class LoginComponent {
   private router = inject(Router);
   private userService = inject(UserService);
   private authService = inject(AuthService);
+  private supplierService = inject(SupplierService);
 
   login() {
     if (!this.email || !this.password) {
@@ -45,18 +47,37 @@ export class LoginComponent {
             const profile = profileResponse.user || profileResponse;
             console.log('👤 Profile fetched:', profile);
             
-            // Save user profile in auth service for app-wide access
-            this.authService.setCurrentUser(profile);
-            
-            if(profile.role === 'admin') {
-              this.router.navigate(['/dash-adm']);
-              this.isLoading = false;
-            } else if(profile.role === 'vendor') {
-              this.router.navigate(['/dash-fn']);
-              this.isLoading = false;
+            if(profile.role === 'vendor') {
+              // For vendors, load supplier data and store in sessionStorage
+              this.supplierService.getSupplierByUserId(response.Uid).subscribe({
+                next: (supplier) => {
+                  console.log('🏪 Supplier data loaded:', supplier);
+                  // Store supplier name and image in sessionStorage
+                  sessionStorage.setItem('supplierName', supplier.name || '');
+                  sessionStorage.setItem('supplierImage', supplier.image || '');
+                  this.router.navigate(['/dash-fn']);
+                  this.isLoading = false;
+                },
+                error: (err) => {
+                  console.error('Error loading supplier data:', err);
+                  // Clear any existing supplier data and proceed
+                  sessionStorage.removeItem('supplierName');
+                  sessionStorage.removeItem('supplierImage');
+                  this.router.navigate(['/dash-fn']);
+                  this.isLoading = false;
+                }
+              });
             } else {
-              this.error = 'Invalid user role. Please contact support.';
-              this.isLoading = false;
+              // For non-vendors, just set the user profile
+              this.authService.setCurrentUser(profile);
+              
+              if(profile.role === 'admin') {
+                this.router.navigate(['/dash-adm']);
+                this.isLoading = false;
+              } else {
+                this.error = 'Invalid user role. Please contact support.';
+                this.isLoading = false;
+              }
             }
           },
           error: (err) => {
