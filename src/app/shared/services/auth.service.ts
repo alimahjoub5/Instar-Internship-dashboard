@@ -47,7 +47,7 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
-    localStorage.removeItem('userId');
+    localStorage.removeItem('uid');
     localStorage.removeItem('refreshToken');
     this.isAuthenticatedSubject.next(false);
     this.currentUserSubject.next(null);

@@ -151,12 +151,16 @@ export class DashboardContent implements OnInit {
       { name: '$101+', min: 101, max: Infinity }
     ];
     
-    this.priceRangeData = priceRanges.map(range => ({
-      name: range.name,
-      value: this.products.filter(p => 
-        (p.price || 0) >= range.min && (p.price || 0) <= range.max
-      ).length
-    })).filter(r => r.value > 0);
+    // Area chart requires series format
+    this.priceRangeData = [{
+      name: 'Products',
+      series: priceRanges.map(range => ({
+        name: range.name,
+        value: this.products.filter(p => 
+          (p.price || 0) >= range.min && (p.price || 0) <= range.max
+        ).length
+      })).filter(r => r.value > 0)
+    }];
 
     // Supplier Performance (top 5)
     const supplierStats = Object.entries(
