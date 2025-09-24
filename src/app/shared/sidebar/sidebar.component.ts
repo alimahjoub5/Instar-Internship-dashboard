@@ -26,6 +26,7 @@ export class SidebarComponent implements OnInit {
     { label: 'Suppliers', route: '/dash-adm/suppliers' },
     { label: 'Subscriptions', route: '/dash-adm/subscriptions' },
     { label: 'Subscription Plans', route: '/dash-adm/subscriptions/plans' },
+    { label: 'Grace Period', route: '/dash-adm/subscriptions/grace-period' },
     { label: 'Settings', route: '/dash-adm/settings' },
     { label: 'Logout', route: '/login' }
   ];
@@ -64,6 +65,7 @@ export class SidebarComponent implements OnInit {
       'Suppliers': '🏭',
       'Subscriptions': '💳',
       'Subscription Plans': '📋',
+      'Grace Period': '⏳',
       'Expiration Management': '⏰',
       'Settings': '⚙️',
       'Logout': '🚪'

@@ -98,6 +98,23 @@ export class SubscriptionListComponent implements OnInit {
     return 'normal';
   }
 
+  // Grace Period Methods
+  isInGracePeriod(subscription: Subscription): boolean {
+    return this.subscriptionService.isInGracePeriod(subscription);
+  }
+
+  getGracePeriodDaysRemaining(subscription: Subscription): number {
+    return this.subscriptionService.getGracePeriodDaysRemaining(subscription);
+  }
+
+  shouldDisableProducts(subscription: Subscription): boolean {
+    return this.subscriptionService.shouldDisableProducts(subscription);
+  }
+
+  getGracePeriodStatus(subscription: Subscription): 'active' | 'grace-period' | 'expired' | 'disabled' {
+    return this.subscriptionService.getGracePeriodStatus(subscription);
+  }
+
   getExpirationStatusClass(subscription: Subscription): string {
     const status = this.getExpirationStatus(subscription);
     return `expiration-${status}`;

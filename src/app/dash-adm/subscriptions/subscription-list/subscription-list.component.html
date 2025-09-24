@@ -20,7 +20,7 @@
           <mat-icon>analytics</mat-icon>
           View Statistics
         </button>
-        <button mat-raised-button color="warn" routerLink="/dash-adm/subscriptions/expiration">
+        <button mat-raised-button color="warn" routerLink="/dash-adm/subscriptions/grace-period">
           <mat-icon>schedule</mat-icon>
           Expiration Management
         </button>
@@ -72,6 +72,17 @@
               </span>
               <div *ngIf="isSubscriptionActive(subscription)" class="days-remaining">
                 {{ getDaysRemaining(subscription) }} days left
+              </div>
+              <!-- Grace Period Info -->
+              <div *ngIf="isInGracePeriod(subscription)" class="grace-period-info">
+                <span class="grace-period-badge">
+                  ⏳ Grace Period: {{ getGracePeriodDaysRemaining(subscription) }} days left
+                </span>
+              </div>
+              <div *ngIf="shouldDisableProducts(subscription)" class="grace-period-expired">
+                <span class="expired-badge">
+                  🚫 Products Disabled
+                </span>
               </div>
             </td>
           </ng-container>

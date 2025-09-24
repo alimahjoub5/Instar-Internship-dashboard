@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DashboardService, DashboardStats, ActivityFeed } from '../../shared/services/dashboard.service';
+import { GracePeriodStatsComponent } from '../subscriptions/grace-period-stats/grace-period-stats.component';
 
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, GracePeriodStatsComponent],
   templateUrl: './dashboard-home.html',
   styleUrls: ['./dashboard-home.css']
 })

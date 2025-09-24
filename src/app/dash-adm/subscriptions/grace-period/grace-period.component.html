@@ -1,0 +1,112 @@
+<div class="grace-period-container">
+  <div class="header">
+    <h2>Grace Period Management</h2>
+    <p>Manage subscriptions in grace period and monitor expiration status</p>
+  </div>
+
+  <!-- Message Display -->
+  <div *ngIf="message" class="message" [ngClass]="'message-' + messageType">
+    {{ message }}
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-container" *ngIf="expirationStats">
+    <div class="stat-card">
+      <div class="stat-number">{{ expirationStats.active }}</div>
+      <div class="stat-label">Active Subscriptions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ expirationStats.expired }}</div>
+      <div class="stat-label">In Grace Period</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ expirationStats.gracePeriodExpired }}</div>
+      <div class="stat-label">Grace Period Ended</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ expirationStats.expiringToday }}</div>
+      <div class="stat-label">Expiring Today</div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="actions">
+    <button 
+      class="btn btn-primary" 
+      (click)="runExpirationCheck()" 
+      [disabled]="isLoading">
+      <span *ngIf="isLoading">Running...</span>
+      <span *ngIf="!isLoading">Run Expiration Check</span>
+    </button>
+    <button 
+      class="btn btn-secondary" 
+      (click)="refreshData()" 
+      [disabled]="isLoading">
+      Refresh Data
+    </button>
+  </div>
+
+  <!-- Grace Period Subscriptions List -->
+  <div class="grace-period-list">
+    <h3>Subscriptions in Grace Period ({{ gracePeriodSubscriptions.length }})</h3>
+    
+    <div *ngIf="isLoading" class="loading">
+      Loading grace period data...
+    </div>
+
+    <div *ngIf="!isLoading && gracePeriodSubscriptions.length === 0" class="no-data">
+      No subscriptions currently in grace period.
+    </div>
+
+    <div *ngIf="!isLoading && gracePeriodSubscriptions.length > 0" class="subscriptions-grid">
+      <div 
+        *ngFor="let subscription of gracePeriodSubscriptions" 
+        class="subscription-card"
+        [ngClass]="getStatusClass(getDaysRemaining(subscription.gracePeriodEndDate))">
+        
+        <div class="subscription-header">
+          <h4>{{ subscription.supplierId?.name || 'Unknown Supplier' }}</h4>
+          <span class="plan-type">{{ subscription.planType | uppercase }}</span>
+        </div>
+        
+        <div class="subscription-details">
+          <div class="detail-item">
+            <strong>Email:</strong> {{ subscription.supplierId?.email || 'N/A' }}
+          </div>
+          
+          <div class="detail-item">
+            <strong>Phone:</strong> {{ subscription.supplierId?.phone || 'N/A' }}
+          </div>
+          
+          <div class="detail-item">
+            <strong>Grace Period Ends:</strong> 
+            {{ subscription.gracePeriodEndDate | date:'medium' }}
+          </div>
+          
+          <div class="detail-item">
+            <strong>Days Remaining:</strong> 
+            <span class="days-remaining" [ngClass]="getStatusClass(getDaysRemaining(subscription.gracePeriodEndDate))">
+              {{ getDaysRemaining(subscription.gracePeriodEndDate) }} days
+            </span>
+          </div>
+          
+          <div class="detail-item">
+            <strong>Status:</strong> 
+            <span class="status-badge" [ngClass]="getStatusClass(getDaysRemaining(subscription.gracePeriodEndDate))">
+              {{ getStatusText(getDaysRemaining(subscription.gracePeriodEndDate)) }}
+            </span>
+          </div>
+          
+          <div class="detail-item">
+            <strong>Price:</strong> ${{ subscription.price }}
+          </div>
+        </div>
+
+        <div class="subscription-actions">
+          <button class="btn btn-sm btn-warning">Send Reminder</button>
+          <button class="btn btn-sm btn-danger">Disable Products</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
